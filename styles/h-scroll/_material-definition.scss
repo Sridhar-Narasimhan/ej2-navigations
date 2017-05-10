@@ -1,0 +1,48 @@
+/*! component's theme wise override definitions and variables */
+
+$hscroll-default-bg: $grey-50;
+$hscroll-press-bg: $grey-400;
+$hscroll-active-bg: $grey-400;
+$hscroll-border-size: 1px;
+$hscroll-border-type-none: none;
+$hscroll-box-shadow: none;
+$hscroll-hover-bg: rgba($grey-black, .12);
+$hscroll-hover-border: rgba($grey-black, .12);
+$hscroll-default-icon-color: rgba($grey-light-font, .54);
+
+$hscroll-ribble-animation-border-frame: rgba(255, 255, 255, .5);
+$hscroll-ribble-animation-shadow-frame: 0 0 0 0 $hscroll-ribble-animation-border-frame;
+$hscroll-ribble-animation-shadow-frame-end: 0 0 0 200px rgba(255, 255, 255, .12);
+
+
+@mixin hscroll-btn-animation {
+  background-color: transparent;
+  border-radius: 50%;
+  border-width: 1px;
+  box-sizing: border-box;
+  content: '' ;
+  height: 1px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  visibility: hidden;
+  width: 1px;
+}
+
+@mixin hscroll-btn-animation-after {
+  animation: hscroll-popup-shadow .6s ease-out 0ms;
+  visibility: visible;
+}
+
+@keyframes hscroll-popup-shadow {
+  0% {
+    border-color: $hscroll-ribble-animation-border-frame;
+    box-shadow: $hscroll-ribble-animation-shadow-frame;
+    }
+
+  100% {
+    box-shadow: $hscroll-ribble-animation-shadow-frame-end;
+    }
+ }
+
+

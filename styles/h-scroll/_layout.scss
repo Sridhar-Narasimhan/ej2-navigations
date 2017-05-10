@@ -1,0 +1,62 @@
+@include export-module('h-scroll') {
+  /*! h-scroll layout */
+
+  .e-bigger .e-hscroll,
+  .e-hscroll.e-bigger {
+    min-height: 56px;
+
+    .e-icons {
+      font-size: 18px;
+     }
+
+    .e-hor-nav {
+      min-height: 56px;
+    }
+
+  }
+
+  .e-hscroll {
+    display: block;
+    width: inherit;
+
+    > * {
+      height: inherit;
+     }
+
+    .e-hscroll-content {
+      height: inherit;
+      position: relative;
+      touch-action: none;
+ }
+
+    .e-hor-nav  {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      float: right;
+      height: 100%;
+      min-height: 42px;
+      position: relative;
+      width: 2.667em;
+      z-index: 100;
+    }
+
+    .e-nav-arrow {
+      position: relative;
+  }
+
+    &.e-rtl {
+
+      .e-hor-nav {
+        float: left;
+    }
+
+    }
+
+    .e-nav-arrow.e-icons {
+      text-align: center;
+      vertical-align: middle;
+      width: 100%;
+      }
+   }
+}

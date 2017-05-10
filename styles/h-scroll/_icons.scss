@@ -1,0 +1,28 @@
+@include export-module('hscroll-icons') {
+  /*! hscroll icons */
+  .e-hscroll {
+
+    &.e-rtl {
+
+      .e-nav-left-arrow::before {
+        content: '\e913';
+         }
+
+      .e-nav-right-arrow::before {
+        content: '\e904';
+        }
+    }
+
+    .e-nav-left-arrow::before {
+      content: '\e904';
+      line-height: normal;
+      vertical-align: middle;
+    }
+
+    .e-nav-right-arrow::before {
+      content: '\e913';
+      line-height: normal;
+      vertical-align: middle;
+    }
+}
+}

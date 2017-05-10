@@ -1,0 +1,30 @@
+
+@include export-module('toolbar-icons') {
+  /*! toolbar icons */
+  .e-toolbar {
+
+    .e-popup-down-icon::before {
+      content: '\e916';
+      line-height: normal;
+    }
+
+    .e-popup-up-icon::before {
+      content: '\e910';
+      line-height: normal;
+    }
+   }
+  @media screen and (max-width: 768px) {
+    .e-toolbar {
+
+      .e-popup-down-icon::before {
+        position: relative;
+        top: 3px;
+      }
+
+      .e-popup-up-icon::before {
+        position: relative;
+        top: 2px;
+      }
+   }
+}
+}

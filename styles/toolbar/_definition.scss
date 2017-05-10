@@ -1,0 +1,52 @@
+/*! component's default definitions and variables */
+
+$btn-txt-padding: 2px;
+$deafult-padding: 5px;
+
+$tbar-zero-value: 0;
+$tbar-border-radius: $border-radius;
+$tbar-border-type: $border-type;
+$tbar-border-size: $border-size;
+$tbar-btn-box-shadow: none;
+$tbar-btn-weight: 400;
+$tbar-btn-family: $font-family;
+$tbar-btn-font-size:  $font-size;
+$tbar-box-shadow: 0 0 2px $shadow-color;
+$tbar-pop-box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .21);
+
+$tbar-font-size: $font-size;
+$tbar-font-family: $font-family;
+
+
+$tbar-default-bg: $default-bg-color  ;
+$tbar-default-border: $default-border-color ;
+$tbar-default-font: $default-font-color ;
+
+$tbar-separator-size: $border-size ;
+$tbar-separator-border: $default-border-color ;
+$tbar-default-icon-color: $default-icon-color ;
+$tbar-default-icon-overlay: $default-icon-color ;
+$tbar-default-font-overlay: $default-font-color ;
+
+$tbar-hover-bg:  $hover-bg-color;
+$tbar-hover-font: $hover-font-color ;
+$tbar-hover-border: $hover-border-color ;
+
+
+$tbar-active-bg: $active-bg-color;
+$tbar-active-icon-color: $active-font-color ;
+$tbar-active-font-color: $active-font-color ;
+
+$tbar-press-bg: $active-bg-color ;
+$tbar-press-font: $active-font-color ;
+$tbar-press-icon-color: $active-font-color ;
+$tbar-press-icon-border: $active-border-color ;
+$tbar-press-icon-bg: $active-bg-color ;
+
+@mixin tbar-btn-animation {
+  content: '';
+}
+
+@mixin tbar-btn-animation-after {
+  content: '';
+}

@@ -1,0 +1,121 @@
+@include export-module('toolbar-theme') {
+  /*! toolbar theme */
+  .e-toolbar {
+    background: $tbar-default-bg;
+    border: $tbar-border-size $tbar-border-type $tbar-default-border;
+    box-shadow: $tbar-box-shadow;
+
+    .e-icons {
+      color: $tbar-default-icon-color;
+    }
+
+    .e-toolbar-pop {
+      background: $tbar-default-bg;
+      border: $tbar-border-size $tbar-border-type $tbar-default-border;
+      box-shadow: $tbar-pop-box-shadow;
+
+      .e-toolbar-item {
+
+        .e-tbar-btn-text {
+          color: $tbar-default-font;
+          }
+      }
+    }
+
+    .e-tbar-btn {
+      background: $tbar-default-bg;
+      box-shadow: $tbar-btn-box-shadow;
+      color: $tbar-default-font;
+
+      &:focus {
+        background: $tbar-hover-bg;
+        border-color: $tbar-hover-border;
+        color: $tbar-hover-font;
+      }
+
+      &:hover {
+        background: $tbar-hover-bg;
+        border-color: $tbar-hover-border;
+        color: $tbar-hover-font;
+       }
+        }
+
+    .e-toolbar-items {
+      background: $tbar-default-bg;
+
+      .e-toolbar-item {
+
+        &.e-overlay {
+          background: $tbar-default-bg;
+
+          .e-tbar-btn-text {
+            color: $tbar-default-font-overlay;
+            }
+
+          .e-icons {
+            color: $tbar-default-icon-overlay;
+           }
+        }
+
+        .e-tbar-btn-text {
+          color: $tbar-default-font;
+        }
+
+        &.e-separator {
+          background: $tbar-default-border;
+          border-right: $tbar-separator-size $border-type $tbar-separator-border;
+          }
+        }
+    }
+
+    .e-hor-nav.e-nav-active {
+      border-left: $border-size $border-type $tbar-active-bg;
+      color: $tbar-active-font-color;
+    }
+
+    &.e-rtl .e-hor-nav {
+      background: $tbar-default-bg;
+      border-left: 0;
+      border-right: $border-size $border-type $tbar-default-border;
+
+      &:not(.e-hor-nav.e-nav-active):hover {
+        background: $tbar-hover-bg;
+        color: $tbar-hover-font;
+      }
+    }
+
+    .e-hor-nav  {
+      background: $tbar-default-bg;
+      border-left: $border-size $border-type $tbar-default-border;
+
+      &::after {
+        @include tbar-btn-animation;
+      }
+
+      &:active::after {
+        @include tbar-btn-animation-after;
+     }
+
+      &:hover {
+        background: $tbar-hover-bg;
+        color: $tbar-hover-font;
+      }
+
+      &:focus {
+        background: $tbar-hover-bg;
+        border-color: $tbar-hover-border;
+        color: $tbar-hover-font;
+      }
+     }
+
+    .e-tbar-btn {
+
+      &:active {
+        background:  $tbar-press-bg;
+        border-color: $tbar-press-bg;
+        color: $tbar-press-font;
+      }
+    }
+
+  }
+}
