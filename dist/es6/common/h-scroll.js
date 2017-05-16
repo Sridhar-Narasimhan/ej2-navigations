@@ -18,7 +18,7 @@ import { Component } from '@syncfusion/ej2-base/component';
 import { Touch } from '@syncfusion/ej2-base/touch';
 import { EventHandler } from '@syncfusion/ej2-base/event-handler';
 import { NotifyPropertyChanges, Property } from '@syncfusion/ej2-base/notify-property-change';
-import { createElement } from '@syncfusion/ej2-base/dom';
+import { createElement, detach } from '@syncfusion/ej2-base/dom';
 import { getUniqueID } from '@syncfusion/ej2-base/util';
 import { Browser } from '@syncfusion/ej2-base/browser';
 var CLASSNAMES = {
@@ -85,7 +85,7 @@ var HScroll = (function (_super) {
         if (this.uniqueId) {
             this.element.removeAttribute('id');
         }
-        this.scrollEle.remove();
+        detach(this.scrollEle);
         nav.parentElement.removeChild(nav);
         EventHandler.remove(this.scrollEle, 'scroll', this.scrollEventHandler);
         this.touchModule.destroy();
@@ -102,6 +102,9 @@ var HScroll = (function (_super) {
         element.insertBefore(nav, element.firstChild);
         EventHandler.add(this.scrollEle, 'scroll', this.scrollEventHandler, this);
         var tchObj = new Touch(nav, { taphold: this.tabHoldHandler.bind(this) });
+        if (Browser.info.name === 'msie') {
+            nav.classList.add('e-ie-align');
+        }
         nav.addEventListener('mouseup', this.repeatScroll.bind(this));
         nav.addEventListener('touchend', this.repeatScroll.bind(this));
         nav.addEventListener('contextmenu', function (e) {

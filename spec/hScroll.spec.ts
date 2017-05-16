@@ -9,13 +9,16 @@ import { isNullOrUndefined} from '@syncfusion/ej2-base/util'
 
 let firefoxUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0';
 
+let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET4.0E; .NET4.0C; ' +
+    'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
+
 describe('Horizontal scroll bar Base items', () => {
     describe(' Horizontal scroll Base Testing', () => {
         let scroll: any;
         beforeEach((): void => {
             let ele: HTMLElement = document.createElement('div');
             ele.id = 'Sample';
-            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div>	</div>";
+            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div>	</div>";
             setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
             document.body.appendChild(ele);
 
@@ -51,7 +54,7 @@ describe('Horizontal scroll bar Base items', () => {
         beforeEach((): void => {
             let ele: HTMLElement = document.createElement('div');
             ele.id = 'Sample';
-            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div>	</div>";
+            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button>Btn_style</button></div><div id='item' style='display: inline-block;'><button>Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div>	</div>";
             setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
             document.body.appendChild(ele);
         });
@@ -74,7 +77,7 @@ describe('Horizontal scroll bar Base items', () => {
         beforeEach((): void => {
             let ele: HTMLElement = document.createElement('div');
             ele.id = 'Sample';
-            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
             setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
             document.body.appendChild(ele);
         });
@@ -97,7 +100,7 @@ describe('Horizontal scroll bar Base items', () => {
         beforeEach((): void => {
             let ele: HTMLElement = document.createElement('div');
             ele.id = 'Sample';
-            ele.innerHTML = "<div class= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+            ele.innerHTML = "<div class= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
             setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
             document.body.appendChild(ele);
         });
@@ -125,7 +128,7 @@ describe('Horizontal scroll bar Base items', () => {
             let ele: HTMLElement = document.createElement('div');
             ele.style.overflow = 'hidden';
             ele.id = 'Sample';
-            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>	";
+            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>	";
             setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
             document.body.appendChild(ele);
         });
@@ -153,6 +156,8 @@ describe('Horizontal scroll bar Base items', () => {
             scroll.touchScrollHandler(event);
             expect(scrollEle.scrollLeft).toEqual(30);
             event.scrollDirection = 'Right'; event.name = 'scroll'; event.distanceX = 30;
+            scroll.touchScrollHandler(event);
+            event.scrollDirection = 'Top'; event.name = 'scroll'; event.distanceX = 30;
             scroll.touchScrollHandler(event);
             expect(scrollEle.scrollLeft).toEqual(0);
             event.scrollDirection = 'Left'; event.name = 'scroll'; event.distanceX = 40;
@@ -237,7 +242,7 @@ describe('Horizontal scroll bar Base items', () => {
                 let ele: HTMLElement = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -259,7 +264,7 @@ describe('Horizontal scroll bar Base items', () => {
                 let ele: HTMLElement = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -281,7 +286,7 @@ describe('Horizontal scroll bar Base items', () => {
                 let ele: HTMLElement = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -304,7 +309,7 @@ describe('Horizontal scroll bar Base items', () => {
                 let ele: HTMLElement = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -332,7 +337,7 @@ describe('Horizontal scroll bar Base items', () => {
                 scroll.tabHoldHandler(e);
             });
         });
-        describe('Cross Browser Testing for Scrolling in RTL mode', () => {
+        describe('Cross Browser Mozilla Testing for Scrolling in RTL mode', () => {
             let scroll: any;
             beforeEach((): void => {
                 document.body.innerHTML = '';
@@ -343,7 +348,7 @@ describe('Horizontal scroll bar Base items', () => {
                 let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
                 let styleNode: Node = style.appendChild(document.createTextNode(css));
                 document.getElementsByTagName('head')[0].appendChild(style);
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
                 Browser.userAgent = firefoxUa;
@@ -352,6 +357,7 @@ describe('Horizontal scroll bar Base items', () => {
                 document.body.innerHTML = '';
             });
             it('EnableRTL Property Testing using dataBind', () => {
+                Browser.userAgent = firefoxUa;
                 let ele: HTMLElement = document.getElementById('inneritems');
                 scroll = new HScroll({ enableRtl : true, scrollStep: 50 }, ele);
                 expect(scroll.element.classList.contains('e-rtl')).toEqual(true);
@@ -364,7 +370,34 @@ describe('Horizontal scroll bar Base items', () => {
                 navEle.click();
                 navEle.click();
                 scrollEle.dispatchEvent(scrollEvent);
-                //expect(navIcon.classList.contains('e-nav-right-arrow')).toEqual(true);
+            });
+        });
+        describe('Cross Browser IE Testing for Scrolling in RTL mode', () => {
+            let scroll: any;
+            beforeEach((): void => {
+                document.body.innerHTML = '';
+                let ele: HTMLElement = document.createElement('div');
+                ele.style.overflow = 'hidden';
+                ele.id = 'Sample';
+                let css: string = ".e-rtl { direction: rtl; } ";
+                let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
+                let styleNode: Node = style.appendChild(document.createTextNode(css));
+                document.getElementsByTagName('head')[0].appendChild(style);
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
+                setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
+                document.body.appendChild(ele);
+            });
+            afterEach((): void => {
+                document.body.innerHTML = '';
+            });
+            it('Cross browser testing with IE', () => {
+                let ele: HTMLElement = document.getElementById('inneritems');
+                Browser.userAgent = ieUa;
+                scroll = new HScroll({ enableRtl : true, scrollStep: 50 }, ele);
+                expect(scroll.element.classList.contains('e-rtl')).toEqual(true);
+                let scrollEle: HTMLElement = scroll.element.children[1];
+                let navEle: HTMLElement = <HTMLElement>ele.firstChild;
+                expect (navEle.classList.contains('e-ie-align')).toEqual(true);
             });
         });
     });

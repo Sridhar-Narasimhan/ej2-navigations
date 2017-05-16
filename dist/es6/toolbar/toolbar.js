@@ -14,8 +14,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { Component, EventHandler, Property, Event } from '@syncfusion/ej2-base';
-import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes } from '@syncfusion/ej2-base/dom';
+import { Component, EventHandler, Property, Event, Browser } from '@syncfusion/ej2-base';
+import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes, detach } from '@syncfusion/ej2-base/dom';
 import { createElement as buildTag } from '@syncfusion/ej2-base/dom';
 import { isNullOrUndefined as isNOU, getUniqueID, formatUnit } from '@syncfusion/ej2-base/util';
 import { NotifyPropertyChanges, CreateBuilder, ChildProperty } from '@syncfusion/ej2-base';
@@ -452,6 +452,9 @@ var Toolbar = (function (_super) {
         var id = element.id.concat('_nav');
         var className = 'e-' + element.id.concat('_nav ' + CLASSNAMES.POPUPNAV);
         var nav = buildTag('div', { id: id, className: className });
+        if (Browser.info.name === 'msie') {
+            nav.classList.add('e-ie-align');
+        }
         var navItem = buildTag('div', { className: CLASSNAMES.POPUPDOWN + ' e-icons' });
         nav.appendChild(navItem);
         nav.setAttribute('tabindex', '0');
@@ -732,9 +735,9 @@ var Toolbar = (function (_super) {
         }
         popupEle.style.display = 'none';
         if (popupEle.children.length === 0) {
-            popNav.remove();
+            detach(popNav);
             this.popupObj.destroy();
-            this.popupObj.element.remove();
+            detach(this.popupObj.element);
             this.popupObj = null;
             this.element.setAttribute('aria-haspopup', 'false');
             this.element.classList.remove('e-toolpop');
@@ -796,7 +799,7 @@ var Toolbar = (function (_super) {
     Toolbar.prototype.removeItemByIndex = function (index, innerItems) {
         if (this.tbarEle[index] && innerItems[index]) {
             var eleIdx = innerItems.indexOf(this.tbarEle[index]);
-            innerItems[eleIdx].remove();
+            detach(innerItems[eleIdx]);
             this.items.splice(index, 1);
             this.tbarEle.splice(index, 1);
         }
@@ -976,7 +979,6 @@ var Toolbar = (function (_super) {
                     if (this.popupObj) {
                         var popNav = this.element.querySelector('.' + CLASSNAMES.TBARNAV);
                         this.popupRefresh(this.popupObj.element, true);
-                        popNav.remove();
                     }
                     this.renderOverflowMode();
                     if (this.enableRtl) {

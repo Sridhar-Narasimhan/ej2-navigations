@@ -445,6 +445,9 @@ define(["require", "exports", "@syncfusion/ej2-base", "@syncfusion/ej2-base/dom"
             var id = element.id.concat('_nav');
             var className = 'e-' + element.id.concat('_nav ' + CLASSNAMES.POPUPNAV);
             var nav = dom_2.createElement('div', { id: id, className: className });
+            if (ej2_base_1.Browser.info.name === 'msie') {
+                nav.classList.add('e-ie-align');
+            }
             var navItem = dom_2.createElement('div', { className: CLASSNAMES.POPUPDOWN + ' e-icons' });
             nav.appendChild(navItem);
             nav.setAttribute('tabindex', '0');
@@ -725,9 +728,9 @@ define(["require", "exports", "@syncfusion/ej2-base", "@syncfusion/ej2-base/dom"
             }
             popupEle.style.display = 'none';
             if (popupEle.children.length === 0) {
-                popNav.remove();
+                dom_1.detach(popNav);
                 this.popupObj.destroy();
-                this.popupObj.element.remove();
+                dom_1.detach(this.popupObj.element);
                 this.popupObj = null;
                 this.element.setAttribute('aria-haspopup', 'false');
                 this.element.classList.remove('e-toolpop');
@@ -789,7 +792,7 @@ define(["require", "exports", "@syncfusion/ej2-base", "@syncfusion/ej2-base/dom"
         Toolbar.prototype.removeItemByIndex = function (index, innerItems) {
             if (this.tbarEle[index] && innerItems[index]) {
                 var eleIdx = innerItems.indexOf(this.tbarEle[index]);
-                innerItems[eleIdx].remove();
+                dom_1.detach(innerItems[eleIdx]);
                 this.items.splice(index, 1);
                 this.tbarEle.splice(index, 1);
             }
@@ -969,7 +972,6 @@ define(["require", "exports", "@syncfusion/ej2-base", "@syncfusion/ej2-base/dom"
                         if (this.popupObj) {
                             var popNav = this.element.querySelector('.' + CLASSNAMES.TBARNAV);
                             this.popupRefresh(this.popupObj.element, true);
-                            popNav.remove();
                         }
                         this.renderOverflowMode();
                         if (this.enableRtl) {

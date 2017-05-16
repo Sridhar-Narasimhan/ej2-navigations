@@ -2,13 +2,15 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var firefoxUa = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0';
+    var ieUa = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET4.0E; .NET4.0C; ' +
+        'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
     describe('Horizontal scroll bar Base items', function () {
         describe(' Horizontal scroll Base Testing', function () {
             var scroll;
             beforeEach(function () {
                 var ele = document.createElement('div');
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div>	</div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div>	</div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -43,7 +45,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
             beforeEach(function () {
                 var ele = document.createElement('div');
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div>	</div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button>Btn_style</button></div><div id='item' style='display: inline-block;'><button>Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div>	</div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -66,7 +68,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
             beforeEach(function () {
                 var ele = document.createElement('div');
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -88,7 +90,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
             beforeEach(function () {
                 var ele = document.createElement('div');
                 ele.id = 'Sample';
-                ele.innerHTML = "<div class= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div class= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -114,7 +116,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 var ele = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>	";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>	";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -142,6 +144,10 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 scroll.touchScrollHandler(event);
                 expect(scrollEle.scrollLeft).toEqual(30);
                 event.scrollDirection = 'Right';
+                event.name = 'scroll';
+                event.distanceX = 30;
+                scroll.touchScrollHandler(event);
+                event.scrollDirection = 'Top';
                 event.name = 'scroll';
                 event.distanceX = 30;
                 scroll.touchScrollHandler(event);
@@ -235,7 +241,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 var ele = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -257,7 +263,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 var ele = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -279,7 +285,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 var ele = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -302,7 +308,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 var ele = document.createElement('div');
                 ele.style.overflow = 'hidden';
                 ele.id = 'Sample';
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
             });
@@ -331,7 +337,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 scroll.tabHoldHandler(e);
             });
         });
-        describe('Cross Browser Testing for Scrolling in RTL mode', function () {
+        describe('Cross Browser Mozilla Testing for Scrolling in RTL mode', function () {
             var scroll;
             beforeEach(function () {
                 document.body.innerHTML = '';
@@ -343,7 +349,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 style.type = 'text/css';
                 var styleNode = style.appendChild(document.createTextNode(css));
                 document.getElementsByTagName('head')[0].appendChild(style);
-                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
                 dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
                 document.body.appendChild(ele);
                 index_1.Browser.userAgent = firefoxUa;
@@ -352,6 +358,7 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 document.body.innerHTML = '';
             });
             it('EnableRTL Property Testing using dataBind', function () {
+                index_1.Browser.userAgent = firefoxUa;
                 var ele = document.getElementById('inneritems');
                 scroll = new h_scroll_1.HScroll({ enableRtl: true, scrollStep: 50 }, ele);
                 expect(scroll.element.classList.contains('e-rtl')).toEqual(true);
@@ -364,6 +371,35 @@ define(["require", "exports", "@syncfusion/ej2-base/index", "@syncfusion/ej2-bas
                 navEle.click();
                 navEle.click();
                 scrollEle.dispatchEvent(scrollEvent);
+            });
+        });
+        describe('Cross Browser IE Testing for Scrolling in RTL mode', function () {
+            var scroll;
+            beforeEach(function () {
+                document.body.innerHTML = '';
+                var ele = document.createElement('div');
+                ele.style.overflow = 'hidden';
+                ele.id = 'Sample';
+                var css = ".e-rtl { direction: rtl; } ";
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                var styleNode = style.appendChild(document.createTextNode(css));
+                document.getElementsByTagName('head')[0].appendChild(style);
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
+                dom_1.setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
+                document.body.appendChild(ele);
+            });
+            afterEach(function () {
+                document.body.innerHTML = '';
+            });
+            it('Cross browser testing with IE', function () {
+                var ele = document.getElementById('inneritems');
+                index_1.Browser.userAgent = ieUa;
+                scroll = new h_scroll_1.HScroll({ enableRtl: true, scrollStep: 50 }, ele);
+                expect(scroll.element.classList.contains('e-rtl')).toEqual(true);
+                var scrollEle = scroll.element.children[1];
+                var navEle = ele.firstChild;
+                expect(navEle.classList.contains('e-ie-align')).toEqual(true);
             });
         });
     });

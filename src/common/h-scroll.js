@@ -81,7 +81,7 @@ define(["require", "exports", "@syncfusion/ej2-base/component", "@syncfusion/ej2
             if (this.uniqueId) {
                 this.element.removeAttribute('id');
             }
-            this.scrollEle.remove();
+            dom_1.detach(this.scrollEle);
             nav.parentElement.removeChild(nav);
             event_handler_1.EventHandler.remove(this.scrollEle, 'scroll', this.scrollEventHandler);
             this.touchModule.destroy();
@@ -98,6 +98,9 @@ define(["require", "exports", "@syncfusion/ej2-base/component", "@syncfusion/ej2
             element.insertBefore(nav, element.firstChild);
             event_handler_1.EventHandler.add(this.scrollEle, 'scroll', this.scrollEventHandler, this);
             var tchObj = new touch_1.Touch(nav, { taphold: this.tabHoldHandler.bind(this) });
+            if (browser_1.Browser.info.name === 'msie') {
+                nav.classList.add('e-ie-align');
+            }
             nav.addEventListener('mouseup', this.repeatScroll.bind(this));
             nav.addEventListener('touchend', this.repeatScroll.bind(this));
             nav.addEventListener('contextmenu', function (e) {

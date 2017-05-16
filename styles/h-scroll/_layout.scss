@@ -39,6 +39,10 @@
       position: relative;
       width: 2.667em;
       z-index: 100;
+
+      &.e-ie-align {
+        display: table;
+        }
     }
 
     .e-nav-arrow {
@@ -54,6 +58,7 @@
     }
 
     .e-nav-arrow.e-icons {
+      display: table-cell;
       text-align: center;
       vertical-align: middle;
       width: 100%;

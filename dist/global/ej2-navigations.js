@@ -5593,6 +5593,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             var id = element.id.concat('_nav');
             var className = 'e-' + element.id.concat('_nav ' + CLASSNAMES.POPUPNAV);
             var nav = dom_2.createElement('div', { id: id, className: className });
+            if (ej2_base_1.Browser.info.name === 'msie') {
+                nav.classList.add('e-ie-align');
+            }
             var navItem = dom_2.createElement('div', { className: CLASSNAMES.POPUPDOWN + ' e-icons' });
             nav.appendChild(navItem);
             nav.setAttribute('tabindex', '0');
@@ -5873,9 +5876,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             }
             popupEle.style.display = 'none';
             if (popupEle.children.length === 0) {
-                popNav.remove();
+                dom_1.detach(popNav);
                 this.popupObj.destroy();
-                this.popupObj.element.remove();
+                dom_1.detach(this.popupObj.element);
                 this.popupObj = null;
                 this.element.setAttribute('aria-haspopup', 'false');
                 this.element.classList.remove('e-toolpop');
@@ -5937,7 +5940,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         Toolbar.prototype.removeItemByIndex = function (index, innerItems) {
             if (this.tbarEle[index] && innerItems[index]) {
                 var eleIdx = innerItems.indexOf(this.tbarEle[index]);
-                innerItems[eleIdx].remove();
+                dom_1.detach(innerItems[eleIdx]);
                 this.items.splice(index, 1);
                 this.tbarEle.splice(index, 1);
             }
@@ -6117,7 +6120,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
                         if (this.popupObj) {
                             var popNav = this.element.querySelector('.' + CLASSNAMES.TBARNAV);
                             this.popupRefresh(this.popupObj.element, true);
-                            popNav.remove();
                         }
                         this.renderOverflowMode();
                         if (this.enableRtl) {
@@ -12571,7 +12573,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             if (this.uniqueId) {
                 this.element.removeAttribute('id');
             }
-            this.scrollEle.remove();
+            dom_1.detach(this.scrollEle);
             nav.parentElement.removeChild(nav);
             event_handler_1.EventHandler.remove(this.scrollEle, 'scroll', this.scrollEventHandler);
             this.touchModule.destroy();
@@ -12588,6 +12590,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
             element.insertBefore(nav, element.firstChild);
             event_handler_1.EventHandler.add(this.scrollEle, 'scroll', this.scrollEventHandler, this);
             var tchObj = new touch_1.Touch(nav, { taphold: this.tabHoldHandler.bind(this) });
+            if (browser_1.Browser.info.name === 'msie') {
+                nav.classList.add('e-ie-align');
+            }
             nav.addEventListener('mouseup', this.repeatScroll.bind(this));
             nav.addEventListener('touchend', this.repeatScroll.bind(this));
             nav.addEventListener('contextmenu', function (e) {

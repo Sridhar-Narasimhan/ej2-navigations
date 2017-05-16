@@ -1,12 +1,15 @@
 /**
  * toolbar spec document
  */
-import { ScrollEventArgs, TouchEventArgs } from '@syncfusion/ej2-base/index';
+import { ScrollEventArgs, TouchEventArgs, Browser } from '@syncfusion/ej2-base/index';
 import { createElement, isVisible, setStyleAttribute } from '@syncfusion/ej2-base/dom';
 import { Toolbar } from '../src/toolbar/toolbar';
 import { HScroll } from '../src/common/h-scroll';
 import { Button } from '@syncfusion/ej2-buttons/src/button/button';
 import '../node_modules/es6-promise/dist/es6-promise';
+
+let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET4.0E; .NET4.0C; ' +
+    'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
 
 describe('Toolbar Control', () => {
     let css: string = ".e-separator { border-right:1px solid; height: 15px; margin: 7.5px 3px} .e-toolbar .e-toolbar-items .e-toolbar-item.e-separator + .e-separator { display:none } .e-toolbar-items { display: inline-block; } .e-toolbar-items.e-hscroll { width:inherit; }  .e-toolbar .e-fix-width {width : 0px !important; } .e-toolbar .e-tbarpop  { position: fixed; } .e-toolbar-items .e-toolbar-item { display: inline-block; } .e-toolbar .e-hor-nav { float:right; width:30px; }  .e-toolbar .e-toolbar-pop { position: fixed;} ";
@@ -3337,6 +3340,40 @@ describe('Toolbar Control', () => {
             });
         });
     });
+
+        describe('Cross Browser Testing with IE popup icon alignment', () => {
+            let toolbar: any;
+            let keyEventArgs: any;
+            document.body.innerHTML = '';
+            beforeEach((): void => {
+                toolbar = undefined;
+                let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+                setStyleAttribute(ele, { 'display': 'block', 'white-space': 'nowrap', 'position': 'relative' });
+                ele.style.display = 'block';
+                document.body.appendChild(ele);
+            });
+            afterEach((): void => {
+                if (toolbar) {
+                    toolbar.destroy();
+                }
+                document.body.innerHTML = '';
+            });
+            it('Cross browser Testing with IE', () => {
+                Browser.userAgent = ieUa;
+                toolbar = new Toolbar({
+                width: 70,
+                overflowMode: "Popup",
+                items: [
+                    { type: 'Button', text: 'Underline', showTextOn: 'Toolbar' },
+                    { type: 'Button', text: 'Bold' },
+                    { type: 'Button', text: 'Italic' }
+                ],
+            }); toolbar.appendTo('#ej2Toolbar');
+           let popupNav: HTMLElement = toolbar.element.querySelector('.e-hor-nav') as HTMLElement;
+           expect (popupNav.classList.contains('e-ie-align')).toEqual(true);
+            });
+        });
+
 
         describe('Popup Open animation testing with animation', () => {
             let toolbar: any;

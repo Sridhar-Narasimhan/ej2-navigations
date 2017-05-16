@@ -197,10 +197,15 @@
       position: relative;
       width: 32px;
       z-index: 100;
+
+      &.e-ie-align {
+        display: table;
+        }
       }
 
     .e-popup-down-icon.e-icons,
     .e-popup-up-icon.e-icons {
+      display: table-cell;
       text-align: center;
       vertical-align: middle;
       width: 100%;

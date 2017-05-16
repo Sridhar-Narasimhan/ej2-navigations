@@ -1,5 +1,5 @@
-import { Component, enableRtl, EventHandler, Property, Event, EmitType } from '@syncfusion/ej2-base';
-import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes } from '@syncfusion/ej2-base/dom';
+import { Component, enableRtl, EventHandler, Property, Event, EmitType, Browser } from '@syncfusion/ej2-base';
+import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes, detach } from '@syncfusion/ej2-base/dom';
 import { createElement as buildTag } from '@syncfusion/ej2-base/dom';
 import { isNullOrUndefined as isNOU, getUniqueID, formatUnit } from '@syncfusion/ej2-base/util';
 import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty } from '@syncfusion/ej2-base';
@@ -586,6 +586,8 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let id: string = element.id.concat('_nav');
         let className: string = 'e-' + element.id.concat('_nav ' + CLASSNAMES.POPUPNAV);
         let nav: HTMLElement = buildTag('div', { id: id, className: className });
+        if (Browser.info.name === 'msie' ) {
+          nav.classList.add('e-ie-align'); }
         let navItem: HTMLElement = buildTag('div', { className: CLASSNAMES.POPUPDOWN + ' e-icons' });
         nav.appendChild(navItem);
         nav.setAttribute('tabindex', '0');
@@ -833,9 +835,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         }
         popupEle.style.display = 'none';
         if (popupEle.children.length === 0) {
-            popNav.remove();
+            detach(popNav);
             this.popupObj.destroy();
-            this.popupObj.element.remove();
+            detach(this.popupObj.element);
             this.popupObj = null;
             this.element.setAttribute('aria-haspopup', 'false');
             this.element.classList.remove('e-toolpop');
@@ -911,7 +913,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     private removeItemByIndex(index: number, innerItems: HTMLElement[]): void {
         if (this.tbarEle[index] && innerItems[index]) {
             let eleIdx: number = innerItems.indexOf(this.tbarEle[index]);
-            innerItems[eleIdx].remove();
+            detach(innerItems[eleIdx]);
             this.items.splice(index, 1);
             this.tbarEle.splice(index, 1);
         }
@@ -1095,7 +1097,6 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     if (this.popupObj) {
                         let popNav: HTMLElement = <HTMLElement>this.element.querySelector('.' + CLASSNAMES.TBARNAV);
                         this.popupRefresh(this.popupObj.element, true);
-                        popNav.remove();
                     }
                     this.renderOverflowMode();
                     if (this.enableRtl) {
