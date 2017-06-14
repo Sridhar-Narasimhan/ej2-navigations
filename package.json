@@ -1,6 +1,6 @@
 {
 	"name": "@syncfusion/ej2-navigations",
-	"version": "1.0.8",
+	"version": "1.2.0",
 	"description": "Syncfusion TypeScript Navigation Components",
 	"author": "Syncfusion Inc.",
 	"license": "SEE LICENSE IN license",
@@ -12,7 +12,6 @@
 	},
 	"devDependencies": {
 		"@types/chai": "^3.4.28",
-		"@types/es6-promise": "0.0.28",
 		"@types/jasmine": "^2.2.29",
 		"@types/jasmine-ajax": "^3.1.27",
 		"@types/requirejs": "^2.1.26",
@@ -35,6 +34,22 @@
 		"nedb": "^1.8.0",
 		"phantomjs-prebuilt": "^2.1.14",
 		"simple-odata-server": "^0.3.1"
+	},
+	"keywords": [
+		"ej2",
+		"syncfusion",
+		"ej2-navigations",
+		"toolbar",
+		"horizontal-scroll",
+		"ribbon",
+		"navbar",
+		"navigation-bar",
+		"toolbar-customization",
+		"command-buttons"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/syncfusion/ej2-navigations.git"
 	},
 	"scripts": {
 		"build": "gulp build",

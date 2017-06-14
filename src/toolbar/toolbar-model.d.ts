@@ -1,5 +1,5 @@
-import { Component, enableRtl, EventHandler, Property, Event, EmitType, Browser } from '@syncfusion/ej2-base';import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes, detach } from '@syncfusion/ej2-base/dom';import { createElement as buildTag } from '@syncfusion/ej2-base/dom';import { isNullOrUndefined as isNOU, getUniqueID, formatUnit } from '@syncfusion/ej2-base/util';import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty } from '@syncfusion/ej2-base';import { KeyboardEvents, KeyboardEventArgs, Collection } from '@syncfusion/ej2-base';import { calculatePosition } from '@syncfusion/ej2-popups/src/common/position';import { Popup} from '@syncfusion/ej2-popups';import { Button } from '@syncfusion/ej2-buttons';import { HScroll } from '../common/h-scroll';import { ToolbarHelper } from './toolbar-builder';
-import {OverflowOption,ItemType,DisplayMode,OverflowMode} from "./toolbar";
+import { Component, enableRtl, EventHandler, Property, Event, EmitType, Browser } from '@syncfusion/ej2-base';import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes, detach } from '@syncfusion/ej2-base/dom';import { createElement as buildTag, selectAll, classList } from '@syncfusion/ej2-base/dom';import { isNullOrUndefined as isNOU, getUniqueID, formatUnit } from '@syncfusion/ej2-base/util';import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty } from '@syncfusion/ej2-base';import { KeyboardEvents, KeyboardEventArgs, Collection } from '@syncfusion/ej2-base';import { calculatePosition } from '@syncfusion/ej2-popups/src/common/position';import { Popup} from '@syncfusion/ej2-popups';import { Button } from '@syncfusion/ej2-buttons';import { HScroll } from '../common/h-scroll';import { ToolbarHelper } from './toolbar-builder';
+import {OverflowOption,ItemType,DisplayMode,ItemAlign,OverflowMode} from "./toolbar";
 import {ComponentModel} from '@syncfusion/ej2-base';
 
 /**
@@ -8,16 +8,16 @@ import {ComponentModel} from '@syncfusion/ej2-base';
 export interface ItemModel {
 
     /**
-     * Specifies the id of the toolbar item such as button, input elements.     * @default ""     */    id?: string;
+     * Specifies the unique id to be used with button or input element of toolbar items.     * @default ""     */    id?: string;
 
     /**
-     * Specifies the text of the toolbar button.     * @default ""     */    text?: string;
+     * Specifies the text to be displayed on the toolbar button.     * @default ""     */    text?: string;
 
     /**
-     * Specifies the width of the toolbar button.     * @default 'auto'     */    width?: number | string;
+     * Specifies the width of the toolbar button commands.     * @default 'auto'     */    width?: number | string;
 
     /**
-     * Defines single / multiple classes separated by space which can be used for toolbar command customization.     * @default ""     */    cssClass?: string;
+     * Defines single / multiple classes (separated by space ) are to be used for commands customization.     * @default ""     */    cssClass?: string;
 
     /**
      * Defines single / multiple classes separated by space which can be used to specify an icon for the button.     * The icon will be positioned before the text content if text available, else icon alone button will be rendered.     * @default ""     */    prefixIcon?: string;
@@ -32,7 +32,7 @@ export interface ItemModel {
      * Specifies the HTML element / element id as a string which can be added as toolbar command.     * ```     * E.g - items: [{ template: '<input placeholder="Search"/>' },{ template: '#checkbox1' }]     * ```     * @default ""     */    template?: string | Object;
 
     /**
-     * Specifies the type of command to be rendered in the toolbar.     * Supported types are:     * - Button - Creates the button control with its given properties like text, prefixIcon, etc.     * - Separator - Adds a horizontal line that separates the toolbar commands.     * - Input - Creates an input element and it's applicable to template rendering with Syncfusion controls like drop down list,      * auto complete, etc.     * @default 'Button'     */    type?: ItemType;
+     * Specifies the types of command to be rendered in the toolbar.     * Supported types are:     * - Button - Creates the button control with its given properties like text, prefixIcon, etc.     * - Separator - Adds a horizontal line that separates the toolbar commands.     * - Input - Creates an input element and it's applicable to template rendering with Syncfusion controls like drop down list,      * auto complete, etc.     * @default 'Button'     */    type?: ItemType;
 
     /**
      * Specifies where the button text will be displayed in *popup mode* of the toolbar.     * Possible values are:     * - Toolbar - Text will be displayed in *toolbar* only.     * - Overflow - Text will be displayed when content overflowed to *popup* only.     * - Both - Text will be displayed in *popup* and *toolbar*.     * @default 'Both'     */    showTextOn?: DisplayMode;
@@ -41,7 +41,10 @@ export interface ItemModel {
      * Defines a htmlAttributes which can be used for adding custom attributes to toolbar command.     * Supports HTML attributes such as style, class, etc.     * @default 'null'     */    htmlAttributes?: { [key: string]: string; };
 
     /**
-     * Sets the text that appears as a tooltip in the toolbar command.     * @default ""     */    tooltipText?: string;
+     * Sets the text that appears as a html tooltip in the toolbar command.     * @default ""     */    tooltipText?: string;
+
+    /**
+     * Specifies the location for aligning items in the toolbar. Each command will be aligned according to the `align` property.     * Possible values are:         * - Left – Places the items to the `left` start of the toolbar.     * - Center - Places the items to the `center` to the toolbar.     * - Right - Places the items to the `right` end of the toolbar.     * @default "left"     */    align?: ItemAlign;
 
 }
 
@@ -63,18 +66,18 @@ export interface ToolbarModel extends ComponentModel{
      * Specifies the toolbar display mode when toolbar content exceeds the viewing area.     * Possible modes are:     * - Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.     * - Popup - Prioritized elements are displayed in toolbar and rest of elements are moved to *popup*.     * If the popup content overflows the height of the page, the rest of the elements will be hidden.     * @default 'Scrollable'     */    overflowMode?: OverflowMode;
 
     /**
-     * Specifies the direction of the toolbar items. For the cultures like Arabic, direction can be switched as right to left.     * @default 'false'     */    enableRtl?: boolean;
+     * Specifies the direction of the toolbar commands. For the cultures like Arabic, direction can be switched as right to left.     * @default 'false'     */    enableRtl?: boolean;
 
     /**
      * The event will be fired while clicking on the toolbar elements.     * @event     */    clicked?: EmitType<Event>;
 
     /**
-     * The event will be fired once the widget rendering is completed.     * @event     */    created?: EmitType<Event>;
+     * The event will be fired once the control rendering is completed.     * @event     */    created?: EmitType<Event>;
 
     /**
-     * The event will be fired when the widget gets destroyed.     * @event     */    destroyed?: EmitType<Event>;
+     * The event will be fired when the control gets destroyed.     * @event     */    destroyed?: EmitType<Event>;
 
     /**
-     * The event will be fired before the widget renders on a page.     * @event     */    beforeCreate?: EmitType<Event>;
+     * The event will be fired before the control rendered on a page.     * @event     */    beforeCreate?: EmitType<Event>;
 
 }

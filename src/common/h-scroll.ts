@@ -2,31 +2,20 @@ import { Component } from '@syncfusion/ej2-base/component';
 import { Touch, ScrollEventArgs, TouchEventArgs } from '@syncfusion/ej2-base/touch';
 import { EventHandler } from '@syncfusion/ej2-base/event-handler';
 import { NotifyPropertyChanges, INotifyPropertyChanged, Property } from '@syncfusion/ej2-base/notify-property-change';
-import { createElement, detach } from '@syncfusion/ej2-base/dom';
+import { createElement, detach, classList } from '@syncfusion/ej2-base/dom';
 import { getUniqueID } from '@syncfusion/ej2-base/util';
 import { HScrollModel } from './h-scroll-model';
 import { Browser } from '@syncfusion/ej2-base/browser';
 
-const CLASSNAMES: ClassNames = {
-    ROOT: 'e-hscroll',
-    RTL: 'e-rtl',
-    HSCROLLBAR: 'e-hscroll-bar',
-    HSCROLLCON: 'e-hscroll-content',
-    NAVARROW: 'e-nav-arrow',
-    NAVRIGHTARROW: 'e-nav-right-arrow',
-    NAVLEFTARROW: 'e-nav-left-arrow',
-    HSCROLLNAV: 'e-hor-nav'
-};
-interface ClassNames {
-    ROOT: string;
-    HSCROLLBAR: string;
-    HSCROLLCON: string;
-    HSCROLLNAV: string;
-    NAVARROW: string;
-    NAVRIGHTARROW: string;
-    NAVLEFTARROW: string;
-    RTL: string;
-}
+const CLASS_ROOT: string = 'e-hscroll';
+const CLASS_RTL : string = 'e-rtl';
+const CLASS_HSCROLLBAR : string = 'e-hscroll-bar';
+const CLASS_HSCROLLCON : string = 'e-hscroll-content';
+const CLASS_NAVARROW : string = 'e-nav-arrow';
+const CLASS_NAVRIGHTARROW : string = 'e-nav-right-arrow';
+const CLASS_NAVLEFTARROW : string = 'e-nav-left-arrow';
+const CLASS_HSCROLLNAV : string = 'e-hor-nav';
+
 interface TapEventArgs {
     name: string;
     originalEvent: TouchEventArgs | TouchEvent;
@@ -45,12 +34,13 @@ interface TapEventArgs {
  */
 @NotifyPropertyChanges
 export class HScroll extends Component<HTMLElement> implements INotifyPropertyChanged {
-    private innerEle: HTMLElement;
     private touchModule: Touch;
     private scrollEle: HTMLElement;
     private scrollItems: HTMLElement;
     private uniqueId : boolean;
     private timeout: number;
+    private browser: string;
+    private browserCheck: boolean;
     /**
      * Specifies the left or right scrolling distance of the horizontal scrollbar moving.
      * @default '40'
@@ -62,6 +52,8 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
      * @private
      */
     protected preRender(): void {
+        this.browser = Browser.info.name;
+        this.browserCheck = this.browser === 'mozilla';
         this.initialize();
         if (this.element.id === '') {
             this.element.id = getUniqueID('hscroll');
@@ -69,7 +61,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         }
         this.element.style.display = 'block';
         if (this.enableRtl) {
-            this.element.classList.add(CLASSNAMES.RTL);
+            this.element.classList.add(CLASS_RTL);
         }
     }
     /**
@@ -77,7 +69,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
      * @private
      */
     protected render(): void {
-        this.createNavigationIcon(this.element, CLASSNAMES.NAVRIGHTARROW + ' ' + CLASSNAMES.NAVARROW);
+        this.createNavigationIcon(this.element, CLASS_NAVRIGHTARROW + ' ' + CLASS_NAVARROW);
     }
     /**
      * Initializes a new instance of the HScroll class.
@@ -88,8 +80,8 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         super(options, <HTMLElement | string>element);
     }
     private initialize(): void {
-        let scrollEle: HTMLElement = createElement('div', { className: CLASSNAMES.HSCROLLCON });
-        let scrollDiv: HTMLElement = createElement('div', { className: CLASSNAMES.HSCROLLBAR });
+        let scrollEle: HTMLElement = createElement('div', { className: CLASS_HSCROLLCON });
+        let scrollDiv: HTMLElement = createElement('div', { className: CLASS_HSCROLLBAR });
         let ele: HTMLElement = this.element;
         let innerEle: HTMLElement[] = [].slice.call(ele.children);
         for (let ele of innerEle) {
@@ -114,13 +106,13 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         return 'hScroll';
     }
     /**
-     * Removes the widget safely from DOM and also detaches all its related event handlers.
+     * To destroy the HScroll Module.Removes the control from the DOM and also removes all its related events.
      * @returns void
      */
     public destroy(): void {
         let ele: HTMLElement = this.element;
         ele.style.display = '';
-        ele.classList.remove(CLASSNAMES.ROOT);
+        ele.classList.remove(CLASS_ROOT);
         let nav: HTMLElement = <HTMLElement>ele.querySelector('#' + ele.id + '_nav.e-' + ele.id + '_nav');
         EventHandler.remove(nav, 'click', this.clickEventHandler);
         for (let elem of [].slice.call(this.scrollItems.children)) {
@@ -137,14 +129,14 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private createNavigationIcon(element: HTMLElement, classList: string): void {
         let id: string = element.id.concat('_nav');
-        let className: string = 'e-' + element.id.concat('_nav ' + CLASSNAMES.HSCROLLNAV);
+        let className: string = 'e-' + element.id.concat('_nav ' + CLASS_HSCROLLNAV);
         let nav: HTMLElement = createElement('div', { id: id, className: className });
         let navItem: HTMLElement = createElement('div', { className: classList + ' e-icons' });
         nav.appendChild(navItem);
         nav.setAttribute('tabindex', '0');
         element.insertBefore(nav, element.firstChild);
         EventHandler.add(this.scrollEle, 'scroll', this.scrollEventHandler, this);
-        let tchObj: Touch = new Touch(nav, {taphold: this.tabHoldHandler.bind(this) });
+        new Touch(nav, {taphold: this.tabHoldHandler.bind(this) });
         if (Browser.info.name === 'msie' ) {
           nav.classList.add('e-ie-align'); }
         nav.addEventListener('mouseup', this.repeatScroll.bind(this));
@@ -160,9 +152,8 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private tabHoldHandler(e: TapEventArgs): void {
        let trgt: HTMLElement = e.originalEvent.target as HTMLElement;
-       trgt = trgt.classList.contains(CLASSNAMES.HSCROLLNAV) ? <HTMLElement>trgt.firstElementChild : trgt ;
+       trgt = trgt.classList.contains(CLASS_HSCROLLNAV) ? <HTMLElement>trgt.firstElementChild : trgt ;
        let timeoutFun: Function = () => {
-       let element: HTMLElement = this.scrollEle;
        let scrollDis: number = 10;
        this.contentScrolling(scrollDis, trgt);
        };
@@ -174,20 +165,20 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     private contentScrolling(scrollDis: number, trgt: HTMLElement ): void {
         let element: HTMLElement = this.scrollEle;
         let classList: DOMTokenList = trgt.classList;
-        if (classList.contains(CLASSNAMES.HSCROLLNAV)) {
-            classList = this.element.querySelector('.' + CLASSNAMES.NAVARROW).classList;
+        if (classList.contains(CLASS_HSCROLLNAV)) {
+            classList = this.element.querySelector('.' + CLASS_NAVARROW).classList;
         }
-        if (this.element.classList.contains(CLASSNAMES.RTL) && Browser.info.name === 'mozilla') {
+        if (this.element.classList.contains(CLASS_RTL) && this.browserCheck) {
             scrollDis = - scrollDis;
         }
-        if (!this.element.classList.contains(CLASSNAMES.RTL) || Browser.info.name === 'mozilla') {
-            if (classList.contains(CLASSNAMES.NAVRIGHTARROW)) {
+        if ((!this.element.classList.contains(CLASS_RTL) || this.browserCheck)  || this.browser === 'edge') {
+            if (classList.contains(CLASS_NAVRIGHTARROW)) {
                 element.scrollLeft = element.scrollLeft + scrollDis;
             } else {
                 element.scrollLeft = element.scrollLeft - scrollDis;
             }
         } else {
-            if (classList.contains(CLASSNAMES.NAVLEFTARROW)) {
+            if (classList.contains(CLASS_NAVLEFTARROW)) {
                 element.scrollLeft = element.scrollLeft + scrollDis;
             } else {
                 element.scrollLeft = element.scrollLeft - scrollDis;
@@ -201,34 +192,35 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
             let ele: HTMLElement = this.scrollEle;
             let distance: number;
             distance = e.distanceX;
+            if (this.browser === 'edge') {
+                distance = - distance;
+            }
             if (e.scrollDirection === 'Left') {
                 ele.scrollLeft = ele.scrollLeft + distance;
-            } else {
+            } else if (e.scrollDirection === 'Right') {
                 ele.scrollLeft = ele.scrollLeft - distance;
             }
     }
     private scrollEventHandler(e: Event): void {
         let target: HTMLElement = <HTMLElement>e.target;
         let width: number = target.offsetWidth;
-        let navElement: HTMLElement = (<HTMLElement>this.element.firstChild);
-        let scrollVal: number = (this.element.clientWidth + this.element.scrollLeft - navElement.offsetWidth);
-        if (navElement.firstChild) {
-            let navClassList: DOMTokenList = (<HTMLElement>navElement.firstChild).classList;
+        let navElement: Element = (<Element>this.element.firstChild.firstChild);
+        if (navElement) {
             let scrollLeft: number = target.scrollLeft;
             if (scrollLeft <= 0) {
                 scrollLeft = -scrollLeft;
             }
             if (scrollLeft === 0) {
-                if (!this.element.classList.contains(CLASSNAMES.RTL) || Browser.info.name === 'mozilla') {
-                    navClassList.add(CLASSNAMES.NAVRIGHTARROW); navClassList.remove(CLASSNAMES.NAVLEFTARROW);
+                if ((!this.element.classList.contains(CLASS_RTL) || this.browserCheck) || this.browser === 'edge') {
+                    classList(navElement as Element, [CLASS_NAVRIGHTARROW], [CLASS_NAVLEFTARROW]);
                 } else {
-                    navClassList.add(CLASSNAMES.NAVLEFTARROW); navClassList.remove(CLASSNAMES.NAVRIGHTARROW);
+                    classList(navElement as Element, [CLASS_NAVLEFTARROW], [CLASS_NAVRIGHTARROW]);
                 }
             } else if (Math.ceil(width + scrollLeft) >= target.scrollWidth) {
-                if (!this.element.classList.contains(CLASSNAMES.RTL) || Browser.info.name === 'mozilla') {
-                    navClassList.add(CLASSNAMES.NAVLEFTARROW); navClassList.remove(CLASSNAMES.NAVRIGHTARROW);
+                if ((!this.element.classList.contains(CLASS_RTL) || this.browserCheck) || this.browser === 'edge') {
+                    classList(navElement as Element, [CLASS_NAVLEFTARROW], [CLASS_NAVRIGHTARROW]);
                 } else {
-                    navClassList.add(CLASSNAMES.NAVRIGHTARROW); navClassList.remove(CLASSNAMES.NAVLEFTARROW);
+                    classList(navElement as Element, [CLASS_NAVRIGHTARROW], [CLASS_NAVLEFTARROW]);
                 }
             } else {
                 return;
@@ -251,7 +243,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
                 case 'scrollStep':
                     break;
                 case 'enableRtl':
-                    newProp.enableRtl ? this.element.classList.add(CLASSNAMES.RTL) : this.element.classList.remove(CLASSNAMES.RTL);
+                    newProp.enableRtl ? this.element.classList.add(CLASS_RTL) : this.element.classList.remove(CLASS_RTL);
                     break;
             }
         }

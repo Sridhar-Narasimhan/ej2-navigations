@@ -45,6 +45,13 @@
     .e-toolbar-items {
       min-height: 56px;
 
+      .e-toolbar-left {
+
+        .e-toolbar-item:first-child {
+          margin-left: 24px;
+        }
+      }
+
       .e-toolbar-item {
         min-height: 56px;
 
@@ -63,18 +70,14 @@
           min-width: 24px;
         }
 
-        &:first-child {
-          margin-left: 24px;
-           }
-
         button.e-btn,
         .e-tbar-btn.e-btn.e-control {
           height: calc(100% - 11px);
           margin: 5.5px 0;
           padding: $tbar-zero-value 6px;
          }
-        }
-    }
+       }
+     }
   }
 
   .e-toolbar {
@@ -172,13 +175,13 @@
 
       .e-toolbar-items {
 
-        .e-toolbar-item {
+        .e-toolbar-left {
 
-          &:first-child {
+          .e-toolbar-item:first-child {
             margin-left: 0;
             margin-right: 18px;
             }
-          }
+            }
       }
 
       .e-hor-nav {
@@ -217,6 +220,48 @@
       min-height: 42px;
       vertical-align: middle;
 
+      &.e-tbar-pos {
+        display: block;
+
+        .e-toolbar-left,
+        .e-toolbar-center,
+        .e-toolbar-right {
+          display: table;
+          height: 100%;
+          top: 0;
+       }
+
+        .e-toolbar-right,
+        .e-toolbar-left {
+          position: absolute;
+        }
+
+        .e-toolbar-right {
+          right: 0;
+        }
+
+        .e-toolbar-left {
+          left: 0;
+        }
+
+        .e-toolbar-center {
+          margin: 0 auto;
+        }
+      }
+
+      .e-toolbar-left,
+      .e-toolbar-center,
+      .e-toolbar-right {
+        display: inline-block;
+        }
+
+      .e-toolbar-left {
+
+        .e-toolbar-item:first-child {
+          margin-left: 18px;
+        }
+      }
+
       .e-toolbar-item  {
         cursor: pointer;
         display: inline-block;
@@ -232,10 +277,6 @@
           height: 100%;
           min-width: 34px;
           padding: 3.5px;
-        }
-
-        &:first-child {
-          margin-left: 18px;
         }
 
         &.e-separator {

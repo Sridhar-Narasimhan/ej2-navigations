@@ -1,6 +1,6 @@
 import{Toolbar} from "./toolbar";
 
-import{ ItemType, DisplayMode, OverflowOption, OverflowMode} from "./toolbar";
+import{ ItemType, DisplayMode, OverflowOption, OverflowMode, ItemAlign} from "./toolbar";
 
 export interface ToolbarHelper {
 	new(id: string | HTMLElement): BuilderProperties
@@ -10,7 +10,7 @@ export interface ToolbarHelper {
 export interface  BuilderProperties {
 	create(): Toolbar
 	/**
-	* The event will be fired before the widget renders on a page.
+	* The event will be fired before the control rendered on a page.
 	*/
 	beforeCreate(value:Function): BuilderProperties;
 	/**
@@ -18,11 +18,11 @@ export interface  BuilderProperties {
 	*/
 	clicked(value:Function): BuilderProperties;
 	/**
-	* The event will be fired once the widget rendering is completed.
+	* The event will be fired once the control rendering is completed.
 	*/
 	created(value:Function): BuilderProperties;
 	/**
-	* The event will be fired when the widget gets destroyed.
+	* The event will be fired when the control gets destroyed.
 	*/
 	destroyed(value:Function): BuilderProperties;
 	/**
@@ -30,7 +30,7 @@ export interface  BuilderProperties {
 	*/
 	enablePersistence(value:boolean): BuilderProperties;
 	/**
-	* Specifies the direction of the toolbar items. For the cultures like Arabic, direction can be switched as right to left.
+	* Specifies the direction of the toolbar commands. For the cultures like Arabic, direction can be switched as right to left.
 	*/
 	enableRtl(value:boolean): BuilderProperties;
 	/**
@@ -61,7 +61,15 @@ If the popup content overflows the height of the page, the rest of the elements 
 }
 export interface ItemModel {
 	/**
-	* Defines single / multiple classes separated by space which can be used for toolbar command customization.
+	* Specifies the location for aligning items in the toolbar. Each command will be aligned according to the `align` property.
+Possible values are:
+- Left – Places the items to the `left` start of the toolbar.
+- Center - Places the items to the `center` to the toolbar.
+- Right - Places the items to the `right` end of the toolbar.
+	*/
+	align(value:ItemAlign): ItemModel;
+	/**
+	* Defines single / multiple classes (separated by space ) are to be used for commands customization.
 	*/
 	cssClass(value:string): ItemModel;
 	/**
@@ -70,7 +78,7 @@ Supports HTML attributes such as style, class, etc.
 	*/
 	htmlAttributes(value:Object): ItemModel;
 	/**
-	* Specifies the id of the toolbar item such as button, input elements.
+	* Specifies the unique id to be used with button or input element of toolbar items.
 	*/
 	id(value:string): ItemModel;
 	/**
@@ -107,15 +115,15 @@ E.g - items: [{ template: '<input placeholder="Search"/>' },{ template: '#checkb
 	*/
 	template(value:string|Object): ItemModel;
 	/**
-	* Specifies the text of the toolbar button.
+	* Specifies the text to be displayed on the toolbar button.
 	*/
 	text(value:string): ItemModel;
 	/**
-	* Sets the text that appears as a tooltip in the toolbar command.
+	* Sets the text that appears as a html tooltip in the toolbar command.
 	*/
 	tooltipText(value:string): ItemModel;
 	/**
-	* Specifies the type of command to be rendered in the toolbar.
+	* Specifies the types of command to be rendered in the toolbar.
 Supported types are:
 - Button - Creates the button control with its given properties like text, prefixIcon, etc.
 - Separator - Adds a horizontal line that separates the toolbar commands.
@@ -124,7 +132,7 @@ auto complete, etc.
 	*/
 	type(value:ItemType): ItemModel;
 	/**
-	* Specifies the width of the toolbar button.
+	* Specifies the width of the toolbar button commands.
 	*/
 	width(value:number|string): ItemModel;
 	add(): ItemModel;

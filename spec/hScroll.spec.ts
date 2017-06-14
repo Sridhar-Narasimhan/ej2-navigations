@@ -9,6 +9,9 @@ import { isNullOrUndefined} from '@syncfusion/ej2-base/util'
 
 let firefoxUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0';
 
+let edgeUa: string = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240';
+
 let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET4.0E; .NET4.0C; ' +
     'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
 
@@ -225,6 +228,7 @@ describe('Horizontal scroll bar Base items', () => {
             scrollEle.dispatchEvent(scrollEvent);
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
+            expect(navEle.classList.contains('e-nav-left-arrow')).toEqual(true);
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
             navEle.click();
@@ -357,7 +361,6 @@ describe('Horizontal scroll bar Base items', () => {
                 document.body.innerHTML = '';
             });
             it('EnableRTL Property Testing using dataBind', () => {
-                Browser.userAgent = firefoxUa;
                 let ele: HTMLElement = document.getElementById('inneritems');
                 scroll = new HScroll({ enableRtl : true, scrollStep: 50 }, ele);
                 expect(scroll.element.classList.contains('e-rtl')).toEqual(true);
@@ -372,7 +375,51 @@ describe('Horizontal scroll bar Base items', () => {
                 scrollEle.dispatchEvent(scrollEvent);
             });
         });
-        describe('Cross Browser IE Testing for Scrolling in RTL mode', () => {
+        describe('Cross Browser Edge Testing for Scrolling in RTL mode', () => {
+            let scroll: any;
+            beforeEach((): void => {
+                document.body.innerHTML = '';
+                let ele: HTMLElement = document.createElement('div');
+                ele.style.overflow = 'hidden';
+                ele.id = 'Sample';
+                let css: string = ".e-rtl { direction: rtl; } ";
+                let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
+                let styleNode: Node = style.appendChild(document.createTextNode(css));
+                document.getElementsByTagName('head')[0].appendChild(style);
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
+                setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
+                document.body.appendChild(ele);
+                Browser.userAgent = edgeUa;
+            });
+            afterEach((): void => {
+                document.body.innerHTML = '';
+            });
+            it('Cross browser testing with EDGE', () => {
+                Browser.userAgent = edgeUa;
+                let tchEvent: TouchEventArgs; 
+                let ele: HTMLElement = document.getElementById('inneritems');
+                scroll = new HScroll({ enableRtl : true, scrollStep: 50 }, ele);
+                expect(scroll.element.classList.contains('e-rtl')).toEqual(true);
+                let scrollEle: HTMLElement = scroll.element.children[1];
+                let navEle: HTMLElement = <HTMLElement>ele.firstChild;
+                let navIcon: HTMLElement = navEle.firstChild as HTMLElement;
+                let scrollEvent: Event = document.createEvent('MouseEvents');
+                scrollEvent.initEvent('scroll', false, false);
+                navEle.click();
+                navEle.click();
+                navEle.click();
+                scrollEle.dispatchEvent(scrollEvent);
+                let event: ScrollEventArgs = {
+                scrollDirection: 'Left',
+                name: 'scroll',
+                distanceX: 30,
+                distanceY: 0, originalEvent: tchEvent, startEvents: tchEvent, startX: 30, startY: 0, velocity: 4
+                };
+                scroll.touchScrollHandler(event);
+            });
+        });
+
+        describe('Cross Browser Edge Testing for Scrolling in RTL mode', () => {
             let scroll: any;
             beforeEach((): void => {
                 document.body.innerHTML = '';
@@ -398,6 +445,7 @@ describe('Horizontal scroll bar Base items', () => {
                 let scrollEle: HTMLElement = scroll.element.children[1];
                 let navEle: HTMLElement = <HTMLElement>ele.firstChild;
                 expect (navEle.classList.contains('e-ie-align')).toEqual(true);
+                Browser.userAgent = '';
             });
         });
     });
