@@ -273,7 +273,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     @Event()
     public beforeCreate: EmitType<Event>;
     /**
-     * To destroy the Toolbar widget.Removes the control from the DOM and also removes all its related events
+     * Removes the control from the DOM and also removes all its related events
      * @returns void
      */
     public destroy(): void {

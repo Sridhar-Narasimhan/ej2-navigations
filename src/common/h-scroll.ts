@@ -106,7 +106,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         return 'hScroll';
     }
     /**
-     * To destroy the HScroll Module.Removes the control from the DOM and also removes all its related events.
+     * Removes the control from the DOM and also removes all its related events.
      * @returns void
      */
     public destroy(): void {
