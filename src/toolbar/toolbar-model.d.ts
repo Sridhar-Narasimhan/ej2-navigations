@@ -1,5 +1,5 @@
 import { Component, enableRtl, EventHandler, Property, Event, EmitType, Browser } from '@syncfusion/ej2-base';import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes, detach } from '@syncfusion/ej2-base/dom';import { createElement as buildTag, selectAll, classList } from '@syncfusion/ej2-base/dom';import { isNullOrUndefined as isNOU, getUniqueID, formatUnit } from '@syncfusion/ej2-base/util';import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty } from '@syncfusion/ej2-base';import { KeyboardEvents, KeyboardEventArgs, Collection } from '@syncfusion/ej2-base';import { calculatePosition } from '@syncfusion/ej2-popups/src/common/position';import { Popup} from '@syncfusion/ej2-popups';import { Button } from '@syncfusion/ej2-buttons';import { HScroll } from '../common/h-scroll';import { ToolbarHelper } from './toolbar-builder';
-import {OverflowOption,ItemType,DisplayMode,ItemAlign,OverflowMode} from "./toolbar";
+import {OverflowOption,ItemType,DisplayMode,ItemAlign,OverflowMode,ClickEventArgs} from "./toolbar";
 import {ComponentModel} from '@syncfusion/ej2-base';
 
 /**
@@ -69,7 +69,7 @@ export interface ToolbarModel extends ComponentModel{
      * Specifies the direction of the toolbar commands. For the cultures like Arabic, direction can be switched as right to left.     * @default 'false'     */    enableRtl?: boolean;
 
     /**
-     * The event will be fired while clicking on the toolbar elements.     * @event     */    clicked?: EmitType<Event>;
+     * The event will be fired while clicking on the toolbar elements.     * @event     */    clicked?: EmitType<ClickEventArgs>;
 
     /**
      * The event will be fired once the control rendering is completed.     * @event     */    created?: EmitType<Event>;

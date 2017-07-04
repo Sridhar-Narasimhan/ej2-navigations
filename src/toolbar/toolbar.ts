@@ -253,7 +253,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
      * @event
      */
     @Event()
-    public clicked: EmitType<Event>;
+    public clicked: EmitType<ClickEventArgs>;
     /**
      * The event will be fired once the control rendering is completed.
      * @event
