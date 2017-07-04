@@ -14,10 +14,14 @@ $tbar-hover-bg: rgba($grey-black, .12);
 $tbar-hover-border: rgba($grey-black, .12);
 $tbar-default-icon-color: rgba($grey-light-font, .54);
 $tbar-default-font: rgba($grey-light-font, .87) ;
+$tbar-hover-font: $tbar-default-font;
+$tbar-active-font-color: $tbar-default-font;
+$tbar-press-font: $tbar-default-font;
 
 $tbar-default-icon-overlay: rgba($grey-light-font, .26);
 $tbar-default-font-overlay: rgba($grey-light-font, .38);
 $tbar-separator-border: rgba($grey-black, .12);
+$tbar-default-border: $tbar-separator-border;
 
 $tbar-ribble-animation-border-frame: rgba(255, 255, 255, .5);
 $tbar-ribble-animation-shadow-frame: 0 0 0 0 $tbar-ribble-animation-border-frame;

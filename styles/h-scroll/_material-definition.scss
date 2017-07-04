@@ -10,6 +10,7 @@ $hscroll-hover-bg: rgba($grey-black, .12);
 $hscroll-hover-border: rgba($grey-black, .12);
 $hscroll-default-icon-color: rgba($grey-light-font, .54);
 
+$hscroll-default-border: $hscroll-hover-border;
 $hscroll-ribble-animation-border-frame: rgba(255, 255, 255, .5);
 $hscroll-ribble-animation-shadow-frame: 0 0 0 0 $hscroll-ribble-animation-border-frame;
 $hscroll-ribble-animation-shadow-frame-end: 0 0 0 200px rgba(255, 255, 255, .12);
