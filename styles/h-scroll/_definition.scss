@@ -1,9 +1,9 @@
 /*! component's default definitions and variables */
 
-$hscroll-border-type: $border-type;
+$hscroll-border-type: solid;
 $hscroll-border-size: $border-size;
 $hscroll-box-shadow:  0 0 2px $shadow-color;
-$hscroll-border-type-none: $border-type;
+$hscroll-border-type-none: none;
 $hscroll-border-radius: $border-radius;
 $hscroll-default-bg: $default-bg-color  ;
 $hscroll-default-border: $default-border-color ;

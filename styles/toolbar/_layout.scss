@@ -2,14 +2,29 @@
   /*! toolbar layout */
   .e-bigger .e-toolbar,
   .e-toolbar.e-bigger {
-    min-height: 56px;
+    min-height: $tbar-bgr-size;
 
     .e-icons {
       font-size: 18px;
     }
 
+    &.e-rtl {
+
+      .e-toolbar-items {
+
+        &:not(.e-tbar-pos) {
+
+          .e-toolbar-item:first-child {
+            margin-left: 0;
+            margin-right: $tbar-item-bgr-mrgn;
+          }
+      }
+      }
+    }
+
     .e-hor-nav {
-      min-height: 56px;
+      min-height: $tbar-bgr-size;
+      min-width: $tbar-nav-bgr-width;
     }
 
     .e-toolbar-item {
@@ -25,56 +40,67 @@
 
         &:not(.e-separator) {
           min-width: 48px;
-          padding: 5px;
+          padding: $tbar-item-pop-bgr-padding;
           }
 
         .e-icons {
-          min-width: 24px;
+          min-width: $tbar-btn-icon-bgr-width;
         }
 
-        .e-tbar-btn {
-          padding: $tbar-zero-value 4px;
+        .e-tbar-btn.e-btn {
+          min-height: $tbar-btn-pop-bgr-minheight;
+          padding: $tbar-pop-btn-bgr-padding;
 
           .e-icons {
             margin-left: $tbar-zero-value;
+            padding: $tbar-pop-icon-bgr-padding;
           }
          }
      }
     }
 
     .e-toolbar-items {
-      min-height: 56px;
+      min-height: $tbar-bgr-size;
 
       .e-toolbar-left {
 
         .e-toolbar-item:first-child {
-          margin-left: 24px;
+          margin-left: $tbar-item-bgr-mrgn;
         }
       }
 
+      &:not(.e-tbar-pos) {
+
+        .e-toolbar-item:first-child {
+          margin-left: $tbar-item-bgr-mrgn;
+          }
+      }
+
       .e-toolbar-item {
-        min-height: 56px;
+        min-height: $tbar-bgr-size;
 
         &:not(.e-separator) {
           min-width: 48px;
-          padding: 5px;
+          padding: $tbar-item-bgr-padding;
         }
 
         &.e-separator {
           height: 64%;
-          margin: 10px 5px;
-          min-height: 36px;
+          margin: $tbar-separator-bgr-mrgn;
+          min-height: $tbar-separator-bgr-height;
         }
 
         .e-icons {
-          min-width: 24px;
+          min-width: $tbar-btn-icon-bgr-width;
         }
 
         button.e-btn,
         .e-tbar-btn.e-btn.e-control {
-          height: calc(100% - 11px);
-          margin: 5.5px 0;
-          padding: $tbar-zero-value 6px;
+          height: $tbar-btn-bgr-height;
+          margin: $tbar-btn-bgr-mrgn;
+          min-height: $tbar-btn-bgr-minheight;
+          min-width: $tbar-btn-bgr-minwidth;
+          padding: $tbar-btn-bgr-padding;
          }
        }
      }
@@ -83,7 +109,7 @@
   .e-toolbar {
     display: block;
     height: auto;
-    min-height: 42px;
+    min-height: $tbar-nrml-size;
     position: relative;
     touch-action: none;
     user-select: none;
@@ -122,21 +148,23 @@
         .e-tbar-btn.e-btn {
           display: inline-flex;
           justify-content: flex-start;
+          min-height: $tbar-btn-pop-nrml-minheight;
+          padding: $tbar-pop-btn-nrml-padding;
 
           .e-icons {
-            margin-left: $tbar-zero-value;
-            margin-right: $tbar-zero-value;
+            margin: $tbar-zero-value;
+            padding: $tbar-pop-icon-nrml-padding;
             width: auto;
           }
        }
 
         .e-icons {
-          min-width: 24px;
+          min-width: $tbar-btn-icon-nrml-width;
         }
 
         &:not(.e-separator) {
           min-width: 34px;
-          padding: 3.5px;
+          padding: $tbar-item-pop-nrml-padding;
         }
 
         &.e-tbtn-align .e-btn.e-control {
@@ -176,13 +204,13 @@
 
       .e-toolbar-items {
 
-        .e-toolbar-left {
+        &:not(.e-tbar-pos) {
 
           .e-toolbar-item:first-child {
             margin-left: 0;
-            margin-right: 18px;
-            }
-            }
+            margin-right: $tbar-item-nrml-mrgn;
+          }
+      }
       }
 
       .e-hor-nav {
@@ -196,10 +224,10 @@
       display: flex;
       float: right;
       height: 100%;
-      min-height: 42px;
+      min-height: $tbar-nrml-size;
       overflow: hidden;
       position: relative;
-      width: 32px;
+      width: $tbar-nav-nrml-width;
       z-index: 100;
 
       &.e-ie-align {
@@ -218,7 +246,7 @@
     .e-toolbar-items {
       display: inline-block;
       height: 100%;
-      min-height: 42px;
+      min-height: $tbar-nrml-size;
       vertical-align: middle;
 
       &.e-tbar-pos {
@@ -259,30 +287,42 @@
       .e-toolbar-left {
 
         .e-toolbar-item:first-child {
-          margin-left: 18px;
+          margin-left: $tbar-item-nrml-mrgn;
         }
       }
 
+      &:not(.e-tbar-pos) {
+
+        .e-toolbar-item:first-child {
+          margin-left: $tbar-item-nrml-mrgn;
+        }
+      }
+
+      > .e-toolbar-item:last-child,
+      > .e-toolbar-right .e-toolbar-item:last-child {
+        margin-right: $tbar-item-nrml-mrgn;
+     }
+
       .e-toolbar-item  {
         cursor: pointer;
-        display: inline-block;
-        min-height: 42px;
+        display: inline-flex;
+        min-height: $tbar-nrml-size;
         vertical-align: middle;
         width: auto;
 
         .e-icons {
-          min-width: 24px;
+          min-width: $tbar-btn-icon-nrml-width;
         }
 
         &:not(.e-separator) {
           height: 100%;
           min-width: 34px;
-          padding: 3.5px;
+          padding: $tbar-item-nrml-padding;
         }
 
         &.e-separator {
-          margin: 7.5px 3px;
-          min-height: 27px;
+          margin: $tbar-separator-nrml-mrgn;
+          min-height: $tbar-separator-nrml-height;
         }
 
         input[type='checkbox'] {
@@ -291,17 +331,19 @@
 
         button.e-btn,
         .e-tbar-btn.e-btn {
-          height: calc(100% - 10px);
-          margin: 4px 0;
+          height: $tbar-btn-nrml-height;
+          margin: $tbar-btn-nrml-mrgn;
+          min-height: $tbar-btn-nrml-minheight;
+          min-width: $tbar-btn-nrml-minwidth;
 
           .e-icons {
-            margin-left: $tbar-zero-value;
-            margin-right: $tbar-zero-value;
+            margin: $tbar-zero-value;
             width: auto;
           }
          }
 
         > * {
+          align-self: center;
           height: 100%;
           text-overflow: ellipsis;
         }
@@ -333,12 +375,13 @@
       font-size: $tbar-btn-font-size;
       font-weight: $tbar-btn-weight;
       overflow: hidden;
-      padding: $tbar-zero-value 1.5px;
+      padding: $tbar-btn-nrml-padding;
       text-align: center;
       text-decoration: none;
       text-transform: none;
 
       .e-icons {
+        font-size: $tbar-btn-font-size;
         vertical-align: middle;
       }
 
@@ -350,7 +393,7 @@
         cursor: default;
         display: inline-block;
         font-family: $tbar-btn-family;
-        font-size: $tbar-btn-font-size;
+        font-size: $tbar-btn-txt-font-size;
         line-height: inherit;
         padding-left: $btn-txt-padding;
         padding-right: $btn-txt-padding;

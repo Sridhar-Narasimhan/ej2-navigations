@@ -1,6 +1,8 @@
 @include export-module('toolbar-theme') {
   /*! toolbar theme */
+  // sass-lint:disable no-vendor-prefixes
   .e-toolbar {
+    -webkit-tap-highlight-color: $tbar-tab-highlight-color;
     background: $tbar-default-bg;
     border: $tbar-border-size $tbar-border-type $tbar-default-border;
     box-shadow: $tbar-box-shadow;
@@ -21,6 +23,19 @@
           }
       }
     }
+
+    &.e-toolpop {
+
+      .e-hor-nav.e-nav-active {
+        background: $tbar-pressed-bg;
+        border-left: $border-size $tbar-border-nav-type $tbar-active-bg;
+
+        .e-icons {
+          color: $tbar-active-font-color;
+        }
+    }
+
+   }
 
     .e-tbar-btn {
       background: $tbar-default-bg;
@@ -67,15 +82,10 @@
         }
     }
 
-    .e-hor-nav.e-nav-active {
-      border-left: $border-size $border-type $tbar-active-bg;
-      color: $tbar-active-font-color;
-    }
-
     &.e-rtl .e-hor-nav {
       background: $tbar-default-bg;
       border-left: 0;
-      border-right: $border-size $border-type $tbar-default-border;
+      border-right: $border-size $tbar-border-nav-type $tbar-default-border;
 
       &:not(.e-hor-nav.e-nav-active):hover {
         background: $tbar-hover-bg;
@@ -85,14 +95,18 @@
 
     .e-hor-nav  {
       background: $tbar-default-bg;
-      border-left: $border-size $border-type $tbar-default-border;
+      border-left: $border-size $tbar-border-nav-type $tbar-default-border;
 
       &::after {
         @include tbar-btn-animation;
       }
 
-      &:active::after {
-        @include tbar-btn-animation-after;
+      &:active {
+        color: $tbar-select-font;
+
+        &::after {
+          @include tbar-btn-animation-after;
+        }
      }
 
       &:hover {
@@ -102,8 +116,8 @@
 
       &:focus {
         background: $tbar-hover-bg;
-        border-color: $tbar-hover-border;
-        color: $tbar-hover-font;
+        border-color: $tbar-pressed-border;
+        color: $tbar-pressed-font;
       }
      }
 

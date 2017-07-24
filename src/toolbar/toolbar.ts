@@ -1,16 +1,15 @@
-import { Component, enableRtl, EventHandler, Property, Event, EmitType, Browser } from '@syncfusion/ej2-base';
-import { addClass, removeClass, isVisible, setStyleAttribute, closest, attributes, detach } from '@syncfusion/ej2-base/dom';
-import { createElement as buildTag, selectAll, classList } from '@syncfusion/ej2-base/dom';
+import { Component, EventHandler, Property, Event, EmitType, BaseEventArgs } from '@syncfusion/ej2-base';
+import { addClass, removeClass, isVisible, closest, attributes, detach, classList } from '@syncfusion/ej2-base/dom';
+import { createElement as buildTag, selectAll, setStyleAttribute as setStyle } from '@syncfusion/ej2-base/dom';
 import { isNullOrUndefined as isNOU, getUniqueID, formatUnit } from '@syncfusion/ej2-base/util';
 import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty } from '@syncfusion/ej2-base';
-import { KeyboardEvents, KeyboardEventArgs, Collection } from '@syncfusion/ej2-base';
+import { KeyboardEvents, KeyboardEventArgs, Collection, Browser } from '@syncfusion/ej2-base';
+import { Popup } from '@syncfusion/ej2-popups';
 import { calculatePosition } from '@syncfusion/ej2-popups/src/common/position';
-import { Popup} from '@syncfusion/ej2-popups';
-import { Button } from '@syncfusion/ej2-buttons';
+import { Button, IconPosition } from '@syncfusion/ej2-buttons';
 import { HScroll } from '../common/h-scroll';
 import { ToolbarModel, ItemModel } from './toolbar-model';
 import { ToolbarHelper } from './toolbar-builder';
-
 /**
  * Specifies the options for supporting element types of toolbar command.
  */
@@ -28,46 +27,50 @@ export type OverflowOption = 'None' | 'Show' | 'Hide';
  */
 export type OverflowMode = 'Scrollable' | 'Popup';
 
+type HTEle = HTMLElement;
+type Str = string;
+type ItmAlign = 'lefts' | 'centers' | 'rights';
 
 export type ItemAlign = 'left' | 'center' | 'right';
 
-const CLASS_ITEMS: string = 'e-toolbar-items';
-const CLASS_ITEM: string = 'e-toolbar-item';
-const CLASS_RTL: string = 'e-rtl';
-const CLASS_SEPARATOR: string = 'e-separator';
-const CLASS_POPUPICON: string = 'e-popup-up-icon';
-const CLASS_POPUPDOWN: string = 'e-popup-down-icon';
-const CLASS_POPUP: string = 'e-toolbar-popup';
-const CLASS_POPUPCLASS: string = 'e-toolbar-pop';
-const CLASS_TEMPLATE: string = 'e-template';
-const CLASS_DISABLE: string = 'e-overlay';
-const CLASS_POPUPTEXT: string = 'e-toolbar-text';
-const CLASS_TBARTEXT: string = 'e-popup-text';
-const CLASS_TBAROVERFLOW: string = 'e-overflow-show';
-const CLASS_POPOVERFLOW: string = 'e-overflow-hide';
-const CLASS_TBARBTNTEXT: string = 'e-tbar-btn-text';
-const CLASS_TBARBTN: string = 'e-tbar-btn' ;
-const CLASS_TBARNAV: string = 'e-hor-nav';
-const CLASS_TBARNAVACT : string = 'e-nav-active';
-const CLASS_POPUPNAV : string = 'e-hor-nav' ;
-const CLASS_TBARRIGHT : string = 'e-toolbar-right' ;
-const CLASS_TBARLEFT : string = 'e-toolbar-left' ;
-const CLASS_TBARCENTER : string = 'e-toolbar-center';
-const CLASS_TBARPOS : string = 'e-tbar-pos' ;
-const CLASS_TBARSCROLL : string = 'e-hscroll-content';
+const CLS_ITEMS: string = 'e-toolbar-items';
+const CLS_ITEM: string = 'e-toolbar-item';
+const CLS_RTL: Str = 'e-rtl';
+const CLS_SEPARATOR: string = 'e-separator';
+const CLS_POPUPICON: string = 'e-popup-up-icon';
+const CLS_POPUPDOWN: string = 'e-popup-down-icon';
+const CLS_TEMPLATE: Str = 'e-template';
+const CLS_DISABLE: Str = 'e-overlay';
+const CLS_POPUPTEXT: string = 'e-toolbar-text';
+const CLS_TBARTEXT: string = 'e-popup-text';
+const CLS_TBAROVERFLOW: string = 'e-overflow-show';
+const CLS_POPOVERFLOW: string = 'e-overflow-hide';
+const CLS_TBARBTN: Str = 'e-tbar-btn' ;
+const CLS_TBARNAV: string = 'e-hor-nav';
+const CLS_TBARRIGHT : Str = 'e-toolbar-right' ;
+const CLS_TBARLEFT : Str = 'e-toolbar-left' ;
+const CLS_TBARCENTER : Str = 'e-toolbar-center';
+const CLS_TBARPOS : Str = 'e-tbar-pos' ;
+const CLS_TBARSCROLL : Str = 'e-hscroll-content';
+const CLS_POPUPNAV: string = 'e-hor-nav';
+const CLS_POPUPCLASS: string = 'e-toolbar-pop';
+const CLS_POPUP: string = 'e-toolbar-popup';
+const CLS_TBARBTNTEXT: string = 'e-tbar-btn-text';
+const CLS_TBARNAVACT: string = 'e-nav-active';
 
 
 interface Template {
     appendTo: Function;
 }
-interface TbarItemAlignIn {
-    left: HTMLElement[];
-    center: HTMLElement[];
-    right: HTMLElement[];
+
+/** @hidden */
+export interface ToolbarItemAlignIn {
+    lefts: HTMLElement[];
+    centers: HTMLElement[];
+    rights: HTMLElement[];
 }
-export interface ClickEventArgs {
+export interface ClickEventArgs extends BaseEventArgs {
   item: ItemModel;
-  eventName: string;
   originalEvent: Event;
 }
 /**
@@ -167,11 +170,11 @@ export class Item extends ChildProperty<Item>  {
     @Property('')
     public tooltipText: string;
     /**
-     * Specifies the location for aligning items in the toolbar. Each command will be aligned according to the `align` property.
+     * Specifies the location for aligning toolbar items in the toolbar. Each command will be aligned according to the `align` property.
      * Possible values are:    
      * - Left – Places the items to the `left` start of the toolbar.
-     * - Center - Places the items to the `center` to the toolbar.
-     * - Right - Places the items to the `right` end of the toolbar.
+     * - Center - Places the items to the `center` to the toolbar items.
+     * - Right - Places the items to the `right` end of the toolbar
      * @default "left"
      */
     @Property('left')
@@ -189,23 +192,29 @@ export class Item extends ChildProperty<Item>  {
  */
 @NotifyPropertyChanges
 export class Toolbar extends Component<HTMLElement> implements INotifyPropertyChanged {
-    private trgtEle: HTMLElement;
-    private popupObj: Popup;
+    private trgtEle: HTEle;
+
+    /** @hidden */
+    private popObj: Popup;
+    /** @hidden */
     private tbarEle: HTMLElement[];
-    private tbarAlgEle: TbarItemAlignIn;
+    /** @hidden */
+    private tbarAlgEle: ToolbarItemAlignIn;
+    /** @hidden */
+    private tbarAlign: boolean;
+    /** @hidden */
+    private tbarEleMrgn: number;
+    /** @hidden */
+    private tbResize: boolean;
     private offsetWid: number;
     private keyModule: KeyboardEvents;
     private scrollModule: HScroll;
-    private activeEle: HTMLElement;
-    private tbResize: boolean;
-    private tbarAlign: boolean;
-    private tbarEleMrgn: number;
-    private sliceFn: Function;
+    private activeEle: HTEle;
 
     /**
      * Contains the keyboard configuration of the toolbar.
      */
-    private keyConfigs: { [key: string]: string } = {
+    private keyConfigs: { [key: string]: Str } = {
         moveLeft: 'leftarrow',
         moveRight: 'rightarrow',
         moveUp: 'uparrow',
@@ -273,11 +282,11 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     @Event()
     public beforeCreate: EmitType<Event>;
     /**
-     * Removes the control from the DOM and also removes all its related events
+     * Removes the widget safely from the DOM and also detaches all its related event handlers.
      * @returns void
      */
     public destroy(): void {
-        let ele: HTMLElement = this.element;
+        let ele: HTEle = this.element;
         super.destroy();
         this.unwireEvents();
         if (ele.children.length > 0) {
@@ -292,7 +301,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     protected preRender(): void {
         this.trigger('beforeCreate');
         if (this.enableRtl) {
-            this.element.classList.add('e-rtl');
+            this.add(this.element, CLS_RTL);
         }
     }
     /**
@@ -301,11 +310,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
      * @param element  - Specifies the element that is rendered as a toolbar.
      */
     constructor(options?: ToolbarModel, element?: string | HTMLElement) {
-        super(options, <HTMLElement | string>element);
+        super(options, <HTEle | Str>element);
     }
-
     private wireEvents(): void {
-        EventHandler.add(this.element, 'click', this.clickEventHandler, this);
+        EventHandler.add(this.element, 'click', this.clickHandler, this);
         window.onresize = this.resize.bind(this);
         this.keyModule = new KeyboardEvents(
             this.element,
@@ -316,76 +324,86 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         this.element.setAttribute('tabIndex', '0');
     }
     private unwireEvents(): void {
-        EventHandler.remove(this.element, 'click', this.clickEventHandler);
+        EventHandler.remove(this.element, 'click', this.clickHandler);
         this.destroyHScroll();
         this.keyModule.destroy();
-        if (this.popupObj) {
-            EventHandler.remove(document, 'scroll', this.docEvent);
-            EventHandler.remove(document, 'click', this.docEvent);
+        if (this.popObj) {
+          EventHandler.remove(document, 'scroll', this.docEvent);
+          EventHandler.remove(document, 'click', this.docEvent);
+        }
+    }
+    private docEvent(e: Event): void {
+        let popEle: Element = closest(<Element>e.target, '.e-popup');
+        if (this.popObj && isVisible(this.popObj.element) && !popEle) {
+            this.popObj.hide({ name: 'SlideUp', duration: 100 });
         }
     }
     private destroyHScroll(): void {
         if (this.scrollModule) {
-            if (this.tbarAlign) { this.scrollModule.element.classList.add(CLASS_TBARPOS); }
+            if (this.tbarAlign) { this.add(this.scrollModule.element, CLS_TBARPOS); }
             this.scrollModule.destroy(); this.scrollModule = null;
         }
     }
+    private add(ele: HTEle, val : Str): void {
+      ele.classList.add(val);
+    }
+    private remove(ele: HTEle, val : Str): void {
+      ele.classList.remove(val);
+    }
     private keyActionHandler(e: KeyboardEventArgs): void {
         e.preventDefault();
-        let clst: HTMLElement;
-        let trgt: HTMLElement = <HTMLElement>e.target;
-        let rootEle: HTMLElement = this.element;
-        let popupObj: Popup = this.popupObj;
-        if (trgt.classList.contains(CLASS_TBARNAV) && popupObj && isVisible(popupObj.element)) {
-            clst = <HTMLElement>popupObj.element.querySelector('.' + CLASS_ITEM);
-        } else if (rootEle === trgt || trgt.classList.contains(CLASS_TBARNAV)) {
-            clst = <HTMLElement>rootEle.querySelector('.' + CLASS_ITEM);
+        let clst: HTEle;
+        let trgt: HTEle = <HTEle>e.target;
+        let rootEle: HTEle = this.element;
+        let popObj: Popup = this.popObj;
+        let popAnimate: Object = { name: 'SlideUp', duration: 100 };
+        let tbrNavChk: boolean = trgt.classList.contains(CLS_TBARNAV);
+        if (tbrNavChk && popObj && isVisible(popObj.element)) {
+            clst = <HTEle>popObj.element.querySelector('.' + CLS_ITEM);
+        } else if (rootEle === trgt || tbrNavChk) {
+            clst = <HTEle>rootEle.querySelector('.' + CLS_ITEM);
         } else {
-            clst = <HTMLElement>closest(trgt, '.' + CLASS_ITEM);
+            clst = <HTEle>closest(trgt, '.' + CLS_ITEM);
         }
         if (clst) {
             switch (e.action) {
                 case 'moveRight':
-                    if (rootEle === trgt || trgt.classList.contains(CLASS_TBARNAV)) {
-                        (<HTMLElement>clst.firstChild).focus();
+                    if (rootEle === trgt || tbrNavChk) {
+                        (<HTEle>clst.firstChild).focus();
                     } else {
                         this.eleFocus(clst, 'next');
                     }
                     break;
                 case 'moveLeft':
-                    if (popupObj && trgt.classList.contains(CLASS_TBARNAV)) {
+                    if (popObj && tbrNavChk) {
                         if (this.tbarAlign) {
-                           clst = <HTMLElement>closest(clst, '.' + CLASS_ITEMS);
-                           let innerItems: HTMLElement[] = selectAll('.' + CLASS_ITEM , clst);
-                           clst = innerItems[innerItems.length - 1] as HTMLElement;
+                           clst = <HTEle>closest(clst, '.' + CLS_ITEMS);
+                           let items: HTEle[] = selectAll('.' + CLS_ITEM , clst);
+                           clst = items[items.length - 1] as HTEle;
                         } else {
-                        clst = clst.parentElement.lastElementChild as HTMLElement; }
+                        clst = clst.parentElement.lastElementChild as HTEle; }
                     }
-                    if (trgt.classList.contains(CLASS_TBARNAV) && !clst.classList.contains(CLASS_SEPARATOR)) {
-                        (<HTMLElement>clst.firstChild).focus();
+                    if (tbrNavChk && !clst.classList.contains(CLS_SEPARATOR) && !clst.classList.contains(CLS_DISABLE) ) {
+                        (<HTEle>clst.firstChild).focus();
                     } else {
                         this.eleFocus(clst, 'previous');
                     }
                     break;
                 case 'moveUp':
-                    if (popupObj && closest(trgt, '.e-popup')) {
-                        if (popupObj.element.firstElementChild === clst) {
-                            (<HTMLElement>rootEle.querySelector('.' + CLASS_TBARNAV)).focus();
-                        } else {
-                            this.eleFocus(clst, 'previous');
-                        }
-                    }
-                    break;
                 case 'moveDown':
-                    if (popupObj && closest(trgt, '.e-popup')) {
-                        this.eleFocus(clst, 'next');
-                    } else if (popupObj && isVisible(popupObj.element)) {
-                        (<HTMLElement>clst.firstChild).focus();
-                    }
-                    break;
+                  let value: Str = e.action === 'moveUp' ? 'previous' : 'next';
+                  if (popObj && closest(trgt, '.e-popup')) {
+                      if (e.action === 'moveUp' && popObj.element.firstElementChild === clst) {
+                         (<HTEle>rootEle.querySelector('.' + CLS_TBARNAV)).focus();
+                      } else {
+                           this.eleFocus(clst, value);
+                      }
+                  } else if (e.action === 'moveDown') {
+                      (<HTEle>clst.firstChild).focus(); }
+                  break;
                 case 'tab':
-                    let ele: HTMLElement = (<HTMLElement>clst.firstChild);
-                    if (rootEle === trgt || trgt.classList.contains(CLASS_TBARNAV)) {
+                    let ele: HTEle = (<HTEle>clst.firstChild);
+                    if (rootEle === trgt || tbrNavChk) {
                         if (this.activeEle) {
                             this.activeEle.focus();
                         } else {
@@ -394,91 +412,107 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     }
                     break;
                 case 'popupClose':
-                    if (popupObj) {
-                        popupObj.hide({ name: 'SlideUp', duration: 100 });
+                    if (popObj) {
+                        popObj.hide(popAnimate);
                     }
                     break;
                 case 'popupOpen':
-                    if (!trgt.classList.contains(CLASS_TBARNAV)) {
+                    if (!tbrNavChk) {
                         return;
                     }
-                    if (popupObj && !isVisible(popupObj.element)) {
-                        popupObj.element.style.top = rootEle.offsetHeight + 'px';
-                        popupObj.show({ name: 'SlideDown', duration: 100 });
+                    if (popObj && !isVisible(popObj.element)) {
+                        popObj.element.style.top = rootEle.offsetHeight + 'px';
+                        popObj.show({ name: 'SlideDown', duration: 100 });
                     } else {
-                        popupObj.hide({ name: 'SlideUp', duration: 100 });
+                        popObj.hide(popAnimate);
                     }
                     break;
             }
         }
     }
-   private eleFocus(closest: HTMLElement, pos: string): void {
-     let sib: HTMLElement = Object(closest)[pos + 'ElementSibling'];
+   private eleFocus(closest: HTEle, pos: Str): void {
+     let sib: HTEle = Object(closest)[pos + 'ElementSibling'];
+     let contains: Function = (el: HTEle) => {
+        return el.classList.contains(CLS_SEPARATOR) || el.classList.contains(CLS_DISABLE); };
      if (sib) {
-         if (sib.classList.contains(CLASS_SEPARATOR)) {
+         let skipEle: boolean = contains(sib);
+         if (skipEle) {
                 if ( Object(sib)[pos + 'Sibling']) {
-                    sib = <HTMLElement> Object(sib)[pos + 'Sibling'];
-                    if (sib.classList.contains(CLASS_SEPARATOR)) {
-                        this.eleFocus(sib, pos); }
-                    } else if (this.popupObj && pos === 'next') {
-                    (this.element.querySelector('.' + CLASS_TBARNAV) as HTMLElement).focus(); }
+                    sib = <HTEle> Object(sib)[pos + 'Sibling'];
+                    skipEle = contains(sib);
+                    if (skipEle) {
+                        this.eleFocus(sib, pos); return; }
+                    } else if (this.popObj && pos === 'next') {
+                    (this.element.querySelector('.' + CLS_TBARNAV) as HTEle).focus(); return; }
             }
          if (!isNOU(sib.firstChild)) {
-           (<HTMLElement>sib.firstChild).focus();
+           (<HTEle>sib.firstChild).focus();
            }
         } else if (this.tbarAlign) {
-           let elem: HTMLElement = Object( closest.parentElement)[pos + 'ElementSibling'] as HTMLElement;
+           let elem: HTEle = Object( closest.parentElement)[pos + 'ElementSibling'] as HTEle;
            if (!isNOU(elem) && elem.children.length > 0) {
              if (pos === 'next') {
-             (<HTMLElement>elem.querySelector('.' + CLASS_ITEM).firstChild).focus();
+                let el: HTEle = <HTEle>elem.querySelector('.' + CLS_ITEM);
+                if (contains(el)) {
+                   this.eleFocus(el, pos); } else {
+              (<HTEle>el.firstChild).focus(); }
             } else {
-                (<HTMLElement>elem.lastElementChild.firstChild).focus(); }
-           } else if (this.popupObj) {
-            (this.element.querySelector('.' + CLASS_TBARNAV) as HTMLElement).focus();
+                let el: HTEle = <HTEle>elem.lastElementChild;
+                if (contains(el)) {
+                   this.eleFocus(el, pos); } else {
+                (<HTEle>el.firstChild).focus(); } }
+           } else if (this.popObj) {
+            (this.element.querySelector('.' + CLS_TBARNAV) as HTEle).focus();
         }
-        } else if (this.popupObj && pos === 'next') {
-            (this.element.querySelector('.' + CLASS_TBARNAV) as HTMLElement).focus();
+        } else if (this.popObj && pos === 'next') {
+            (this.element.querySelector('.' + CLS_TBARNAV) as HTEle).focus();
         }
    }
-    private clickEventHandler(e: Event): void {
-        let trgt: HTMLElement = <HTMLElement>e.target;
+    private clickHandler(e: Event): void {
+        let trgt: HTEle = <HTEle>e.target;
         let clsList: DOMTokenList = trgt.classList;
-        let ele: HTMLElement = this.element;
-        let popObj: Popup = this.popupObj;
-        let popupNav: HTMLElement = <HTMLElement>closest(trgt, ('.' + CLASS_TBARNAV));
+        let ele: HTEle = this.element;
+        let popupNav: HTEle = <HTEle>closest(trgt, ('.' + CLS_TBARNAV));
         if (!popupNav) {
             popupNav = trgt;
         }
-        if (!ele.children[0].classList.contains('e-hscroll') && (clsList.contains(CLASS_TBARNAV))) {
+        if (!ele.children[0].classList.contains('e-hscroll') && (clsList.contains(CLS_TBARNAV))) {
             clsList = trgt.querySelector('.e-icons').classList;
         }
-        if (clsList.contains(CLASS_POPUPICON) || clsList.contains(CLASS_POPUPDOWN)) {
-            if (isVisible(popObj.element)) {
-                popupNav.classList.remove(CLASS_TBARNAVACT);
-                popObj.hide({ name: 'SlideUp', duration: 100 });
-            } else {
-                if (ele.classList.contains(CLASS_RTL)) {
-                    popObj.enableRtl = true;
-                    popObj.position = { X: 'left', Y: 'top' };
-                }
-                if (popObj.offsetX === 0 && !ele.classList.contains(CLASS_RTL)) {
-                    popObj.enableRtl = false;
-                    popObj.position = { X: 'right', Y: 'top' };
-                }
-                popObj.dataBind();
-                popObj.element.style.top = this.element.offsetHeight + 'px';
-                popupNav.classList.add(CLASS_TBARNAVACT);
-                popObj.show({ name: 'SlideDown', duration: 100 });
-            }
+        if (clsList.contains(CLS_POPUPICON) || clsList.contains(CLS_POPUPDOWN)) {
+          this.popupClickHandler(ele, popupNav , CLS_RTL);
         }
         let itemObj: ItemModel;
-        let clst: HTMLElement = <HTMLElement>closest(<Node>e.target , '.' + CLASS_ITEM);
+        let clst: HTEle = <HTEle>closest(<Node>e.target , '.' + CLS_ITEM);
+        if ((isNOU(clst) || clst.classList.contains(CLS_DISABLE)) && !popupNav.classList.contains(CLS_TBARNAV) ) {
+            return; }
         if (clst) {
-          itemObj = this.items[this.sliceFn.call(clst.parentElement.children).indexOf(clst)];
+          itemObj = this.items[this.tbarEle.indexOf(clst)];
         }
-        let eventArgs: ClickEventArgs = { eventName: 'clicked', originalEvent: e, item: itemObj};
+        let eventArgs: ClickEventArgs = {originalEvent: e, item: itemObj};
         this.trigger('clicked', eventArgs);
     };
+
+    private popupClickHandler(ele: HTMLElement, popupNav: HTMLElement, CLS_RTL: string): void {
+        let popObj: Popup = this.popObj;
+        if (isVisible(popObj.element)) {
+            popupNav.classList.remove(CLS_TBARNAVACT);
+            popObj.hide({ name: 'SlideUp', duration: 100 });
+        } else {
+            if (ele.classList.contains(CLS_RTL)) {
+                popObj.enableRtl = true;
+                popObj.position = { X: 'left', Y: 'top' };
+            }
+            if (popObj.offsetX === 0 && !ele.classList.contains(CLS_RTL)) {
+                popObj.enableRtl = false;
+                popObj.position = { X: 'right', Y: 'top' };
+            }
+            popObj.dataBind();
+            popObj.element.style.top = this.element.offsetHeight + 'px';
+            popupNav.classList.add(CLS_TBARNAVACT);
+            popObj.show({ name: 'SlideDown', duration: 100 });
+        }
+    }
     /**
      * To Initialize the control rendering
      * @private
@@ -489,38 +523,39 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         this.wireEvents();
     }
     private initialize(): void {
-        let width: string = formatUnit(this.width);
-        let height: string = formatUnit(this.height);
-        setStyleAttribute(this.element, { 'width': width, 'height': height });
-        let ariaAttr: { [key: string]: string } = {
+        let width: Str = formatUnit(this.width);
+        let height: Str = formatUnit(this.height);
+        setStyle(this.element, { 'width': width, 'height': height });
+        let ariaAttr: { [key: string]: Str } = {
             'role': 'toolbar', 'aria-disabled': 'false', 'aria-haspopup': 'false', 'aria-orientation': 'horizontal',
         };
         attributes(this.element, ariaAttr);
     }
     private renderControl(): void {
-        this.trgtEle = (this.element.children.length > 0) ? <HTMLElement>this.element.querySelector('div') : null;
-        this.tbarAlgEle = {left : [] , center: [], right: [] };
-        this.sliceFn = [].slice;
+        this.trgtEle = (this.element.children.length > 0) ? <HTEle>this.element.querySelector('div') : null;
+        this.tbarAlgEle = {lefts : [] , centers: [], rights: [] };
         this.renderItems();
         this.renderOverflowMode();
         if (this.tbarAlign) { this.itemPositioning(); }
     }
-    private initHScroll(element: HTMLElement, innerItems: NodeList): void {
-        if (!this.scrollModule && this.checkOverflow(element, <HTMLElement>innerItems[0])) {
-         if (this.tbarAlign) { this.element.querySelector('.' + CLASS_ITEMS + ' .' + CLASS_TBARCENTER).removeAttribute('style'); }
-         this.scrollModule = new HScroll({ scrollStep: 50, enableRtl: this.enableRtl }, <HTMLElement>innerItems[0]);
-         this.scrollModule.element.classList.remove(CLASS_TBARPOS);
-         setStyleAttribute(this.element, {overflow: 'hidden'});
+    private initHScroll(element: HTEle, innerItems: NodeList): void {
+        if (!this.scrollModule && this.checkOverflow(element, <HTEle>innerItems[0])) {
+         if (this.tbarAlign) {
+            this.element.querySelector('.' + CLS_ITEMS + ' .' + CLS_TBARCENTER).removeAttribute('style');
+         }
+         this.scrollModule = new HScroll({ scrollStep: 50, enableRtl: this.enableRtl }, <HTEle>innerItems[0]);
+         this.remove(this.scrollModule.element, CLS_TBARPOS);
+         setStyle(this.element, {overflow: 'hidden'});
         }
     }
-    private itemWidthCal(innerItem: HTMLElement): number {
+    private itemWidthCal(items: HTEle): number {
       let width: number = 0;
-      this.sliceFn.call(innerItem.children).forEach ((el: HTMLElement) => {
+      [].slice.call(items.children).forEach ((el: HTEle) => {
          width += el.offsetWidth;
       });
       return width;
     }
-    private checkOverflow(element: HTMLElement, innerItem: HTMLElement): boolean {
+    private checkOverflow(element: HTEle, innerItem: HTEle): boolean {
         if (isNOU(element) || isNOU(innerItem)) {
             return false;
         }
@@ -530,36 +565,161 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
           itemWidth = this.itemWidthCal(innerItem);
         } else {
          itemWidth = innerItem.offsetWidth; }
-        let popNav: HTMLElement = <HTMLElement>element.querySelector('.' + CLASS_TBARNAV);
+        let popNav: HTEle = <HTEle>element.querySelector('.' + CLS_TBARNAV);
         if (itemWidth > eleWidth - (popNav ? popNav.offsetWidth : 0)) {
             return true;
         } else { return false; }
     }
     private renderOverflowMode(): void {
-        let ele: HTMLElement = this.element;
-        let innerItems: HTMLElement = <HTMLElement>ele.querySelector('.' + CLASS_ITEMS);
+        let ele: HTEle = this.element;
+        let innerItems: HTEle = <HTEle>ele.querySelector('.' + CLS_ITEMS);
         if (ele && ele.children.length > 0) {
             this.offsetWid = ele.offsetWidth;
             switch (this.overflowMode) {
                 case 'Scrollable':
                     this.destroyHScroll();
-                    this.initHScroll(ele, ele.getElementsByClassName(CLASS_ITEMS));
+                    this.initHScroll(ele, ele.getElementsByClassName(CLS_ITEMS));
                     break;
                 case 'Popup':
-                    this.element.classList.add('e-toolpop');
-                    if (this.tbarAlign) { this.removePositioning(); }
-                    if (this.checkOverflow(ele, innerItems)) {
-                        this.createOverflowIcon(ele, this.sliceFn.call(selectAll('.' + CLASS_ITEMS + ' .' + CLASS_ITEM, ele)));
-                        this.element.querySelector('.' + CLASS_TBARNAV).setAttribute('tabIndex', '0');
+                        this.add(this.element, 'e-toolpop');
+                        if (this.tbarAlign) { this.removePositioning(); }
+                        if (this.checkOverflow(ele, innerItems)) {
+                        this.createPopupEle(ele, [].slice.call(selectAll('.' + CLS_ITEMS + ' .' + CLS_ITEM, ele)));
+                        this.element.querySelector('.' + CLS_TBARNAV).setAttribute('tabIndex', '0');
                     }
-                    if (this.tbarAlign) {
-                    innerItems.classList.add(CLASS_TBARPOS);
-                    this.itemPositioning(); }
+                        if (this.tbarAlign) {
+                         this.add(innerItems, CLS_TBARPOS);
+                         this.itemPositioning(); }
                     break;
             }
         }
     }
-    private checkPriority(ele: HTMLElement, inEle: HTMLElement[], eleWidth: number, pre: boolean): void {
+
+    private createPopupEle(ele: HTMLElement, innerEle: HTMLElement[]): void {
+        let innerNav: HTEle = <HTEle>ele.querySelector('.' + CLS_TBARNAV);
+        if (!innerNav) {
+            this.createPopupIcon(ele);
+        }
+        innerNav = <HTEle>ele.querySelector('.' + CLS_TBARNAV);
+        let eleWidth: number = (ele.offsetWidth - (innerNav.offsetWidth));
+        this.element.classList.remove('e-rtl');
+        this.checkPriority(ele, innerEle, eleWidth, true);
+        if (this.enableRtl) {
+            this.element.classList.add('e-rtl');
+        }
+        this.createPopup();
+    }
+    private pushingPoppedEle(tbarObj: Toolbar, popupPri: Element[], ele: HTEle, eleHeight: number): void {
+        let element: HTEle = tbarObj.element;
+        let nodes: HTEle[] = selectAll('.' + CLS_TBAROVERFLOW, ele);
+        let nodeIndex: number = 0;
+        let poppedEle: HTEle[] = [].slice.call(selectAll('.' + CLS_POPUP, element.querySelector('.' + CLS_ITEMS)));
+        let nodePri: number = 0;
+        poppedEle.forEach((el: HTEle, index: number) => {
+            nodes = selectAll('.' + CLS_TBAROVERFLOW, ele);
+            if (el.classList.contains(CLS_TBAROVERFLOW) && nodes.length > 0) {
+                if (tbarObj.tbResize && nodes.length > index) {
+                    ele.insertBefore(el, nodes[index]); ++nodePri;
+                } else { ele.insertBefore(el, ele.children[nodes.length]); ++nodePri; }
+            } else if (el.classList.contains(CLS_TBAROVERFLOW)) {
+                ele.insertBefore(el, ele.firstChild); ++nodePri;
+            } else if (tbarObj.tbResize && el.classList.contains(CLS_POPOVERFLOW) && ele.children.length > 0 && nodes.length === 0) {
+                ele.insertBefore(el, ele.firstChild); ++nodePri;
+            } else if (el.classList.contains(CLS_POPOVERFLOW)) {
+                popupPri.push(el);
+            } else if (tbarObj.tbResize) {
+                ele.insertBefore(el, ele.childNodes[nodeIndex + nodePri]);
+                ++nodeIndex;
+            } else {
+                ele.appendChild(el);
+            }
+            setStyle(el, { display: '', height: eleHeight + 'px' });
+        });
+        popupPri.forEach((el: Element) => {
+            ele.appendChild(el);
+        });
+        let tbarEle: HTEle[] = selectAll('.' + CLS_ITEM, element.querySelector('.' + CLS_ITEMS));
+        for (let i: number = tbarEle.length - 1; i >= 0; i--) {
+            let tbarElement: HTEle = tbarEle[i];
+            if (tbarElement.classList.contains(CLS_SEPARATOR)) {
+                setStyle(tbarElement, { display: 'none' });
+            } else {
+                break;
+            }
+        }
+    }
+    private createPopup(): void {
+        let element: HTEle = this.element;
+        let eleHeight: number;
+        let eleItem: Element;
+        eleItem = element.querySelector('.' + CLS_ITEM + ':not(.' + CLS_SEPARATOR + ' ):not(.' + CLS_POPUP + ' )');
+        eleHeight = element.style.height === 'auto' ? null : (eleItem as HTEle).offsetHeight;
+        let ele: HTEle;
+        let popupPri: Element[] = [];
+        if (element.querySelector('#' + element.id + '_popup.' + CLS_POPUPCLASS)) {
+            ele = <HTEle>element.querySelector('#' + element.id + '_popup.' + CLS_POPUPCLASS);
+        } else {
+            ele = buildTag('div', { id: element.id + '_popup', className: CLS_POPUPCLASS });
+        }
+        this.pushingPoppedEle(this, popupPri, ele, eleHeight);
+        this.popupInit(element, ele);
+    }
+
+    private popupInit(element: HTEle, ele: HTEle): void {
+        if (!this.popObj) {
+            element.appendChild(ele);
+            setStyle(this.element, { overflow: '' });
+            let popup: Popup = new Popup(null, {
+            relateTo: this.element,
+            offsetY: (element.offsetHeight),
+            enableRtl: this.enableRtl,
+            open: this.popupOpen.bind(this),
+            close: this.popupClose,
+            position: this.enableRtl ? { X: 'left', Y: 'top' } : { X: 'right', Y: 'top' }
+        });
+            popup.appendTo(ele);
+            EventHandler.add(document, 'scroll', this.docEvent.bind(this));
+            EventHandler.add(document, 'click ', this.docEvent.bind(this));
+            popup.element.style.maxHeight = popup.element.offsetHeight + 'px';
+            popup.hide();
+            this.popObj = popup;
+            this.element.setAttribute('aria-haspopup', 'true');
+        } else {
+            let popupEle: HTEle = this.popObj.element;
+            setStyle(popupEle, { maxHeight: '', display: 'block' });
+            setStyle(popupEle, { maxHeight: popupEle.offsetHeight + 'px', display: '' });
+        }
+    }
+    private popupOpen(e: Event): void {
+        let popObj: Popup = this.popObj;
+        let popupEle: HTEle = this.popObj.element;
+        let toolEle: HTEle = this.popObj.element.parentElement;
+        let popupNav: HTEle = <HTEle>toolEle.querySelector('.' + CLS_TBARNAV);
+        setStyle(popObj.element, { height: 'auto', maxHeight: '' });
+        popObj.element.style.maxHeight = popObj.element.clientHeight + 'px';
+        let popupElePos: number = popupEle.offsetTop + popupEle.offsetHeight + calculatePosition(toolEle).top;
+        if (!isNOU(popupNav)) {
+            let popIcon: Element = (popupNav.firstElementChild as Element);
+            popupNav.classList.add(CLS_TBARNAVACT);
+            classList(popIcon, [CLS_POPUPICON], [CLS_POPUPDOWN]);
+        }
+        if ((window.innerHeight + window.scrollY) < popupElePos) {
+            let overflowHeight: number = (popupEle.offsetHeight - ((popupElePos - window.innerHeight - window.scrollY) + 5));
+            popObj.height = overflowHeight + 'px';
+            setStyle(popObj.element, { maxHeight: overflowHeight + 'px' });
+        }
+    }
+
+    private popupClose(e: Event): void {
+        let element: HTEle = this.element.parentElement;
+        let popupNav: HTEle = <HTEle>element.querySelector('.' + CLS_TBARNAV);
+        if (popupNav) {
+            let popIcon: Element = (popupNav.firstElementChild as Element);
+            popupNav.classList.remove(CLS_TBARNAVACT);
+            classList(popIcon, [CLS_POPUPDOWN], [CLS_POPUPICON]);
+        }
+    }
+   private checkPriority(ele: HTEle, inEle: HTEle[], eleWidth: number, pre: boolean): void {
         let len: number = inEle.length;
         let eleWid: number = eleWidth;
         let sepCheck: number = 0; let itemCount: number = 0; let itemPopCount: number = 0;
@@ -568,21 +728,22 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             mrgn += parseFloat((window.getComputedStyle(inEle[i])).marginLeft);
             if (inEle[i] === this.tbarEle[0]) { this.tbarEleMrgn = mrgn; }
             if ((inEle[i].offsetLeft + inEle[i].offsetWidth + mrgn) > eleWidth) {
-                if (inEle[i].classList.contains(CLASS_SEPARATOR)) {
+                if (inEle[i].classList.contains(CLS_SEPARATOR)) {
                     if (sepCheck > 0 && itemCount === itemPopCount) {
-                        let sepEle : HTMLElement = (inEle[i + itemCount + (sepCheck - 1)] as HTMLElement);
-                        if (sepEle.classList.contains(CLASS_SEPARATOR)) {
-                          setStyleAttribute(sepEle, {display: 'none' }); }
+                        let sepEle: HTEle = (inEle[i + itemCount + (sepCheck - 1)] as HTEle);
+                        if (sepEle.classList.contains(CLS_SEPARATOR)) {
+                            setStyle(sepEle, { display: 'none' });
+                        }
                     }
                     sepCheck++; itemCount = 0; itemPopCount = 0;
                 } else {
                     itemCount++;
                 }
-                if (inEle[i].classList.contains(CLASS_TBAROVERFLOW) && pre) {
+                if (inEle[i].classList.contains(CLS_TBAROVERFLOW) && pre) {
                     eleWidth -= (inEle[i].offsetWidth + (mrgn));
-                } else if (!inEle[i].classList.contains(CLASS_SEPARATOR)) {
-                    inEle[i].classList.add(CLASS_POPUP);
-                    setStyleAttribute(inEle[i] , {display: 'none'});
+                } else if (!inEle[i].classList.contains(CLS_SEPARATOR)) {
+                    inEle[i].classList.add(CLS_POPUP);
+                    setStyle(inEle[i], { display: 'none' });
                     itemPopCount++;
                 } else {
                     eleWidth -= (inEle[i].offsetWidth + (mrgn));
@@ -590,270 +751,89 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             }
         }
         if (pre) {
-            let popedEle: HTMLElement[] = selectAll('.' + CLASS_ITEM + ':not(.' + CLASS_POPUP + ')', this.element);
+            let popedEle: HTEle[] = selectAll('.' + CLS_ITEM + ':not(.' + CLS_POPUP + ')', this.element);
             this.checkPriority(ele, popedEle, eleWid, false);
         }
     }
-    private createOverflowIcon(ele: HTMLElement, innerEle: HTMLElement[]): void {
-        let innerNav: HTMLElement = <HTMLElement>ele.querySelector('.' + CLASS_TBARNAV);
-        if (!innerNav) {
-            this.createPopupIcon(ele);
-        }
-        innerNav = <HTMLElement>ele.querySelector('.' + CLASS_TBARNAV);
-        let eleWidth: number = (ele.offsetWidth - (innerNav.offsetWidth));
-        if (this.enableRtl) {
-            this.element.classList.remove('e-rtl'); }
-        this.checkPriority(ele, innerEle, eleWidth, true);
-        if (this.enableRtl) {
-            this.element.classList.add('e-rtl'); }
-        this.createPopup();
-    }
-    private createPopupIcon(element: HTMLElement): void {
+
+    private createPopupIcon(element: HTEle): void {
         let id: string = element.id.concat('_nav');
-        let className: string = 'e-' + element.id.concat('_nav ' + CLASS_POPUPNAV);
-        let nav: HTMLElement = buildTag('div', { id: id, className: className });
-        if (Browser.info.name === 'msie' ) {
-          nav.classList.add('e-ie-align'); }
-        let navItem: HTMLElement = buildTag('div', { className: CLASS_POPUPDOWN + ' e-icons' });
+        let className: string = 'e-' + element.id.concat('_nav ' + CLS_POPUPNAV);
+        let nav: HTEle = buildTag('div', { id: id, className: className });
+        if (Browser.info.name === 'msie' || Browser.info.name === 'edge') {
+            nav.classList.add('e-ie-align');
+        }
+        let navItem: HTEle = buildTag('div', { className: CLS_POPUPDOWN + ' e-icons' });
         nav.appendChild(navItem);
         nav.setAttribute('tabindex', '0');
         element.insertBefore(nav, element.firstChild);
     }
-    private createPopup(): void {
-        let element: HTMLElement = this.element;
-        let eleHeight: number;
-        let eleItem: Element;
-        eleItem = element.querySelector('.' + CLASS_ITEM + ':not(.' + CLASS_SEPARATOR + ' ):not(.' + CLASS_POPUP + ' )');
-        eleHeight = element.style.height === 'auto' ? null : (eleItem as HTMLElement).offsetHeight;
-        let ele: HTMLElement;
-        let nodes: HTMLElement[];
-        let popupPri: Element[] = [];
-        if (element.querySelector('#' + element.id + '_popup.' + CLASS_POPUPCLASS)) {
-            ele = <HTMLElement>element.querySelector('#' + element.id + '_popup.' + CLASS_POPUPCLASS);
-        } else {
-            ele = buildTag('div', { id: element.id + '_popup', className: CLASS_POPUPCLASS });
-        }
-        let poppedEle: HTMLElement[] = this.sliceFn.call(selectAll('.' + CLASS_POPUP, element.querySelector('.' + CLASS_ITEMS)));
-        nodes = selectAll('.' + CLASS_TBAROVERFLOW, ele);
-        let nodeIndex: number = 0;
-        let nodePri: number = 0;
-        poppedEle.forEach((el: HTMLElement, index: number) => {
-            nodes = selectAll('.' + CLASS_TBAROVERFLOW, ele);
-            if (el.classList.contains(CLASS_TBAROVERFLOW) && nodes.length > 0) {
-                if (this.tbResize && nodes.length > index) {
-                    ele.insertBefore(el, nodes[index]); ++nodePri;
-                } else { ele.insertBefore(el, ele.children[nodes.length]); ++nodePri; }
-            } else if (el.classList.contains(CLASS_TBAROVERFLOW)) {
-                ele.insertBefore(el, ele.firstChild); ++nodePri;
-            } else if ( this.tbResize && el.classList.contains(CLASS_POPOVERFLOW) && ele.children.length > 0 && nodes.length === 0 ) {
-                ele.insertBefore(el, ele.firstChild); ++nodePri;
-            } else if (el.classList.contains(CLASS_POPOVERFLOW)) {
-                popupPri.push(el);
-            } else if (this.tbResize) {
-                ele.insertBefore(el, ele.childNodes[nodeIndex + nodePri]);
-                ++nodeIndex;
-            } else {
-                ele.appendChild(el);
-            }
-            setStyleAttribute(el , {display : '', height: eleHeight + 'px' } );
-        });
-        popupPri.forEach((el: Element) => {
-            ele.appendChild(el);
-        });
-        let tbarEle: HTMLElement[] = selectAll('.' + CLASS_ITEM, element.querySelector('.' + CLASS_ITEMS));
-        for (let i: number = tbarEle.length - 1; i >= 0; i--) {
-            let tbarElement: HTMLElement = tbarEle[i];
-            if (tbarElement.classList.contains(CLASS_SEPARATOR)) {
-                setStyleAttribute(tbarElement, {display: 'none'});
-            } else {
-                break;
-            }
-        }
-        this.initPopup(element, ele);
-    }
-    private initPopup (element: HTMLElement, ele: HTMLElement): void {
-        if (!this.popupObj) {
-            element.appendChild(ele);
-            setStyleAttribute(this.element, {overflow: ''});
-            let popup: Popup = new Popup(ele, {
-                relateTo: element,
-                offsetY: (element.offsetHeight),
-                enableRtl: this.enableRtl,
-                open: this.popupOpen.bind(this),
-                close: this.popupClose,
-                position: this.enableRtl ? { X: 'left', Y: 'top' } : { X: 'right', Y: 'top' }
-            });
-            EventHandler.add(document, 'scroll', this.docEvent.bind(this));
-            EventHandler.add(document, 'click ', this.docEvent.bind(this));
-            popup.element.style.maxHeight = popup.element.offsetHeight + 'px';
-            popup.hide();
-            this.popupObj = popup;
-            this.element.setAttribute('aria-haspopup', 'true');
-        } else {
-            let popupEle: HTMLElement = this.popupObj.element;
-            setStyleAttribute(popupEle, {maxHeight: '' , display : 'block'});
-            setStyleAttribute(popupEle, {maxHeight: popupEle.offsetHeight + 'px' , display : ''});
-        }
-}
-    private docEvent(e: Event): void {
-        let popEle: Element = closest(<Element>e.target, '.e-popup');
-        if (this.popupObj && isVisible(this.popupObj.element) && !popEle) {
-            this.popupObj.hide({ name: 'SlideUp', duration: 100 });
-        }
-    }
-    private popupOpen(e: Event): void {
-        let popObj: Popup =  this.popupObj;
-        let popupEle: HTMLElement = this.popupObj.element;
-        let toolEle: HTMLElement = this.element;
-        let popupNav: HTMLElement = <HTMLElement>toolEle.querySelector('.' + CLASS_TBARNAV);
-        setStyleAttribute (popObj.element, {height: 'auto', maxHeight: ''});
-        popObj.element.style.height = 'auto';
-        popObj.element.style.maxHeight = '';
-        popObj.element.style.maxHeight = popObj.element.clientHeight + 'px';
-        let popupElePos: number = popupEle.offsetTop + popupEle.offsetHeight + calculatePosition(toolEle).top;
-        if (!isNOU(popupNav)) {
-            let popIcon: Element = (popupNav.firstElementChild as Element);
-            popupNav.classList.add(CLASS_TBARNAVACT);
-            classList(popIcon, [CLASS_POPUPICON], [CLASS_POPUPDOWN] );
-        }
-        if ((window.innerHeight + window.scrollY) < popupElePos) {
-            let overflowHeight: number = (popupEle.offsetHeight - ((popupElePos - window.innerHeight - window.scrollY) + 5));
-            popObj.height = overflowHeight + 'px';
-            setStyleAttribute(popObj.element, {maxHeight: overflowHeight + 'px'});
-        }
-    }
-    private popupClose(e: Event): void {
-        let element: HTMLElement = this.element.parentElement;
-        let popupNav: HTMLElement = <HTMLElement>element.querySelector('.' + CLASS_TBARNAV);
-        if (popupNav) {
-            let popIcon: Element = (popupNav.firstElementChild as Element);
-            popupNav.classList.remove(CLASS_TBARNAVACT);
-            classList(popIcon, [CLASS_POPUPDOWN], [CLASS_POPUPICON] );
-        }
-    }
-    private removePositioning(): void {
-      let item: HTMLElement = this.element.querySelector('.' + CLASS_ITEMS) as HTMLElement;
-      if (isNOU(item) || !item.classList.contains(CLASS_TBARPOS)) { return; }
-      item.classList.remove(CLASS_TBARPOS);
-      let innerItem: HTMLElement[] = this.sliceFn.call(item.childNodes);
-      innerItem[1].removeAttribute('style');
-      innerItem[2].removeAttribute('style');
-    }
-    private refreshPositioning(): void {
-      let item: HTMLElement = this.element.querySelector('.' + CLASS_ITEMS) as HTMLElement;
-      item.classList.add(CLASS_TBARPOS);
-      this.itemPositioning();
-    }
-    private itemPositioning(): void {
-      let item: HTMLElement = this.element.querySelector('.' + CLASS_ITEMS) as HTMLElement;
-      if (isNOU(item) || !item.classList.contains(CLASS_TBARPOS)) { return; }
-      let popupNav: HTMLElement = <HTMLElement>this.element.querySelector('.' + CLASS_TBARNAV);
-      let innerItem: HTMLElement[];
-      if (this.scrollModule) {
-          innerItem = this.sliceFn.call(item.querySelector('.' + CLASS_TBARSCROLL).children);
-      } else {
-      innerItem = this.sliceFn.call(item.childNodes); }
-      let margin: number = innerItem[0].offsetWidth + innerItem[2].offsetWidth;
-      let tbarWid: number = this.element.offsetWidth;
-      if (popupNav) {
-          tbarWid -= popupNav.offsetWidth;
-          innerItem[2].style.right = popupNav.offsetWidth + 'px';
-      }
-      if (tbarWid <= margin) { return; }
-      let value: number = (((tbarWid - margin)) - innerItem[1].offsetWidth) / 2;
-      innerItem[1].style.marginLeft = (innerItem[0].offsetWidth + value) + 'px';
-    }
-    private tbarItemAlign(item: ItemModel, itemEle: HTMLElement, pos: number ): void {
-      if (pos === 0 && item.align !== 'left' )  {
-        itemEle.appendChild( buildTag('div', { className: CLASS_TBARLEFT } ));
-        itemEle.appendChild( buildTag('div', { className: CLASS_TBARCENTER } ));
-        itemEle.appendChild( buildTag('div', { className: CLASS_TBARRIGHT } ));
-        this.tbarAlign = true;
-        itemEle.classList.add(CLASS_TBARPOS);
-      } else if (item.align !== 'left') {
-        let alignEle: NodeList = itemEle.childNodes;
-        let leftAlign: HTMLElement = buildTag('div', { className: CLASS_TBARLEFT });
-        this.sliceFn.call(alignEle).forEach((el: HTMLElement) => {
-          this.tbarAlgEle.left.push(el);
-          leftAlign.appendChild(el);
-        });
-        itemEle.appendChild(leftAlign);
-        itemEle.appendChild( buildTag('div', { className: CLASS_TBARCENTER } ));
-        itemEle.appendChild( buildTag('div', { className: CLASS_TBARRIGHT } ));
-        this.tbarAlign = true;
-        itemEle.classList.add(CLASS_TBARPOS);
-      }
 
-    }
-    private renderItems(): void {
-        let ele: HTMLElement = this.element;
-        let itemEleDom: HTMLElement;
-        let innerItem: HTMLElement;
-        let innerPos: HTMLElement;
-        let items: Item[] = <Item[]>this.items;
-        if (ele && ele.children.length > 0) {
-            let navEle: HTMLElement[] = selectAll('.' + CLASS_TBARNAV, ele);
-            itemEleDom = navEle.length > 0 ? <HTMLElement>ele.children[1] : <HTMLElement>ele.children[0];
-        }
-        if (this.trgtEle != null) {
-            this.trgtEle.classList.add(CLASS_ITEMS);
-            this.tbarEle = [];
-            let innerEle: HTMLElement[] = this.sliceFn.call(this.trgtEle.children);
-            innerEle.forEach((ele: HTMLElement) => {
-                if (ele.tagName === 'DIV') {
-                    this.tbarEle.push(ele);
-                    ele.classList.add(CLASS_ITEM);
-                }
-            });
-        } else if (ele && items.length > 0) {
-            if (!itemEleDom) {
-                itemEleDom = buildTag('div', { className: CLASS_ITEMS });
-            }
-            for (let i: number = 0; i < items.length; i++) {
-                innerItem = this.renderSubComponent(items[i]);
-                this.tbarEle.push(innerItem);
-                if (!this.tbarAlign) {
-                  this.tbarItemAlign(items[i] , itemEleDom , i); }
-                innerPos = <HTMLElement>itemEleDom.querySelector('.e-toolbar-' + items[i].align.toLowerCase());
-                if (innerPos) {
-                  this.tbarAlgEle[items[i].align].push(innerItem);
-                  innerPos.appendChild(innerItem);
+    private tbarPriRef(inEle: HTEle, indx: number, sepPri: number, el: HTEle, des: boolean, elWid: number, wid: number): void {
+        let popEle: HTEle = this.popObj.element;
+        let query: string = '.' + CLS_ITEM + ':not(.' + CLS_SEPARATOR + '):not(.' + CLS_TBAROVERFLOW + ')';
+        let priEleCnt: number = selectAll('.' + CLS_POPUP + ':not(.' + CLS_TBAROVERFLOW + ')', popEle).length;
+        if (selectAll(query, inEle).length === 0) {
+            let eleSep: HTEle = inEle.children[indx - (indx - sepPri) - 1] as HTEle;
+            if (!isNOU(eleSep) && eleSep.classList.contains(CLS_SEPARATOR) && !isVisible(eleSep)) {
+                let sepDisplay: string = 'none';
+                eleSep.style.display = 'inherit';
+                let eleSepWidth: number = eleSep.offsetWidth + (parseFloat(window.getComputedStyle(eleSep).marginRight) * 2);
+                let prevSep: HTEle = eleSep.previousElementSibling as HTEle;
+                if ((elWid + eleSepWidth) < wid || des) {
+                    inEle.insertBefore(el, inEle.children[indx - (indx - sepPri)]);
+                    if (!isNOU(prevSep)) {
+                        prevSep.style.display = '';
+                    }
                 } else {
-                    itemEleDom.appendChild(innerItem);
+                    if (prevSep.classList.contains(CLS_SEPARATOR)) {
+                        prevSep.style.display = sepDisplay;
+                    }
                 }
+                eleSep.style.display = '';
+            } else {
+                inEle.insertBefore(el, inEle.children[indx - (indx - sepPri)]);
             }
-            ele.appendChild(itemEleDom);
+        } else {
+            inEle.insertBefore(el, inEle.children[indx - priEleCnt]);
         }
     }
-    private setAttr(attr: { [key: string]: string; }, element: HTMLElement): void {
-        let key: string = Object.keys(attr)[0];
-        switch (key) {
-            case 'class':
-                element.classList.add(attr[key]);
-                break;
-            case 'style':
-                let value: Object = JSON.parse(<string>'\{"' + attr[key].replace(':', '\":\"') + '\"}');
-                setStyleAttribute(element, <{ [key: string]: Object }>value);
-                break;
-            default:
-                element.setAttribute(key, attr[key]);
-                break;
+
+    private popupRefresh(popupEle: HTMLElement, destroy: boolean): void {
+        let ele: HTEle = this.element;
+        let popNav: HTEle = <HTEle>ele.querySelector('.' + CLS_TBARNAV);
+        let innerEle: HTEle = <HTEle>ele.querySelector('.' + CLS_ITEMS);
+        if (isNOU(popNav)) {
+            return;
+        }
+        innerEle.removeAttribute('style');
+        popupEle.style.display = 'block';
+        let width: number = ele.offsetWidth - (popNav.offsetWidth + innerEle.offsetWidth);
+        this.popupEleRefresh(width, popupEle, destroy);
+        popupEle.style.display = '';
+        if (popupEle.children.length === 0) {
+            detach(popNav);
+            this.popObj.destroy();
+            detach(this.popObj.element);
+            this.popObj = null;
+            ele.setAttribute('aria-haspopup', 'false');
+            ele.classList.remove('e-toolpop');
         }
     }
-    private popupEleRefresh(width: number, popupEle: HTMLElement, destroy: boolean): void {
-        let eleSplice: HTMLElement[] = this.tbarEle;
+    private popupEleRefresh(width: number, popupEle: HTEle, destroy: boolean): void {
+        let eleSplice: HTEle[] = this.tbarEle;
         let priEleCnt: number;
         let index: number;
-        let innerEle: HTMLElement = <HTMLElement>this.element.querySelector('.' + CLASS_ITEMS);
-        for (let el of this.sliceFn.call(popupEle.children)) {
+        let innerEle: HTEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS);
+        for (let el of [].slice.call(popupEle.children)) {
             el.style.position = 'absolute';
             let elWidth: number = el.offsetWidth;
-            let btnText: HTMLElement = el.querySelector('.' + CLASS_TBARBTNTEXT);
-            if (el.classList.contains('e-tbtn-align') || el.classList.contains(CLASS_TBARTEXT)) {
-                let btn: HTMLElement = el.children[0];
-                if (!isNOU(btnText) && el.classList.contains(CLASS_TBARTEXT)) {
+            let btnText: HTEle = el.querySelector('.' + CLS_TBARBTNTEXT);
+            if (el.classList.contains('e-tbtn-align') || el.classList.contains(CLS_TBARTEXT)) {
+                let btn: HTEle = el.children[0];
+                if (!isNOU(btnText) && el.classList.contains(CLS_TBARTEXT)) {
                     btnText.style.display = 'none';
-                } else if (!isNOU(btnText) && el.classList.contains(CLASS_POPUPTEXT)) {
+                } else if (!isNOU(btnText) && el.classList.contains(CLS_POPUPTEXT)) {
                     btnText.style.display = 'block';
                 }
                 btn.style.minWidth = '0%';
@@ -866,60 +846,34 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             if (el === this.tbarEle[0]) { elWidth += this.tbarEleMrgn; }
             el.style.position = '';
             if (elWidth < width || destroy) {
-                if (!el.classList.contains(CLASS_POPOVERFLOW)) {
-                    el.classList.remove(CLASS_POPUP);
+                if (!el.classList.contains(CLS_POPOVERFLOW)) {
+                    el.classList.remove(CLS_POPUP);
                 }
                 index = this.tbarEle.indexOf(el);
                 if (this.tbarAlign) {
                     let pos: ItemAlign = this.items[index].align;
-                    index = this.tbarAlgEle[pos].indexOf(el);
-                    eleSplice = this.tbarAlgEle[pos];
-                    innerEle = <HTMLElement>this.element.querySelector('.' + CLASS_ITEMS + ' .' + 'e-toolbar-' + pos);
+                    index = this.tbarAlgEle[(pos + 's') as ItmAlign].indexOf(el);
+                    eleSplice = this.tbarAlgEle[(pos + 's') as ItmAlign];
+                    innerEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS + ' .' + 'e-toolbar-' + pos);
                 }
                 let sepBeforePri: number = 0;
-                eleSplice.slice(0, index).forEach((el: HTMLElement) => {
-                    if (el.classList.contains(CLASS_TBAROVERFLOW) || el.classList.contains(CLASS_SEPARATOR)) {
-                        if (el.classList.contains(CLASS_SEPARATOR)) {
+                eleSplice.slice(0, index).forEach((el: HTEle) => {
+                    if (el.classList.contains(CLS_TBAROVERFLOW) || el.classList.contains(CLS_SEPARATOR)) {
+                        if (el.classList.contains(CLS_SEPARATOR)) {
                             el.style.display = '';
                             width -= el.offsetWidth;
                         }
                         sepBeforePri++;
                     }
                 });
-                if (el.classList.contains(CLASS_TBAROVERFLOW)) {
-                    let popEle: HTMLElement = this.popupObj.element;
-                    let query: string = '.' + CLASS_ITEM + ':not(.' + CLASS_SEPARATOR + '):not(.' + CLASS_TBAROVERFLOW + ')';
-                    priEleCnt = selectAll('.' + CLASS_POPUP + ':not(.' + CLASS_TBAROVERFLOW + ')', popEle).length;
-                    if (selectAll(query, innerEle).length === 0) {
-                        let eleSep: HTMLElement = innerEle.children[index - (index - sepBeforePri) - 1] as HTMLElement;
-                        if (!isNOU(eleSep) && eleSep.classList.contains(CLASS_SEPARATOR) && !isVisible(eleSep)) {
-                            let sepDisplay: string = 'none';
-                            eleSep.style.display = 'inherit';
-                            let eleSepWidth: number = eleSep.offsetWidth + (parseFloat(window.getComputedStyle(eleSep).marginRight) * 2);
-                            let prevSep: HTMLElement = eleSep.previousElementSibling as HTMLElement;
-                            if ((elWidth + eleSepWidth) < width || destroy) {
-                                innerEle.insertBefore(el, innerEle.children[index - (index - sepBeforePri)]);
-                                if (!isNOU(prevSep)) {
-                                    prevSep.style.display = '';
-                                }
-                            } else {
-                                if (prevSep.classList.contains(CLASS_SEPARATOR)) {
-                                    prevSep.style.display = sepDisplay;
-                                }
-                            }
-                            eleSep.style.display = '';
-                        } else {
-                            innerEle.insertBefore(el, innerEle.children[index - (index - sepBeforePri)]);
-                        }
-                    } else {
-                        innerEle.insertBefore(el, innerEle.children[index - priEleCnt]);
-                    }
+                if (el.classList.contains(CLS_TBAROVERFLOW)) {
+                    this.tbarPriRef(innerEle, index, sepBeforePri, el, destroy, elWidth, width);
                     width -= el.offsetWidth;
                 } else if (index === 0) {
                     innerEle.insertBefore(el, innerEle.firstChild);
                     width -= el.offsetWidth;
                 } else {
-                    priEleCnt = selectAll('.' + CLASS_TBAROVERFLOW, this.popupObj.element).length;
+                    priEleCnt = selectAll('.' + CLS_TBAROVERFLOW, this.popObj.element).length;
                     innerEle.insertBefore(el, innerEle.children[index - priEleCnt]);
                     width -= el.offsetWidth;
                 }
@@ -929,25 +883,114 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             }
         }
     }
-    private popupRefresh(popupEle: HTMLElement, destroy: boolean): void {
-        let ele: HTMLElement = this.element;
-        let popNav: HTMLElement = <HTMLElement>ele.querySelector('.' + CLASS_TBARNAV);
-        let innerEle: HTMLElement = <HTMLElement>ele.querySelector('.' + CLASS_ITEMS);
-        if (isNOU(popNav)) {
-            return; }
-        innerEle.removeAttribute('style');
-        popupEle.style.display = 'block';
-        let width: number = ele.offsetWidth - (popNav.offsetWidth + innerEle.offsetWidth);
-        this.popupEleRefresh(width, popupEle, destroy);
-        popupEle.style.display = '';
-        if (popupEle.children.length === 0) {
-            detach(popNav);
-            this.popupObj.destroy();
-            detach(this.popupObj.element);
-            this.popupObj = null;
-            this.element.setAttribute('aria-haspopup', 'false');
-            this.element.classList.remove('e-toolpop');
+    private removePositioning(): void {
+      let item: HTEle = this.element.querySelector('.' + CLS_ITEMS) as HTEle;
+      if (isNOU(item) || !item.classList.contains(CLS_TBARPOS)) { return; }
+      this.remove(item, CLS_TBARPOS);
+      let innerItem: HTEle[] = [].slice.call(item.childNodes);
+      innerItem[1].removeAttribute('style');
+      innerItem[2].removeAttribute('style');
+    }
+    private refreshPositioning(): void {
+      let item: HTEle = this.element.querySelector('.' + CLS_ITEMS) as HTEle;
+      this.add(item, CLS_TBARPOS);
+      this.itemPositioning();
+    }
+    private itemPositioning(): void {
+      let item: HTEle = this.element.querySelector('.' + CLS_ITEMS) as HTEle;
+      if (isNOU(item) || !item.classList.contains(CLS_TBARPOS)) { return; }
+      let popupNav: HTEle = <HTEle>this.element.querySelector('.' + CLS_TBARNAV);
+      let innerItem: HTEle[];
+      if (this.scrollModule) {
+          innerItem = [].slice.call(item.querySelector('.' + CLS_TBARSCROLL).children);
+      } else {
+      innerItem = [].slice.call(item.childNodes); }
+      let margin: number = innerItem[0].offsetWidth + innerItem[2].offsetWidth;
+      let tbarWid: number = this.element.offsetWidth;
+      if (popupNav) {
+          tbarWid -= popupNav.offsetWidth;
+          innerItem[2].style.right = popupNav.offsetWidth + 'px';
+      }
+      if (tbarWid <= margin) { return; }
+      let value: number = (((tbarWid - margin)) - innerItem[1].offsetWidth) / 2;
+      innerItem[1].style.marginLeft = (innerItem[0].offsetWidth + value) + 'px';
+    }
+    private tbarItemAlign(item: ItemModel, itemEle: HTEle, pos: number ): void {
+      let alignDiv: HTMLElement[] = [];
+      alignDiv.push( buildTag('div', { className: CLS_TBARLEFT } ));
+      alignDiv.push( buildTag('div', { className: CLS_TBARCENTER } ));
+      alignDiv.push( buildTag('div', { className: CLS_TBARRIGHT } ));
+      if (pos === 0 && item.align !== 'left' )  {
+        alignDiv.forEach((ele: HTEle) => {
+        itemEle.appendChild(ele);
+        });
+        this.tbarAlign = true;
+        this.add(itemEle, CLS_TBARPOS);
+      } else if (item.align !== 'left') {
+        let alignEle: NodeList = itemEle.childNodes;
+        let leftAlign: HTEle = alignDiv[0];
+        [].slice.call(alignEle).forEach((el: HTEle) => {
+          this.tbarAlgEle.lefts.push(el);
+          leftAlign.appendChild(el);
+        });
+        itemEle.appendChild(leftAlign);
+        itemEle.appendChild(alignDiv[1]);
+        itemEle.appendChild(alignDiv[2]);
+        this.tbarAlign = true;
+        this.add(itemEle, CLS_TBARPOS);
+      }
+    }
+    private ctrlTemplate(): void {
+        this.add(this.trgtEle, CLS_ITEMS);
+        this.tbarEle = [];
+        let innerEle: HTEle[] = [].slice.call(this.trgtEle.children);
+        innerEle.forEach((ele: HTEle) => {
+            if (ele.tagName === 'DIV') {
+                this.tbarEle.push(ele);
+                this.add(ele, CLS_ITEM);
+            }
+        });
+    }
+    private renderItems(): void {
+        let ele: HTEle = this.element;
+        let itemEleDom: HTEle;
+        let innerItem: HTEle;
+        let innerPos: HTEle;
+        let items: Item[] = <Item[]>this.items;
+        if (ele && ele.children.length > 0) {
+            let navEle: HTEle[] = selectAll('.' + CLS_TBARNAV, ele);
+            itemEleDom = navEle.length > 0 ? <HTEle>ele.children[1] : <HTEle>ele.children[0];
         }
+        if (this.trgtEle != null) {
+          this.ctrlTemplate();
+        } else if (ele && items.length > 0) {
+            if (!itemEleDom) {
+                itemEleDom = buildTag('div', { className: CLS_ITEMS });
+            }
+            for (let i: number = 0; i < items.length; i++) {
+                innerItem = this.renderSubComponent(items[i]);
+                if (this.tbarEle.indexOf(innerItem) === -1) {
+                this.tbarEle.push(innerItem); }
+                if (!this.tbarAlign) {
+                  this.tbarItemAlign(items[i] , itemEleDom , i); }
+                innerPos = <HTEle>itemEleDom.querySelector('.e-toolbar-' + items[i].align.toLowerCase());
+                if (innerPos) {
+                  this.tbarAlgEle[(items[i].align + 's') as ItmAlign].push(innerItem);
+                  innerPos.appendChild(innerItem);
+                } else {
+                    itemEleDom.appendChild(innerItem);
+                }
+            }
+            ele.appendChild(itemEleDom);
+        }
+    }
+    private setAttr(attr: { [key: string]: Str; }, element: HTEle): void {
+        let key: Object[] = Object.keys(attr);
+        let keyVal: string;
+        for (let i: number = 0; i < key.length; i++) {
+        keyVal = key[i] as Str;
+        keyVal === 'class' ? this.add(element, attr[keyVal]) : element.setAttribute(keyVal, attr[keyVal]);
+      }
     }
     /**
      * Enables or disables the specified toolbar item.
@@ -963,11 +1006,11 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             isEnable = true;
         }
         if (len && len > 1) {
-            isEnable ? removeClass(elements, CLASS_DISABLE) : addClass(elements, CLASS_DISABLE);
+            isEnable ?  removeClass(elements, CLS_DISABLE) : addClass(elements, CLS_DISABLE);
         } else {
-            let ele: HTMLElement;
-            ele = (len && len === 1) ? <HTMLElement>elements[0] : <HTMLElement>items;
-            isEnable ? ele.classList.remove(CLASS_DISABLE) : ele.classList.add(CLASS_DISABLE);
+            let ele: HTEle;
+            ele = (len && len === 1) ? <HTEle>elements[0] : <HTEle>items;
+            isEnable ? this.remove(ele, CLS_DISABLE ) : this.add(ele, CLS_DISABLE );
         }
     }
     /**
@@ -977,10 +1020,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
      * @returns void
      */
     public addItems(items: ItemModel[], index?: number): void {
-        let innerItems: HTMLElement[];
-        let itemsDiv: HTMLElement = <HTMLElement>this.element.querySelector('.' + CLASS_ITEMS);
-        let innerEle: HTMLElement;
-        let itemAgn: string = 'left';
+        let innerItems: HTEle[];
+        let itemsDiv: HTEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS);
+        let innerEle: HTEle;
+        let itemAgn: Str = 'left';
         if (isNOU(index)) {
             index = 0;
         }
@@ -989,7 +1032,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
            itemAgn = e.align;  }
         });
         for (let item of items) {
-            innerItems = selectAll('.' + CLASS_ITEM, this.element);
+            innerItems = selectAll('.' + CLS_ITEM, this.element);
             item.align = <ItemAlign>itemAgn;
             innerEle = this.renderSubComponent(item);
             if (this.tbarEle.length > index && innerItems.length > 0) {
@@ -997,11 +1040,11 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                  let algIndex: number = item.align[0] === 'l' ? 0 : item.align[0] === 'c' ? 1 : 2;
                  let ele: Element;
                  if (this.scrollModule) {
-                 ele = closest(innerItems[0] , '.' + CLASS_ITEMS + ' .' + CLASS_TBARSCROLL).children[algIndex];
+                 ele = closest(innerItems[0] , '.' + CLS_ITEMS + ' .' + CLS_TBARSCROLL).children[algIndex];
                  } else {
-                 ele = closest(innerItems[0] , '.' + CLASS_ITEMS).children[algIndex]; }
+                 ele = closest(innerItems[0] , '.' + CLS_ITEMS).children[algIndex]; }
                  ele.insertBefore(innerEle, ele.children[index]);
-                 this.tbarAlgEle[item.align].splice(index, 0, innerEle);
+                 this.tbarAlgEle[(item.align + 's') as ItmAlign].splice(index, 0, innerEle);
                  this.refreshPositioning();
                 }else {
                 innerItems[0].parentNode.insertBefore(innerEle, innerItems[index]); }
@@ -1022,61 +1065,90 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     public removeItems(args: number | HTMLElement | NodeList | Element): void {
         let elements: NodeList = <NodeList>args;
         let index: number;
-        let innerItems: HTMLElement[] = this.sliceFn.call(selectAll('.' + CLASS_ITEM, this.element));
+        let innerItems: HTEle[] = [].slice.call(selectAll('.' + CLS_ITEM, this.element));
         if (typeof (elements) === 'number') {
             index = parseInt(args.toString(), 10);
             this.removeItemByIndex(index, innerItems);
         } else {
             if (elements && elements.length > 1) {
-            for (let ele of this.sliceFn.call(elements)) {
+            for (let ele of [].slice.call(elements)) {
                 index = this.tbarEle.indexOf(ele);
                 this.removeItemByIndex(index, innerItems);
-                innerItems = selectAll('.' + CLASS_ITEM, this.element);
+                innerItems = selectAll('.' + CLS_ITEM, this.element);
             }
         } else {
-           let ele: HTMLElement = (elements && elements.length && elements.length === 1) ? <HTMLElement>elements[0] : <HTMLElement>args;
+           let ele: HTEle = (elements && elements.length && elements.length === 1) ? <HTEle>elements[0] : <HTEle>args;
            index = innerItems.indexOf(ele);
            this.removeItemByIndex(index, innerItems);
         }
         }
         this.resize();
     }
-    private removeItemByIndex(index: number, innerItems: HTMLElement[]): void {
+    private removeItemByIndex(index: number, innerItems: HTEle[]): void {
         if (this.tbarEle[index] && innerItems[index]) {
             let eleIdx: number = this.tbarEle.indexOf(innerItems[index]);
             if (this.tbarAlign) {
-              let indexAgn: number = this.tbarAlgEle[this.items[eleIdx].align].indexOf(this.tbarEle[eleIdx]);
-              this.tbarAlgEle[this.items[eleIdx].align].splice(indexAgn, 1);
+              let indexAgn: number = this.tbarAlgEle[(this.items[eleIdx].align + 's') as ItmAlign].indexOf(this.tbarEle[eleIdx]);
+              this.tbarAlgEle[(this.items[eleIdx].align + 's') as ItmAlign].splice(indexAgn, 1);
             }
             detach(innerItems[index]);
             this.items.splice(eleIdx, 1);
             this.tbarEle.splice(eleIdx, 1);
         }
     }
-    private templateRender(templateProp: Object | string, innerEle: HTMLElement, item: ItemModel): void {
-        let itemType: string = item.type;
+    private templateRender(templateProp: Object | Str, innerEle: HTEle, item: ItemModel): void {
+        let itemType: Str = item.type;
         if (typeof (templateProp) === 'string') {
             innerEle.innerHTML = templateProp;
-            let ele: HTMLElement = <HTMLElement>innerEle.childNodes[0];
+            let ele: HTEle = <HTEle>innerEle.childNodes[0];
             if (!ele.tagName) {
                 let templateEle: Node = document.querySelector(templateProp);
                 innerEle.innerHTML = '';
                 innerEle.appendChild(templateEle);
             }
-        } else if (itemType === 'Input' || itemType === '2') {
+        } else if (itemType === 'Input') {
             let templateProperty: Template = <Template>templateProp;
-            let ele: HTMLElement = buildTag('input');
+            let ele: HTEle = buildTag('input');
             item.id ? (ele.id = item.id) : (ele.id = getUniqueID('tbr-ipt'));
             innerEle.appendChild(ele);
             templateProperty.appendTo(ele);
         }
-        innerEle.classList.add(CLASS_TEMPLATE);
+        this.add(innerEle, CLS_TEMPLATE);
         this.tbarEle.push(innerEle);
     }
-    private renderSubComponent(item: ItemModel): HTMLElement {
-        let innerEle: HTMLElement;
-        let dom: HTMLElement;
-        innerEle = buildTag('div', { className: CLASS_ITEM });
+    private buttonRendering(item: ItemModel, innerEle: HTEle): HTEle {
+        let dom: HTEle = buildTag('button', { className: CLS_TBARBTN });
+        let textStr: Str = item.text;
+        let iconCss: Str;
+        let iconPos: Str;
+        item.id ? (dom.id = item.id) : dom.id = getUniqueID('e-tbr-btn');
+        let btnTxt: HTEle = buildTag('div', { className: 'e-tbar-btn-text' });
+        if (textStr) {
+            btnTxt.innerHTML = textStr;
+            dom.appendChild(btnTxt);
+            dom.classList.add('e-tbtn-txt');
+        } else {
+            this.add(innerEle, 'e-tbtn-align');
+        }
+        if (item.prefixIcon || item.suffixIcon) {
+            if ((item.prefixIcon && item.suffixIcon) || item.prefixIcon) {
+                iconCss = item.prefixIcon + ' e-icons';
+                iconPos = 'left';
+            } else {
+                iconCss = item.suffixIcon + ' e-icons';
+                iconPos = 'right';
+            }
+        }
+        new Button({iconCss: iconCss, iconPosition: <IconPosition>iconPos }, dom as HTMLButtonElement);
+        if (item.width) {
+            setStyle(dom, { 'width': formatUnit(item.width) });
+        }
+        return dom;
+    }
+    private renderSubComponent(item: ItemModel): HTEle {
+        let innerEle: HTEle;
+        let dom: HTEle;
+        innerEle = buildTag('div', { className: CLS_ITEM });
         if (!this.tbarEle) {
             this.tbarEle = [];
         }
@@ -1094,65 +1166,42 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         } else {
             switch (item.type) {
                 case 'Button':
-                    let textStr: string = item.text;
-                    dom = buildTag('button', { className: CLASS_TBARBTN });
-                    item.id ? (dom.id = item.id) : dom.id = getUniqueID('e-tbr-btn');
-                    let btnTxt: HTMLElement = buildTag('div', { className: 'e-tbar-btn-text' });
-                    if (textStr) {
-                        btnTxt.innerHTML = textStr;
-                        dom.appendChild(btnTxt);
-                    } else {
-                        innerEle.classList.add('e-tbtn-align');
-                    }
-                    let btnObj: Button = new Button({}, dom as HTMLButtonElement);
-                    if (item.prefixIcon || item.suffixIcon) {
-                       if ((item.prefixIcon && item.suffixIcon) || item.prefixIcon) {
-                         btnObj.iconCss = item.prefixIcon + ' e-icons';
-                         btnObj.iconPosition = 'left';
-                       } else {
-                           btnObj.iconCss = item.suffixIcon + ' e-icons';
-                           btnObj.iconPosition = 'right';
-                       }
-                    }
-                    btnObj.dataBind();
-                    if (item.width) {
-                        setStyleAttribute(dom, { 'width': formatUnit(item.width) });
-                    }
+                    dom = this.buttonRendering(item, innerEle);
                     dom.setAttribute('tabindex', '-1');
                     innerEle.appendChild(dom);
                     innerEle.addEventListener('click', this.itemClick.bind(this));
                     break;
                 case 'Separator':
-                    innerEle.classList.add(CLASS_SEPARATOR);
+                    this.add(innerEle, CLS_SEPARATOR);
                     break;
             }
         }
         if (item.showTextOn) {
-            let sTxt: string = item.showTextOn;
+            let sTxt: Str = item.showTextOn;
             if (sTxt === 'Toolbar') {
-                innerEle.classList.add(CLASS_POPUPTEXT);
-                innerEle.classList.add('e-tbtn-align');
+                this.add(innerEle, CLS_POPUPTEXT);
+                this.add(innerEle, 'e-tbtn-align' );
             } else if (sTxt === 'Overflow') {
-                innerEle.classList.add(CLASS_TBARTEXT);
+                this.add(innerEle, CLS_TBARTEXT);
             }
         }
         if (item.overflow) {
-            let overflow: string = item.overflow;
+            let overflow: Str = item.overflow;
             if (overflow === 'Show') {
-                innerEle.classList.add(CLASS_TBAROVERFLOW);
+                this.add(innerEle, CLS_TBAROVERFLOW);
             } else if (overflow === 'Hide') {
-                if (!innerEle.classList.contains(CLASS_SEPARATOR)) {
-                    innerEle.classList.add(CLASS_POPOVERFLOW);
+                if (!innerEle.classList.contains(CLS_SEPARATOR)) {
+                    this.add(innerEle, CLS_POPOVERFLOW);
                 }
             }
         }
         return innerEle;
     }
     private itemClick(e: Event): void {
-        this.activeEleRemove((<HTMLElement>e.currentTarget).firstChild as HTMLElement);
+        this.activeEleRemove((<HTEle>e.currentTarget).firstChild as HTEle);
         this.activeEle.focus();
     }
-    private activeEleRemove(curEle: HTMLElement): void {
+    private activeEleRemove(curEle: HTEle): void {
         if (!isNOU(this.activeEle)) {
           this.activeEle.setAttribute('tabindex', '-1');
         }
@@ -1171,20 +1220,20 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         return 'toolbar';
     }
     private resize(): void {
-        let ele: HTMLElement = this.element;
+        let ele: HTEle = this.element;
         this.tbResize = true;
         if (this.tbarAlign) { this.itemPositioning(); }
-        if (this.popupObj) {
-           this.popupObj.hide();
+        if (this.popObj) {
+           this.popObj.hide();
         }
-        let checkOverflow: boolean = this.checkOverflow(ele, ele.getElementsByClassName(CLASS_ITEMS)[0] as HTMLElement);
+        let checkOverflow: boolean = this.checkOverflow(ele, ele.getElementsByClassName(CLS_ITEMS)[0] as HTEle);
         if (checkOverflow && this.scrollModule && (this.offsetWid === ele.offsetWidth)) { return; }
         if (this.offsetWid > ele.offsetWidth || checkOverflow) {
             this.renderOverflowMode();
         }
-        if (this.popupObj) {
+        if (this.popObj) {
             if (this.tbarAlign) { this.removePositioning(); }
-            this.popupRefresh(this.popupObj.element, false);
+            this.popupRefresh(this.popObj.element, false);
             if (this.tbarAlign) { this.refreshPositioning(); }
         }
         this.offsetWid = ele.offsetWidth;
@@ -1198,6 +1247,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
      * @private
      */
     public onPropertyChanged(newProp: ToolbarModel, oldProp: ToolbarModel): void {
+        let tEle: HTEle = this.element;
         for (let prop of Object.keys(newProp)) {
             switch (prop) {
                 case 'items':
@@ -1206,46 +1256,36 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     this.renderOverflowMode();
                     break;
                 case 'width':
-                    let wid: number = this.element.offsetWidth;
-                    setStyleAttribute(this.element, { 'width': formatUnit(newProp.width) });
+                    let wid: number = tEle.offsetWidth;
+                    setStyle(tEle, { 'width': formatUnit(newProp.width) });
                     this.renderOverflowMode();
-                    if (this.popupObj && wid < this.element.offsetWidth) {
-                        this.popupRefresh(this.popupObj.element, false);
+                    if (this.popObj && wid < tEle.offsetWidth) {
+                        this.popupRefresh(this.popObj.element, false);
                     }
                     break;
                 case 'height':
-                    setStyleAttribute(this.element, { 'height': formatUnit(newProp.height) });
+                    setStyle(this.element, { 'height': formatUnit(newProp.height) });
                     break;
                 case 'overflowMode':
                     if (this.scrollModule) {
-                        this.scrollModule.element.classList.remove(CLASS_RTL);
+                        this.remove(this.scrollModule.element, CLS_RTL);
                         this.destroyHScroll();
                     }
-                    if (this.popupObj) {
-                        this.popupRefresh(this.popupObj.element, true);
+                    if (this.popObj) {
+                        this.popupRefresh(this.popObj.element, true);
                     }
                     this.renderOverflowMode();
                     if (this.enableRtl) {
-                        this.element.classList.add(CLASS_RTL);
+                        this.add(tEle, CLS_RTL);
                     }
                     break;
                 case 'enableRtl':
-                    if (newProp.enableRtl) {
-                        this.element.classList.add(CLASS_RTL);
-                        if (!isNOU(this.scrollModule)) {
-                            this.scrollModule.element.classList.add(CLASS_RTL);
-                        }
-                        if (!isNOU(this.popupObj)) {
-                            this.popupObj.element.classList.add(CLASS_RTL);
-                        }
-                    } else {
-                        this.element.classList.remove(CLASS_RTL);
-                        if (!isNOU(this.scrollModule)) {
-                            this.scrollModule.element.classList.remove(CLASS_RTL);
-                        }
-                        if (!isNOU(this.popupObj)) {
-                            this.popupObj.element.classList.remove(CLASS_RTL);
-                        }
+                    newProp.enableRtl ? this.add(tEle, CLS_RTL) : this.remove(tEle, CLS_RTL);
+                    if (!isNOU(this.scrollModule)) {
+                     newProp.enableRtl ? this.add(this.scrollModule.element, CLS_RTL) : this.remove(this.scrollModule.element, CLS_RTL);
+                    }
+                    if (!isNOU(this.popObj)) {
+                     newProp.enableRtl ? this.add(this.popObj.element, CLS_RTL) : this.remove(this.popObj.element, CLS_RTL);
                     }
                     break;
             }

@@ -16,6 +16,11 @@ let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET
     'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
 
 describe('Horizontal scroll bar Base items', () => {
+   let css: string = " button {font-family:Arial; font-size: 14px; padding: 1px 6px;} ";
+    let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
+    let styleNode: Node = style.appendChild(document.createTextNode(css));
+    document.getElementsByTagName('head')[0].appendChild(style);
+
     describe(' Horizontal scroll Base Testing', () => {
         let scroll: any;
         beforeEach((): void => {
@@ -156,25 +161,25 @@ describe('Horizontal scroll bar Base items', () => {
                 distanceY: 0, originalEvent: tchEvent, startEvents: tchEvent, startX: 30, startY: 0, velocity: 4
             };
             expect(scrollEle.scrollLeft).toEqual(0);
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             expect(scrollEle.scrollLeft).toEqual(30);
             event.scrollDirection = 'Right'; event.name = 'scroll'; event.distanceX = 30;
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             event.scrollDirection = 'Top'; event.name = 'scroll'; event.distanceX = 30;
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             expect(scrollEle.scrollLeft).toEqual(0);
             event.scrollDirection = 'Left'; event.name = 'scroll'; event.distanceX = 40;
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             expect(scrollEle.scrollLeft).toEqual(40);
             event.scrollDirection = 'Left'; event.name = 'scroll'; event.distanceX = 10;
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             scrollEle.dispatchEvent(scrollEvent);
             expect(scrollEle.scrollLeft).toEqual(50);
             event.scrollDirection = 'Left'; event.name = 'scroll'; event.distanceX = 10;
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             expect(scrollEle.scrollLeft).toEqual(60);
             event.scrollDirection = 'Left'; event.name = 'scroll'; event.distanceX = 10;
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
             expect(scrollEle.scrollLeft).toEqual(70);
             scrollEle.scrollLeft = 500;
             scrollEle.dispatchEvent(scrollEvent);
@@ -194,7 +199,7 @@ describe('Horizontal scroll bar Base items', () => {
             navEle.remove();
             scrollEle.dispatchEvent(scrollEvent);
             event.name = 'swipe';
-            scroll.touchScrollHandler(event);
+            scroll.touchHandler(event);
         });
     });
 
@@ -228,7 +233,6 @@ describe('Horizontal scroll bar Base items', () => {
             scrollEle.dispatchEvent(scrollEvent);
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
-            expect(navEle.classList.contains('e-nav-left-arrow')).toEqual(true);
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
             navEle.click();
@@ -373,6 +377,7 @@ describe('Horizontal scroll bar Base items', () => {
                 navEle.click();
                 navEle.click();
                 scrollEle.dispatchEvent(scrollEvent);
+                expect(navIcon.classList.contains('e-nav-right-arrow')).toEqual(true);
             });
         });
         describe('Cross Browser Edge Testing for Scrolling in RTL mode', () => {
@@ -415,7 +420,7 @@ describe('Horizontal scroll bar Base items', () => {
                 distanceX: 30,
                 distanceY: 0, originalEvent: tchEvent, startEvents: tchEvent, startX: 30, startY: 0, velocity: 4
                 };
-                scroll.touchScrollHandler(event);
+                scroll.touchHandler(event);
             });
         });
 
