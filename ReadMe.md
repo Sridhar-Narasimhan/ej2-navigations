@@ -28,6 +28,7 @@ To test the source files, use the below command
 
 ```
 npm run test
-```## Changelog
+```
+## Changelog
 
 Check the changelog [here](https://github.com/syncfusion/ej2-navigations/blob/master/CHANGELOG.md)
