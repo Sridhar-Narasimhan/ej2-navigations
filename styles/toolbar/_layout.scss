@@ -2,6 +2,7 @@
   /*! toolbar layout */
   .e-bigger .e-toolbar,
   .e-toolbar.e-bigger {
+    height: $tbar-bgr-size;
     min-height: $tbar-bgr-size;
 
     .e-icons {
@@ -11,6 +12,17 @@
     &.e-rtl {
 
       .e-toolbar-items {
+
+        .e-toolbar-left {
+
+          .e-toolbar-item:first-child {
+            margin-left: 0;
+         }
+
+          .e-toolbar-item:last-child {
+            margin-left: $tbar-item-nrml-mrgn;
+         }
+      }
 
         &:not(.e-tbar-pos) {
 
@@ -85,9 +97,9 @@
         }
 
         &.e-separator {
-          height: 64%;
+          height: $tbar-separator-bgr-height;
           margin: $tbar-separator-bgr-mrgn;
-          min-height: $tbar-separator-bgr-height;
+          min-height: $tbar-separator-bgr-minheight;
         }
 
         .e-icons {
@@ -108,7 +120,7 @@
 
   .e-toolbar {
     display: block;
-    height: auto;
+    height: $tbar-nrml-size;
     min-height: $tbar-nrml-size;
     position: relative;
     touch-action: none;
@@ -204,6 +216,17 @@
 
       .e-toolbar-items {
 
+        .e-toolbar-left {
+
+          .e-toolbar-item:first-child {
+            margin-left: 0;
+            }
+
+          .e-toolbar-item:last-child {
+            margin-left: $tbar-item-nrml-mrgn;
+            }
+        }
+
         &:not(.e-tbar-pos) {
 
           .e-toolbar-item:first-child {
@@ -211,7 +234,22 @@
             margin-right: $tbar-item-nrml-mrgn;
           }
       }
+
+        &:first-child {
+
+          > .e-toolbar-item:last-child,
+          > .e-toolbar-right .e-toolbar-item {
+
+            &:last-child {
+              margin-right: 0;
+         }
+
+            &:first-child {
+              margin-right: $tbar-item-nrml-mrgn;
+        }
+        }
       }
+    }
 
       .e-hor-nav {
         float: left;
@@ -296,14 +334,26 @@
         .e-toolbar-item:first-child {
           margin-left: $tbar-item-nrml-mrgn;
         }
+
+        .e-toolbar-right {
+
+          .e-toolbar-item:first-child {
+            margin-left: 0;
+        }
+        }
       }
 
-      > .e-toolbar-item:last-child,
-      > .e-toolbar-right .e-toolbar-item:last-child {
-        margin-right: $tbar-item-nrml-mrgn;
+      &:first-child {
+
+        > .e-toolbar-item:last-child,
+        > .e-toolbar-right .e-toolbar-item:last-child {
+          margin-right: $tbar-item-nrml-mrgn;
      }
+    }
 
       .e-toolbar-item  {
+        align-content: center;
+        align-items: center;
         cursor: pointer;
         display: inline-flex;
         min-height: $tbar-nrml-size;
@@ -322,7 +372,7 @@
 
         &.e-separator {
           margin: $tbar-separator-nrml-mrgn;
-          min-height: $tbar-separator-nrml-height;
+          min-height: $tbar-separator-nrml-minheight;
         }
 
         input[type='checkbox'] {
@@ -344,12 +394,11 @@
 
         > * {
           align-self: center;
-          height: 100%;
           text-overflow: ellipsis;
         }
 
         &.e-separator {
-          height: 70%;
+          height: $tbar-separator-nrml-height;
           vertical-align: middle;
 
           + .e-separator {

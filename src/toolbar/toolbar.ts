@@ -524,8 +524,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private initialize(): void {
         let width: Str = formatUnit(this.width);
-        let height: Str = formatUnit(this.height);
-        setStyle(this.element, { 'width': width, 'height': height });
+        let  height: Str = formatUnit(this.height);
+        if (Browser.info.name !== 'msie' || this.height !== 'auto' ) {
+          setStyle(this.element, {'height': height}); }
+        setStyle(this.element, { 'width': width });
         let ariaAttr: { [key: string]: Str } = {
             'role': 'toolbar', 'aria-disabled': 'false', 'aria-haspopup': 'false', 'aria-orientation': 'horizontal',
         };
@@ -562,7 +564,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let eleWidth: number = element.offsetWidth;
         let itemWidth: number;
         if (this.tbarAlign) {
-          itemWidth = this.itemWidthCal(innerItem);
+          itemWidth = this.itemWidthCal(this.scrollModule ? <HTEle>innerItem.querySelector('.e-hscroll-content') : innerItem);
         } else {
          itemWidth = innerItem.offsetWidth; }
         let popNav: HTEle = <HTEle>element.querySelector('.' + CLS_TBARNAV);
@@ -653,7 +655,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let eleHeight: number;
         let eleItem: Element;
         eleItem = element.querySelector('.' + CLS_ITEM + ':not(.' + CLS_SEPARATOR + ' ):not(.' + CLS_POPUP + ' )');
-        eleHeight = element.style.height === 'auto' ? null : (eleItem as HTEle).offsetHeight;
+        eleHeight = (element.style.height === 'auto' || element.style.height === '') ? null : (eleItem as HTEle).offsetHeight;
         let ele: HTEle;
         let popupPri: Element[] = [];
         if (element.querySelector('#' + element.id + '_popup.' + CLS_POPUPCLASS)) {
