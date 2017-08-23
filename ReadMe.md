@@ -1,3 +1,5 @@
+[![coverage](http://ej2.syncfusion.com/coverage/ej2-navigations/coverage.svg)](http://ej2.syncfusion.com/coverage/ej2-navigations)
+
 # Overview
 
 Displays a group of command buttons arranged horizontally.It comes with full support and is available under commercial and community licenses – please visit www.syncfusion.com to get started.
