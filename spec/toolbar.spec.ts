@@ -1,18 +1,18 @@
 /**
  * toolbar spec document
  */
-import { ScrollEventArgs, TouchEventArgs, Browser } from '@syncfusion/ej2-base/index';
-import { createElement, isVisible, setStyleAttribute } from '@syncfusion/ej2-base/dom';
+import { ScrollEventArgs, TouchEventArgs, Browser } from '@syncfusion/ej2-base';
+import { createElement, isVisible, setStyleAttribute } from '@syncfusion/ej2-base';
 import { Toolbar, ClickEventArgs } from '../src/toolbar/toolbar';
 import { HScroll } from '../src/common/h-scroll';
-import { Button } from '@syncfusion/ej2-buttons/src/button/button';
+import { Button } from '@syncfusion/ej2-buttons';
 import '../node_modules/es6-promise/dist/es6-promise';
 
 let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET4.0E; .NET4.0C; ' +
     'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
 
 describe('Toolbar Control', () => {
-    let css: string = ".e-separator { border-right:1px solid; height: 15px; margin: 7.5px 3px} .e-toolbar .e-toolbar-items .e-toolbar-item.e-separator + .e-separator { display:none } .e-toolbar-items { display: inline-block; } .e-toolbar-items.e-hscroll { width:inherit; }  .e-toolbar .e-fix-width {width : 0px !important; } .e-toolbar .e-tbarpop  { position: fixed; } .e-toolbar-items .e-toolbar-item, .e-toolbar-left, .e-toolbar-center, .e-toolbar-right { display: inline-block; } .e-toolbar .e-hor-nav { float:right; width:30px; }  .e-toolbar .e-toolbar-pop { position: fixed;} .e-popup-open { display:block } .e-popup-close { display: none } button {font-family:Arial; font-size: 14px; padding: 1px 6px} ";
+    let css: string = ".e-toolbar { height: auto } .e-separator { border-right:1px solid; height: 15px; margin: 7.5px 3px} .e-toolbar .e-toolbar-items .e-toolbar-item.e-separator + .e-separator { display:none } .e-toolbar-items { display: inline-block; } .e-toolbar-items.e-hscroll { width:inherit; }  .e-toolbar .e-fix-width {width : 0px !important; } .e-toolbar .e-tbarpop  { position: fixed; } .e-toolbar-items .e-toolbar-item, .e-toolbar-left, .e-toolbar-center, .e-toolbar-right { display: inline-block; } .e-toolbar .e-hor-nav { float:right; width:30px; }  .e-toolbar .e-toolbar-pop { position: fixed;} .e-popup-open { display:block } .e-popup-close { display: none } button {font-family:Arial; font-size: 14px; padding: 1px 6px} ";
     let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
     let styleNode: Node = style.appendChild(document.createTextNode(css));
     document.getElementsByTagName('head')[0].appendChild(style);
@@ -428,6 +428,8 @@ describe('Toolbar Control', () => {
                 type: 'Button', text: 'Bold',
             }];
             toolbar.dataBind();
+            expect(element.children.length).toEqual(1);
+            expect(toolbar.items.length).toEqual(1);
             let scrollELe: HTMLElement = <HTMLElement>element.children[0];
             expect(scrollELe.classList.contains('e-hscroll')).toEqual(true);
         });
@@ -443,8 +445,8 @@ describe('Toolbar Control', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
             let scrollELe: HTMLElement = <HTMLElement>element.children[0];
             expect(scrollELe.classList.contains('e-hscroll')).toEqual(true);
-            let innerNavEle: HTMLElement = <HTMLElement>scrollELe.children[0];
-            expect(innerNavEle.classList.contains('e-hor-nav')).toEqual(true);
+            let innerNavEle: HTMLElement = <HTMLElement>scrollELe.querySelector('.e-scroll-right-nav');
+            expect(innerNavEle.classList.contains('e-scroll-nav')).toEqual(true);
             let innerNavElement: HTMLElement = <HTMLElement>innerNavEle.querySelector('.e-icons');
             expect(innerNavElement.classList.contains('e-nav-arrow')).toEqual(true);
             expect(innerNavElement.classList.contains('e-nav-right-arrow')).toEqual(true);
@@ -473,36 +475,25 @@ describe('Toolbar Control', () => {
                 }],
             });
             toolbar.appendTo('#ej2Toolbar');
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item')[0].getAttribute('aria-disabled')).toBe('false');
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item')[1].getAttribute('aria-disabled')).toBe('false');
             let element: HTMLElement = document.getElementById('ej2Toolbar');
             let scrollELe: HTMLElement = <HTMLElement>element.children[0];
             expect(scrollELe.classList.contains('e-hscroll')).toEqual(true);
             scrollELe.style.display = 'inline-block';
             toolbar.items = [{
                 type: 'Button', text: 'Underline',
+            },{
+                type: 'Button', text: 'bold',
             }]
             toolbar.dataBind();
             expect(scrollELe.classList.contains('e-hscroll')).toEqual(true);
-            let innerNavElement: HTMLElement = <HTMLElement>scrollELe.children[0];
+            let innerNavElement: HTMLElement = <HTMLElement>scrollELe.children[2];
             let innerArrowEle: HTMLElement = <HTMLElement>innerNavElement.querySelector('.e-icons');
             expect(innerArrowEle.classList.contains('e-nav-right-arrow')).toEqual(true);
             let scrollEvent = document.createEvent('MouseEvents');
             let scrollCon: HTMLElement = <HTMLElement>element.querySelector('.e-hscroll-bar');
-            scrollEvent.initEvent('scroll', false, false);
             innerNavElement.click();
-            scrollCon.dispatchEvent(scrollEvent);
-            innerNavElement.click();
-            innerNavElement.click();
-            innerNavElement.click();
-            innerNavElement.click();
-            scrollCon.dispatchEvent(scrollEvent);
-            innerNavElement.click();
-            scrollCon.dispatchEvent(scrollEvent);
-            expect(innerArrowEle.classList.contains('e-nav-left-arrow')).toEqual(true);
-            innerNavElement.click();
-            scrollCon.dispatchEvent(scrollEvent);
-            scrollCon.scrollLeft = 0;
-            scrollCon.dispatchEvent(scrollEvent);
-            expect(innerArrowEle.classList.contains('e-nav-right-arrow')).toEqual(true);
             innerArrowEle.click();
         });
 
@@ -1328,7 +1319,7 @@ describe('Toolbar Control', () => {
     });
 
     describe('Resize testing', () => {
-        let toolbar: any;
+        let toolbar: Toolbar;
         document.body.innerHTML = '';
         beforeEach((): void => {
             toolbar = undefined;
@@ -1356,7 +1347,7 @@ describe('Toolbar Control', () => {
                 }],
             }); toolbar.appendTo('#ej2Toolbar');
             element.style.width = '50px';
-            toolbar.resize();
+            toolbar.refreshOverflow();
             expect(element.classList.contains('e-toolpop')).toEqual(true);
             expect(element.querySelector('.e-toolbar-pop').childNodes.length).toEqual(2);
             expect(element.querySelectorAll('.e-toolbar-items .-toolbar-item').length == 0).toEqual(true);
@@ -1431,7 +1422,7 @@ describe('Toolbar Control', () => {
                     }
                 ],
             }); toolbar.appendTo('#ej2Toolbar');
-            let popNav: NodeList = element.querySelectorAll('.e-hor-nav');
+            let popNav: NodeList = element.querySelectorAll('.e-scroll-nav');
             expect(popNav.length > 0).toEqual(true);
             element.style.width = '50px';
             toolbar.resize();
@@ -1673,9 +1664,7 @@ describe('Toolbar Control', () => {
             toolbar.resize();
             itemCollection = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
             separator = itemCollection[1] as HTMLElement;
-            //  expect(separator.style.display).toEqual('');
             separator = itemCollection[3] as HTMLElement;
-            //expect(separator.style.display).toEqual('none');
         });
         it('Resize with popup without text item case', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
@@ -1876,7 +1865,6 @@ describe('Toolbar Control', () => {
                 ],
             }, '#ej2Toolbar');
             let itemCollection: NodeList = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
-            //expect(itemCollection.length).toEqual(5);
             element.style.width = '100px';
             toolbar.resize();
             itemCollection = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
@@ -1908,7 +1896,6 @@ describe('Toolbar Control', () => {
                 ],
             }, '#ej2Toolbar');
             let itemCollection: NodeList = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
-            //expect(itemCollection.length).toEqual(5);
             element.style.width = '100px';
             toolbar.resize();
             itemCollection = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
@@ -1955,7 +1942,7 @@ describe('Toolbar Control', () => {
                     }
                 ],
             }); toolbar.appendTo('#ej2Toolbar');
-            let popNav: NodeList = element.querySelectorAll('.e-hor-nav');
+            let popNav: NodeList = element.querySelectorAll('.e-scroll-nav');
             expect(popNav.length > 0).toEqual(true);
             element.style.width = '50px';
             toolbar.resize();
@@ -2197,9 +2184,7 @@ describe('Toolbar Control', () => {
             toolbar.resize();
             itemCollection = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
             separator = itemCollection[1] as HTMLElement;
-            //  expect(separator.style.display).toEqual('');
             separator = itemCollection[3] as HTMLElement;
-            //expect(separator.style.display).toEqual('none');
         });
         it('Resize with popup without text item case', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
@@ -2400,7 +2385,6 @@ describe('Toolbar Control', () => {
                 ],
             }, '#ej2Toolbar');
             let itemCollection: NodeList = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
-            //expect(itemCollection.length).toEqual(5);
             element.style.width = '100px';
             toolbar.resize();
             itemCollection = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
@@ -2432,7 +2416,6 @@ describe('Toolbar Control', () => {
                 ],
             }, '#ej2Toolbar');
             let itemCollection: NodeList = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
-            //expect(itemCollection.length).toEqual(5);
             element.style.width = '100px';
             toolbar.resize();
             itemCollection = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
@@ -2494,7 +2477,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[0],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('Underline');
@@ -2517,7 +2499,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'Underline').toEqual(false);
@@ -2526,7 +2507,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'Underline').toEqual(false);
@@ -2548,15 +2528,13 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element,
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'New').toEqual(true);
             keyEventArgs = {
                 preventDefault: function () { },
                 action: 'moveRight',
-                target: toolbar.element.querySelectorAll('.e-hor-nav')[0],
+                target: toolbar.element.querySelectorAll('.e-scroll-nav')[0],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'Bold').toEqual(false);
@@ -2601,7 +2579,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.classList.contains('e-toolbar')).toEqual(true);
@@ -2625,7 +2602,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('Bold');
@@ -2649,7 +2625,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[5],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('Underline');
@@ -2671,7 +2646,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[3],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.classList.contains('e-toolbar')).toEqual(true);
@@ -2693,9 +2667,29 @@ describe('Toolbar Control', () => {
                 action: 'tab',
                 target: toolbar.element,
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('New');
+        });
+        it('Tab Key testing without scroll Navigations', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 170,
+                overflowMode: 'Scrollable',
+                items: [
+                    { type: 'Button', text: 'New', htmlAttributes: { 'role': 'Toolbar' }, },
+                    { type: 'Separator' },
+                    { type: 'Button', text: 'Underline', htmlAttributes: { 'role': 'Toolbar' }, },
+                    { type: 'Button', text: 'Bold', htmlAttributes: { 'role': 'Toolbar' }, }]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'tab',
+                target: toolbar.element.querySelector('.e-scroll-nav'),
+            };
+            element.focus();
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML == 'New').toEqual(false);
         });
         it('Tab Key testing with item Click', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
@@ -2719,7 +2713,6 @@ describe('Toolbar Control', () => {
                 action: 'tab',
                 target: toolbar.element,
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             let el: HTMLElement = toolbar.element.querySelectorAll('.e-toolbar-item')[0].firstChild;
             expect(document.activeElement.children[0].innerHTML).toEqual('New');
@@ -2760,7 +2753,6 @@ describe('Toolbar Control', () => {
                 action: 'tab',
                 target: toolbar.element.querySelector('.e-hor-nav'),
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'New').toEqual(true);
         });
@@ -2785,7 +2777,6 @@ describe('Toolbar Control', () => {
                 action: 'tab',
                 target: toolbar.element.querySelector('.e-toolbar-item'),
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             toolbar.element.focus();
             expect(document.activeElement.classList.contains('e-toolbar')).toEqual(true);
@@ -2807,7 +2798,6 @@ describe('Toolbar Control', () => {
                 action: 'tab',
                 target: toolbar.element,
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             toolbar.element.focus();
             expect(document.activeElement.classList.contains('e-toolbar')).toEqual(true);
@@ -2832,7 +2822,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelector('.e-hor-nav'),
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'New').toEqual(true);
         });
@@ -2858,7 +2847,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelector('.e-hor-nav'),
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'New').toEqual(true);
             keyEventArgs = {
@@ -2866,7 +2854,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.classList.contains('e-hor-nav')).toEqual(true);
         });
@@ -2888,7 +2875,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML == 'Underline').toEqual(false);
@@ -2917,7 +2903,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('New');
@@ -2947,7 +2932,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[0],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'New').toEqual(false);
@@ -2976,7 +2960,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('New');
@@ -3003,7 +2986,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'New').toEqual(false);
@@ -3028,7 +3010,6 @@ describe('Toolbar Control', () => {
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
             toolbar.popObj.show();
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('New');
             keyEventArgs = {
@@ -3039,6 +3020,113 @@ describe('Toolbar Control', () => {
             toolbar.popObj.show();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.classList.contains('e-hor-nav')).toEqual(true);
+        });
+        it('Home and End arrow Key testing in Scrollable', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                items: [
+                    { type: 'Button', text: 'New', htmlAttributes: { 'role': 'Toolbar' } },
+                    { type: 'Button', text: 'Underline', htmlAttributes: { 'role': 'Toolbar' } },
+                    {
+                        type: 'Button', text: 'Bold', htmlAttributes: { 'role': 'Toolbar' }
+                    }
+                ]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'home',
+                target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML).toEqual('New');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'end',
+                target: toolbar.element,
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML).toEqual('Bold');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'home',
+                target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML).toEqual('New');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'end',
+                target: toolbar.element,
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML).toEqual('Bold');
+        });
+        it('Home and End Key testig in Popup Mode', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 30,
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: 'Button', text: 'New', htmlAttributes: { 'role': 'Toolbar' },
+                    },
+                    {
+                        type: 'Button', text: 'Underline', htmlAttributes: { 'role': 'Toolbar' },
+                    },
+                    {
+                        type: 'Button', text: 'Bold', htmlAttributes: { 'role': 'Toolbar' },
+                    }
+                ]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'home',
+                target: toolbar.popObj.element.querySelectorAll('.e-toolbar-item')[1],
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML == 'New').toEqual(false);
+            toolbar.popObj.show();
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML == 'New').toEqual(true);
+            toolbar.popObj.hide();
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'end',
+                target: toolbar.popObj.element.querySelectorAll('.e-toolbar-item')[1],
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML == 'Bold').toEqual(false);
+            toolbar.popObj.show();
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML == 'Bold').toEqual(true);
+        });
+        it('Home and End key testing', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 30,
+                overflowMode: 'Scrollable',
+                items: [
+                    {
+                        type: 'Button', text: 'New', htmlAttributes: { 'role': 'Toolbar' },
+                    },
+                    {
+                        type: 'Button', text: 'Underline', htmlAttributes: { 'role': 'Toolbar' },
+                    },
+                    {
+                        type: 'Button', text: 'Bold', htmlAttributes: { 'role': 'Toolbar' },
+                    }
+                ]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'home',
+                target: toolbar.element.querySelector('.e-scroll-nav'),
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML == 'New').toEqual(false);
         });
         it('Up arrow Key  without Popup  testing', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
@@ -3063,7 +3151,6 @@ describe('Toolbar Control', () => {
                 action: 'moveUp',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML == 'New').toEqual(false);
         });
@@ -3091,7 +3178,6 @@ describe('Toolbar Control', () => {
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
             toolbar.popObj.show();
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('Bold');
             keyEventArgs = {
@@ -3100,7 +3186,6 @@ describe('Toolbar Control', () => {
                 target: toolbar.element.querySelector('.e-hor-nav'),
             };
             toolbar.popObj.show();
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('New');
             keyEventArgs = {
@@ -3137,7 +3222,6 @@ describe('Toolbar Control', () => {
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[1],
             };
             toolbar.element.focus();
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML === 'Bold').toEqual(false);
         });
@@ -3214,6 +3298,47 @@ describe('Toolbar Control', () => {
             expect(toolbar.items.length).toEqual(5);
             expect(toolbar.element.querySelectorAll('.e-toolbar-item button')[0].children[0].innerHTML).toEqual('Underline1');
             expect(toolbar.element.querySelectorAll('.e-toolbar-item button')[1].children[0].innerHTML).toEqual('Bold1');
+        });
+        it('addItem method - adding item to popup element index', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 100,
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: 'Button', text: 'Hii',
+                    },
+                    {
+                        type: 'Button', text: 'Cut',
+                    },
+                    {
+                        type: 'Button', text: 'Bold',
+                    },
+                    {
+                        type: 'Button', text: 'UnderLine',
+                    }
+                ],
+            }); toolbar.appendTo('#ej2Toolbar');
+            expect(toolbar.items.length).toEqual(4);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item button')[2].children[0].innerHTML).toEqual('Bold');
+            toolbar.addItems([{ type: 'Button', text: 'Underline1' }], 2);
+            expect(toolbar.items.length).toEqual(5);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item button')[2].children[0].innerHTML).toEqual('Underline1');
+            toolbar.addItems([{ type: 'Button', text: 'Hi' }], 1);
+            expect(toolbar.items.length).toEqual(6);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item button')[1].children[0].innerHTML).toEqual('Hi');
+            toolbar.addItems([{ type: 'Button', text: 'Center' }], 6);
+            expect(toolbar.items.length).toEqual(7);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item button')[6].children[0].innerHTML).toEqual('Center');
+            toolbar.addItems([{ template: '<div>Copy</div>' }], 2);
+            expect(toolbar.items.length).toEqual(8);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item')[2].children[0].innerHTML).toEqual('Copy');
+            toolbar.addItems([{ template: '<div>Paste</div>' }], 1);
+            expect(toolbar.items.length).toEqual(9);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item')[1].children[0].innerHTML).toEqual('Paste');
+            toolbar.addItems([{ template: '<div>Left</div>' }], 8);
+            expect(toolbar.items.length).toEqual(10);
+            expect(toolbar.element.querySelectorAll('.e-toolbar-item')[8].children[0].innerHTML).toEqual('Left');
         });
     });
 
@@ -3788,7 +3913,7 @@ describe('Toolbar Control', () => {
             toolbar.enableRtl = true;
             toolbar.dataBind();
             expect(element.classList.contains('e-rtl')).toEqual(true);
-            let innerNavElement: HTMLElement = <HTMLElement>element.querySelector('.e-hor-nav');
+            let innerNavElement: HTMLElement = <HTMLElement>element.querySelector('.e-scroll-nav');
             innerNavElement.click();
             toolbar.enableRtl = false;
             toolbar.dataBind();
@@ -4363,6 +4488,50 @@ describe('Toolbar Control', () => {
             expect((<HTMLElement>tbarAlignEle[2]).children.length === 1).toEqual(true);
         });
     });
+    describe("Alignment Based toolbar item Rendering eith RTL", () => {
+        let toolbar: Toolbar;
+        document.body.innerHTML = "";
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement("div", { id: "ej2Toolbar" });
+            setStyleAttribute(ele, { "display": "block", "white-space": "nowrap", "position": "relative" });
+            ele.style.display = "block";
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = "";
+        });
+        it("Without align type toolbar testing", () => {
+            toolbar = new Toolbar({
+                overflowMode: "Popup",
+                enableRtl: true,
+                items: [
+                    {
+                        type: "Button", text: "Hii", overflow: "Show",
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: "Show",
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: "Show", align: "center"
+                    },
+                    {
+                        type: "Button", text: "ChartButton", overflow: "Show", align: "center"
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: "Hide", align: "right"
+                    }
+                ],
+            }, "#ej2Toolbar");
+            let tbarAlignEle: NodeList = toolbar.element.querySelector(".e-toolbar-items").children;
+            expect(tbarAlignEle.length === 3).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[1]).style.marginLeft.length === 0).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[1]).style.marginRight.length > 0).toEqual(true);
+        });
+    });
     describe("Alignment Based toolbar item Rendering", () => {
         let toolbar: any;
         document.body.innerHTML = "";
@@ -4701,7 +4870,7 @@ describe('Toolbar Control', () => {
                     },
                 ],
             }, "#ej2Toolbar");
-            toolbar.addItems([{ type: 'Button', text: 'NewBtn' }], 1);
+            toolbar.addItems([{text: 'NewBtn' }], 1);
             expect(toolbar.element.querySelectorAll('.e-tbar-pos .e-toolbar-left .e-tbar-btn-text')[1].textContent).toEqual('NewBtn');
             toolbar.element.style.width = '350px';
             toolbar.resize();
@@ -4928,7 +5097,6 @@ describe('Toolbar Control', () => {
                 action: 'moveLeft',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[3],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('Next_Prev_Btn');
@@ -4937,7 +5105,6 @@ describe('Toolbar Control', () => {
                 action: 'moveRight',
                 target: toolbar.element.querySelectorAll('.e-toolbar-item')[2],
             };
-            expect(element.classList.contains('e-keyboard')).toEqual(true);
             element.focus();
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('New RibbonBtn');
@@ -5075,7 +5242,6 @@ describe('Toolbar Control', () => {
             let popupEle: HTMLCollection = toolbar.popObj.element.children;
             element.style.width = "auto";
             toolbar.resize();
-            //expect(toolbar.element.querySelector('.e-toolbar-item .e-tbar-btn-text').textContent).toEqual("GridBtn");
         });
         it("1st item coming with margin in popup mode", () => {
             let element: HTMLElement = document.getElementById("ej2Toolbar");
@@ -5439,6 +5605,7 @@ describe('Toolbar Control', () => {
                 ],
             }, '#ej2Toolbar');
             toolbar.enableItems(element.querySelectorAll('.e-toolbar-item')[2], false);
+            expect(element.querySelectorAll('.e-toolbar-item')[2].getAttribute("aria-disabled")).toBe('true');
             keyEventArgs = {
                 preventDefault: function () { },
                 action: 'moveRight',
@@ -5447,11 +5614,15 @@ describe('Toolbar Control', () => {
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[0].innerHTML).toEqual('ChartButton');
             toolbar.enableItems(element.querySelectorAll('.e-toolbar-item')[3], false);
+            expect(element.querySelectorAll('.e-toolbar-item')[3].getAttribute("aria-disabled")).toBe('true');
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.children[1].innerHTML).toEqual('LeftButton');
             toolbar.enableItems(element.querySelectorAll('.e-toolbar-item')[3], true);
+            expect(element.querySelectorAll('.e-toolbar-item')[3].getAttribute("aria-disabled")).toBe('false');
             toolbar.enableItems(element.querySelectorAll('.e-toolbar-item')[2], true);
+            expect(element.querySelectorAll('.e-toolbar-item')[2].getAttribute("aria-disabled")).toBe('false');
             toolbar.enableItems(element.querySelectorAll('.e-toolbar-item')[5], false);
+            expect(element.querySelectorAll('.e-toolbar-item')[5].getAttribute("aria-disabled")).toBe('true');
             keyEventArgs = {
                 preventDefault: function () { },
                 action: 'moveRight',
@@ -5476,6 +5647,7 @@ describe('Toolbar Control', () => {
             expect(document.activeElement.children[0].innerHTML).toEqual('ChartButton');
         });
     });
+    //Toolbar Duplication item testing for private variables.
     describe('Duplication issue fix testing', () => {
         let toolbar: any;
         beforeEach((): void => {
@@ -5489,7 +5661,35 @@ describe('Toolbar Control', () => {
             }
             document.body.innerHTML = '';
         });
-
+        it('private variable Testing in Onproperty chage', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                width: 350,
+                overflowMode: "Popup",
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', align: 'right'
+                    }
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.items.length).toBe(2);
+            expect(toolbar.tbarEle.length).toBe(2);
+            toolbar.items = [{
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show', align: 'right'
+                    },
+                    {
+                       text: "New Chart Button", overflow: 'Hide'
+                    }];
+            toolbar.dataBind();
+            expect(toolbar.items.length).toBe(3);
+            expect(toolbar.tbarEle.length).toBe(3);
+        });
         it('Duplication issue in private variable', () => {
             let element: HTMLElement = document.getElementById("ej2Toolbar");
             toolbar = new Toolbar({
@@ -5541,6 +5741,130 @@ describe('Toolbar Control', () => {
             }, "#ej2Toolbar");
             expect(toolbar.items.length).toBe(5);
             expect(toolbar.tbarEle.length).toBe(5);
+        });
+    });
+    describe('Template Toolbar Testing with div keyboard interaction', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        document.body.innerHTML = '';
+        beforeEach((): void => {
+            toolbar = undefined;
+            document.body.innerHTML = '';
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            let innerEle: HTMLElement = createElement('div');
+            let innerOfEle: HTMLElement = createElement('div', {id: 'InnerOfEle'});
+            innerOfEle.setAttribute('tabindex', '0' );
+            innerOfEle.innerHTML = 'ChildElement'
+            let innerEle1: HTMLElement = createElement('div');
+            let innerEle_1: HTMLElement = createElement('div', { className: 'e-toolbar-item', id: 'e-itemID' });
+            innerEle_1.setAttribute('tabindex', '0' );
+            let innerEle_: HTMLElement = createElement('div');
+            innerEle_.appendChild(innerOfEle);
+            innerEle.appendChild(innerEle_);
+            innerEle.appendChild(innerEle_1);
+            ele.appendChild(innerEle);
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Template Toolbar Testing keyboard interaction', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({}, '#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveRight',
+                target: toolbar.element.querySelector('.e-toolbar-item'),
+            };
+            expect(element.classList.contains('e-keyboard')).toEqual(true);
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.id === 'e-itemID').toBe(true);
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveLeft',
+                target: document.activeElement,
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.id === 'InnerOfEle').toBe(true);
+        });
+    });
+
+    describe('Item Template Toolbar Testing keyboard interaction', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Duplication issue in private variable', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', template: ' <div id ="e-itemTemplate" tabindex="0" >Hii</div>'
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide'
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show'
+                    },
+                ],
+            }, "#ej2Toolbar");
+
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveRight',
+                target: element.children[0].children[0],
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.id === 'e-itemTemplate').toBe(true);
+        });
+        it('Duplication issue in private variable', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', template: ' <div id ="e-itemTemplate" tabindex="0" >Hii</div>'
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', align: 'center'
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show'
+                    },
+                ],
+            }, "#ej2Toolbar");
+
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveRight',
+                target: element.children[0].children[0].children[0],
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.id === 'e-itemTemplate').toBe(true);
         });
     });
 });

@@ -3,7 +3,12 @@
 $hscroll-border-type: solid;
 $hscroll-border-size: $border-size;
 $hscroll-box-shadow:  0 0 2px $shadow-color;
-$hscroll-border-type-none: none;
+$hscroll-nav-nrml-minheight: 42px;
+$hscroll-nav-bgr-minheight: 56px;
+$hscroll-nav-nrml-width: 40px;
+$hscroll-nav-bgr-width: 50px;
+$hscroll-nrml-padding: 0 $hscroll-nav-nrml-width;
+$hscroll-bgr-padding: 0 $hscroll-nav-bgr-width;
 $hscroll-border-radius: $border-radius;
 $hscroll-default-bg: $default-bg-color  ;
 $hscroll-default-border: $default-border-color ;
@@ -17,6 +22,8 @@ $hscroll-press-bg: $active-bg-color ;
 $hscroll-press-font: $active-font-color ;
 
 $hscroll-font-family: $font-family;
+$hscroll-left-arrow-icon: '\e913';
+$hscroll-right-arrow-icon: '\e904';
 
 @mixin hscroll-btn-animation {
   content: '';

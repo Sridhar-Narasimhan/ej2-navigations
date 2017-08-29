@@ -7,7 +7,7 @@ $tbar-press-bg: $theme-lighter;
 $tbar-hover-bg:  $neutral-lighter;
 $tbar-hover-font: $neutral-light-fontalt;
 $tbar-default-icon-color: $theme-light-font;
-$tbar-pressed-bg: $theme-primary;
+$tbar-pressed-bg: $theme-lighter;
 $tbar-pressed-font: $theme-primary-font;
 $tbar-select-font: $neutral-light-font;
 $tbar-default-font-overlay: $neutral-tertiary-alt;
@@ -17,7 +17,7 @@ $tbar-default-border: $neutral-quintenaryalt;
 $tbar-hover-border: $neutral-quintenaryalt;
 $tbar-press-font: $theme-light-font;
 
-$tbar-active-font-color: $theme-primary-font;
+$tbar-active-font-color: $tbar-press-font;
 $tbar-border-nav-type: none;
 
 $tbar-box-shadow: none;
@@ -28,13 +28,17 @@ $tbar-bgr-size: 50px;
 $tbar-btn-font-size: 16px;
 $tbar-btn-txt-font-size: 14px;
 
-$tbar-item-bgr-padding: 0  2.5px;
-$tbar-item-nrml-padding: 0 2px;
+$tbar-item-bgr-padding: 0  1.5px;
+$tbar-item-nrml-padding: 0 1px;
+$tbar-btn-nrml-padding: 0;
+$tbar-btn-bgr-padding: 0;
+$tbar-btn-icn-nrml-padding: 0 0 0 12px;
+$tbar-btn-icn-bgr-padding: 0 0 0 15px;
+$btn-txt-nrml-padding: 0 12px 0 8px;
+$btn-txt-bgr-padding: 0 15px 0 10px;
 
 $tbar-item-pop-nrml-padding: 0;
 $tbar-item-pop-bgr-padding: 0;
-$tbar-btn-bgr-padding: 0;
-$tbar-btn-nrml-padding: 0;
 $tbar-pop-btn-bgr-padding: 0 12.5px 0 0;
 $tbar-pop-btn-nrml-padding: 0 10px 0 0;
 $tbar-pop-icon-bgr-padding: 0 12.5px;
@@ -50,6 +54,8 @@ $tbar-btn-bgr-height: inherit;
 $tbar-btn-nrml-height: inherit;
 $tbar-separator-nrml-height: 24px;
 $tbar-separator-bgr-height: 30px;
+$tbar-separator-nrml-minheight: $tbar-separator-nrml-height;
+$tbar-separator-bgr-minheight: $tbar-separator-bgr-height;
 $tbar-btn-icon-nrml-width: 20px;
 $tbar-btn-icon-bgr-width: 25px;
 $tbar-nav-nrml-width: 40px;

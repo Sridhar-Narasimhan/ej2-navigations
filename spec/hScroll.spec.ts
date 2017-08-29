@@ -1,10 +1,10 @@
 /**
  * Horizontal scroll spec document
  */
-import { ScrollEventArgs, TouchEventArgs, Browser } from '@syncfusion/ej2-base/index';
-import { setStyleAttribute } from '@syncfusion/ej2-base/dom';
+import { ScrollEventArgs, TouchEventArgs, Browser } from '@syncfusion/ej2-base';
+import { setStyleAttribute } from '@syncfusion/ej2-base';
 import { HScroll } from '../src/common/h-scroll';
-import { isNullOrUndefined} from '@syncfusion/ej2-base/util'
+import { isNullOrUndefined} from '@syncfusion/ej2-base'
 
 
 let firefoxUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0';
@@ -15,8 +15,11 @@ let edgeUa: string = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
 let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET4.0E; .NET4.0C; ' +
     'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
 
+let iosChromeUa: string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) ' +
+    'AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1';
+
 describe('Horizontal scroll bar Base items', () => {
-   let css: string = " button {font-family:Arial; font-size: 14px; padding: 1px 6px;} ";
+   let css: string = " button {font-family:Arial; font-size: 14px; padding: 1px 6px;} .e-rtl { direction: rtl; } ";
     let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
     let styleNode: Node = style.appendChild(document.createTextNode(css));
     document.getElementsByTagName('head')[0].appendChild(style);
@@ -40,6 +43,7 @@ describe('Horizontal scroll bar Base items', () => {
             let ele: HTMLElement = document.getElementById('inneritems');
             scroll = new HScroll({}, ele);
             expect(ele.classList.contains("e-hscroll")).toEqual(true);
+            expect(scroll.element.classList.contains('e-scroll-device')).toBe(false);
         });
         it('Horizontal Touch test', () => {
             let ele: HTMLElement = document.getElementById('inneritems');
@@ -55,6 +59,7 @@ describe('Horizontal scroll bar Base items', () => {
             let ele: HTMLElement = document.getElementById('inneritems');
             scroll = new HScroll({}, ele);
             expect((<HTMLElement>ele.querySelector('.e-hscroll-content')).childElementCount == 3).toEqual(true);
+            expect(ele.childElementCount).toBe(3);
         });
     });
     describe('HSCrollbar Persistance Testing', () => {
@@ -151,7 +156,7 @@ describe('Horizontal scroll bar Base items', () => {
             scroll.appendTo('#Sample');
             let scrollEle: HTMLElement = scroll.element.children[1];
             let tchEvent: TouchEventArgs;
-            let navEle: HTMLElement = scroll.element.firstChild.lastChild;
+            let navEle: HTMLElement = scroll.element.children[2].lastChild;
             let scrollEvent: Event = document.createEvent('MouseEvents');
             scrollEvent.initEvent('scroll', false, false);
             let event: ScrollEventArgs = {
@@ -183,7 +188,6 @@ describe('Horizontal scroll bar Base items', () => {
             expect(scrollEle.scrollLeft).toEqual(70);
             scrollEle.scrollLeft = 500;
             scrollEle.dispatchEvent(scrollEvent);
-            expect(navEle.classList.contains('e-nav-left-arrow')).toEqual(true);
             scrollEle.scrollLeft = 0;
             scrollEvent.initEvent('scroll', false, false);
             scrollEle.dispatchEvent(scrollEvent);
@@ -194,7 +198,6 @@ describe('Horizontal scroll bar Base items', () => {
             scrollEle.scrollLeft = 160;
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
-            expect(navEle.classList.contains('e-nav-left-arrow')).toEqual(true);
             navEle.click();
             navEle.remove();
             scrollEle.dispatchEvent(scrollEvent);
@@ -224,25 +227,49 @@ describe('Horizontal scroll bar Base items', () => {
             scroll = new HScroll({}); scroll.appendTo('#inneritems');
             scroll.element.classList.add('e-rtl');
             let navEle: HTMLElement = <HTMLElement>ele.firstChild.firstChild.lastChild;
+            let navEleRight: HTMLElement = (<HTMLElement>ele.firstChild).children[2].firstChild as HTMLElement;
             let scrollEle: HTMLElement = scroll.element.children[1];
             let scrollEvent: Event = document.createEvent('MouseEvents');
             scrollEvent.initEvent('scroll', false, false);
-            navEle.click();
+            expect(navEle.parentElement.classList.contains('e-overlay')).toBe(true);
+            expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('true');
+            expect(navEle.parentElement.getAttribute('tabindex')).toBe(null);
+            navEleRight.click();
+            scrollEle.dispatchEvent(scrollEvent);
+            expect(navEle.parentElement.classList.contains('e-overlay')).toBe(false);
+            expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('false');
+            expect(navEle.parentElement.getAttribute('tabindex')).toBe('0');
             scrollEle.dispatchEvent(scrollEvent);
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
-            navEle.click();
+            expect(navEle.parentElement.classList.contains('e-overlay')).toBe(true);
+            expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('true');
+            expect(navEle.parentElement.getAttribute('tabindex')).toBe(null);
+            navEleRight.click();
             scrollEle.dispatchEvent(scrollEvent);
-            navEle.click();
+            expect(navEle.parentElement.classList.contains('e-overlay')).toBe(false);
+            expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('false');
+            expect(navEle.parentElement.getAttribute('tabindex')).toBe('0');
+            navEleRight.click();
+            navEleRight.click();
+            navEleRight.click();
             scrollEle.dispatchEvent(scrollEvent);
-            navEle.click();
+            expect(navEleRight.parentElement.classList.contains('e-overlay')).toBe(true);
+            expect(navEleRight.parentElement.getAttribute('aria-disabled')).toBe('true');
+            expect(navEleRight.parentElement.getAttribute('tabindex')).toBe(null);
+            navEleRight.click();
             scrollEle.dispatchEvent(scrollEvent);
-            expect(navEle.classList.contains('e-nav-right-arrow')).toEqual(true);
+            expect(navEleRight.parentElement.classList.contains('e-overlay')).toBe(true);
+            expect(navEleRight.parentElement.getAttribute('aria-disabled')).toBe('true');
+            expect(navEleRight.parentElement.getAttribute('tabindex')).toBe(null);
             navEle.click();
+            navEle.click();
+            navEle.click();navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
-            navEle.click();
+            expect(navEle.parentElement.classList.contains('e-overlay')).toBe(true);
+            expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('true');
+            expect(navEle.parentElement.getAttribute('tabindex')).toBe(null);
         });
-
     });
     describe('RTL Testing', () => {
             let scroll: any;
@@ -310,6 +337,72 @@ describe('Horizontal scroll bar Base items', () => {
                 expect(scroll.element.classList.contains('e-rtl')).toEqual(false);
             });
         });
+        describe('Key long press Testing', () => {
+            let scroll: any;
+            beforeEach((done: Function) => {
+                document.body.innerHTML = '';
+                let ele: HTMLElement = document.createElement('div');
+                ele.style.overflow = 'hidden';
+                ele.id = 'Sample';
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
+                setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
+                document.body.appendChild(ele);
+                ele= document.getElementById('inneritems');
+                scroll = new HScroll({}, ele);
+                let scrollEle: HTMLElement = scroll.element.children[1];
+                let navEle1: HTMLElement = <HTMLElement>ele.children[2];
+                let e: any = {};e.key = "Enter";
+                e.target = navEle1;
+                scroll.onKeyPress(e);
+                scroll.onKeyUp(e);
+                e.key = "Shift";
+                scroll.onKeyPress(e);
+                scroll.onKeyUp(e);
+                e.key = "Enter";
+                scroll.onKeyPress(e);
+                scroll.onKeyPress(e);
+                scroll.onKeyPress(e);
+                setTimeout(() => { done(); }, 450);
+            });
+            afterEach((): void => {
+               document.body.innerHTML = '';
+            });
+            it('Key long press Testing with contious moving', () => {
+               let scroll: HTMLElement = <HTMLElement>document.getElementById('inneritems').children[1]
+               expect(scroll.scrollLeft).toBe(70);
+            });
+        });
+        describe('Key long press Testing with key release', () => {
+            let scroll: any;
+            beforeEach((done: Function) => {
+                document.body.innerHTML = '';
+                let ele: HTMLElement = document.createElement('div');
+                ele.style.overflow = 'hidden';
+                ele.id = 'Sample';
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
+                setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
+                document.body.appendChild(ele);
+                ele= document.getElementById('inneritems');
+                scroll = new HScroll({}, ele);
+                let scrollEle: HTMLElement = scroll.element.children[1];
+                let navEle1: HTMLElement = <HTMLElement>ele.children[2];
+                let e: any = {};e.key = "Enter";
+                e.target = navEle1;
+                scroll.onKeyPress(e);
+                scroll.onKeyPress(e);
+                scroll.onKeyPress(e);
+                setTimeout(() => { done(); }, 450);
+            });
+            afterEach((): void => {
+               document.body.innerHTML = '';
+            });
+            it('Key long press Testing with contious moving in key release', () => {
+               let scrollEle: HTMLElement = <HTMLElement>document.getElementById('inneritems').children[1]
+               let e: any = {};e.key = "Enter"; 
+               scroll.onKeyUp(e);
+               expect(scrollEle.scrollLeft).toBe(30);
+            });
+        });
         describe('Tab Hold Testing', () => {
             let scroll: any;
             beforeEach((): void => {
@@ -329,18 +422,21 @@ describe('Horizontal scroll bar Base items', () => {
                 scroll = new HScroll({}, ele);
                 let scrollEle: HTMLElement = scroll.element.children[1];
                 let navEle: HTMLElement = <HTMLElement>ele.firstChild;
+                let navEle1: HTMLElement = <HTMLElement>ele.children[2];
                 let navIcon: HTMLElement = navEle.firstChild as HTMLElement;
                 expect(navEle.classList.contains('e-touch')).toEqual(true);
                 let e: any = {}; e.originalEvent = {};
                 e.originalEvent.target = navEle.firstChild;
-                expect(navIcon.classList.contains('e-nav-right-arrow')).toEqual(true);
                 scroll.tabHoldHandler(e);
                 let scrollEvent: Event = document.createEvent('MouseEvents');
                 let scrollEventContext: Event = document.createEvent('MouseEvents');
                 scrollEvent.initEvent('mouseup', false, false);
                 scrollEventContext.initEvent('contextmenu', false, false);
                 navEle.dispatchEvent(scrollEventContext);
+                navEle1.dispatchEvent(scrollEventContext);
+                scroll.element.dispatchEvent(scrollEventContext);
                 navEle.dispatchEvent(scrollEvent);
+                navEle1.dispatchEvent(scrollEvent);
                 e.originalEvent.target = navEle;
                 scroll.tabHoldHandler(e);
             });
@@ -376,8 +472,6 @@ describe('Horizontal scroll bar Base items', () => {
                 navEle.click();
                 navEle.click();
                 navEle.click();
-                scrollEle.dispatchEvent(scrollEvent);
-                expect(navIcon.classList.contains('e-nav-right-arrow')).toEqual(true);
             });
         });
         describe('Cross Browser Edge Testing for Scrolling in RTL mode', () => {
@@ -450,6 +544,35 @@ describe('Horizontal scroll bar Base items', () => {
                 let scrollEle: HTMLElement = scroll.element.children[1];
                 let navEle: HTMLElement = <HTMLElement>ele.firstChild;
                 expect (navEle.classList.contains('e-ie-align')).toEqual(true);
+                Browser.userAgent = '';
+            });
+        });
+        describe('Device Testing', () => {
+            let scroll: any;
+            beforeEach((): void => {
+                document.body.innerHTML = '';
+                let ele: HTMLElement = document.createElement('div');
+                ele.style.overflow = 'hidden';
+                ele.id = 'Sample';
+                let css: string = ".e-rtl { direction: rtl; } ";
+                let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
+                let styleNode: Node = style.appendChild(document.createTextNode(css));
+                document.getElementsByTagName('head')[0].appendChild(style);
+                ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div><div id='item' style='display: inline-block;'><button> Btn_style</button></div></div>";
+                setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
+                document.body.appendChild(ele);
+            });
+            afterEach((): void => {
+            if (scroll)
+                scroll.destroy();
+                document.body.innerHTML = '';
+            });
+            it('Cross browser testing with IE', () => {
+                let ele: HTMLElement = document.getElementById('inneritems');
+                Browser.userAgent = iosChromeUa;
+                scroll = new HScroll({ scrollStep: 50 }, ele);
+                expect(scroll.element.classList.contains('e-scroll-device')).toBe(true);
+                expect(scroll.element.children.length).toBe(1);
                 Browser.userAgent = '';
             });
         });

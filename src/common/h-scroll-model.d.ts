@@ -1,4 +1,4 @@
-import { Touch, ScrollEventArgs, TouchEventArgs, Component, EventHandler } from '@syncfusion/ej2-base';import { NotifyPropertyChanges, INotifyPropertyChanged, Property, Browser } from '@syncfusion/ej2-base';import { createElement as buildTag, detach, classList } from '@syncfusion/ej2-base/dom';import { getUniqueID } from '@syncfusion/ej2-base/util';
+import { Touch, ScrollEventArgs, TouchEventArgs, Component, EventHandler, selectAll, getUniqueID } from '@syncfusion/ej2-base';import { NotifyPropertyChanges, INotifyPropertyChanged, Property, Browser, detach, createElement as buildTag } from '@syncfusion/ej2-base';
 import {ComponentModel} from '@syncfusion/ej2-base';
 
 /**
@@ -7,6 +7,9 @@ import {ComponentModel} from '@syncfusion/ej2-base';
 export interface HScrollModel extends ComponentModel{
 
     /**
-     * Specifies the left or right scrolling distance of the horizontal scrollbar moving.     * @default '40'     */    scrollStep?: number;
+     * Specifies the left or right scrolling distance of the horizontal scrollbar moving.
+     * @default '40'
+     */
+    scrollStep?: number;
 
 }

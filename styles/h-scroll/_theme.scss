@@ -8,10 +8,18 @@
 
     &.e-rtl {
 
-      .e-hor-nav  {
+      .e-scroll-nav  {
         background: $hscroll-default-bg;
-        border-left: 0;
-        border-right: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
+
+        &.e-scroll-left-nav {
+          border-left: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
+          border-right: 0;
+      }
+
+        &.e-scroll-right-nav {
+          border-left: 0;
+          border-right: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
+      }
 
         &:hover {
           background: $hscroll-hover-bg;
@@ -21,12 +29,19 @@
        }
     }
 
-    .e-hor-nav  {
+    .e-scroll-nav  {
       background: $hscroll-default-bg;
-      border-left: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
+
+      &.e-scroll-left-nav {
+        border-right: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
+      }
+
+      &.e-scroll-right-nav {
+        border-left: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
+      }
 
       &:focus {
-        background: $default-bg-color;
+        background: $hscroll-hover-bg;
         border-color: $hscroll-hover-border;
         color: $hscroll-hover-font;
       }

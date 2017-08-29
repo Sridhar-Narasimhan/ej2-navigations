@@ -28,7 +28,7 @@
 
       .e-hor-nav.e-nav-active {
         background: $tbar-pressed-bg;
-        border-left: $border-size $tbar-border-nav-type $tbar-active-bg;
+        border-left: $border-size $tbar-border-nav-type $tbar-pressed-bg;
 
         .e-icons {
           color: $tbar-active-font-color;

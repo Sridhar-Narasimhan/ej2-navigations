@@ -5,22 +5,22 @@
     &.e-rtl {
 
       .e-nav-left-arrow::before {
-        content: '\e913';
+        content: $hscroll-left-arrow-icon;
          }
 
       .e-nav-right-arrow::before {
-        content: '\e904';
+        content: $hscroll-right-arrow-icon;
         }
     }
 
     .e-nav-left-arrow::before {
-      content: '\e904';
+      content: $hscroll-right-arrow-icon;
       line-height: normal;
       vertical-align: middle;
     }
 
     .e-nav-right-arrow::before {
-      content: '\e913';
+      content: $hscroll-left-arrow-icon;
       line-height: normal;
       vertical-align: middle;
     }

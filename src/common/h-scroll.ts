@@ -1,23 +1,26 @@
-import { Touch, ScrollEventArgs, TouchEventArgs, Component, EventHandler } from '@syncfusion/ej2-base';
-import { NotifyPropertyChanges, INotifyPropertyChanged, Property, Browser } from '@syncfusion/ej2-base';
-import { createElement as buildTag, detach, classList } from '@syncfusion/ej2-base/dom';
-import { getUniqueID } from '@syncfusion/ej2-base/util';
+import { Touch, ScrollEventArgs, TouchEventArgs, Component, EventHandler, selectAll, getUniqueID } from '@syncfusion/ej2-base';
+import { NotifyPropertyChanges, INotifyPropertyChanged, Property, Browser, detach, createElement as buildTag } from '@syncfusion/ej2-base';
 import { HScrollModel } from './h-scroll-model';
 
-const CLS_ROOT: string = 'e-hscroll';
-const CLS_RTL : string = 'e-rtl';
-const CLS_HSCROLLBAR : string = 'e-hscroll-bar';
-const CLS_HSCROLLCON : string = 'e-hscroll-content';
-const CLS_NAVARROW : string = 'e-nav-arrow';
-const CLS_NAVRIGHTARROW : string = 'e-nav-right-arrow';
-const CLS_NAVLEFTARROW : string = 'e-nav-left-arrow';
-const CLS_HSCROLLNAV : string = 'e-hor-nav';
-
 type HTEle = HTMLElement;
+type Str = string;
+
+const CLS_ROOT: Str = 'e-hscroll';
+const CLS_RTL : Str = 'e-rtl';
+const CLS_DISABLE: Str = 'e-overlay';
+const CLS_HSCROLLBAR : Str = 'e-hscroll-bar';
+const CLS_HSCROLLCON : Str = 'e-hscroll-content';
+const CLS_NAVARROW : Str = 'e-nav-arrow';
+const CLS_NAVRIGHTARROW : Str = 'e-nav-right-arrow';
+const CLS_NAVLEFTARROW : Str = 'e-nav-left-arrow';
+const CLS_HSCROLLNAV : Str = 'e-scroll-nav';
+const CLS_HSCROLLNAVRIGHT : Str = 'e-scroll-right-nav';
+const CLS_HSCROLLNAVLEFT : Str = 'e-scroll-left-nav';
+const CLS_DEVICE: Str = 'e-scroll-device';
 
 interface TapEventArgs {
     name: string;
-    originalEvent: TouchEventArgs | TouchEvent;
+    originalEvent: TouchEventArgs | TouchEvent | KeyboardEvent;
 }
 /**
  * HScroll module is introduces horizontal scroller when content exceeds the current viewing area.
@@ -36,11 +39,14 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     private touchModule: Touch;
     private scrollEle: HTEle;
     private scrollItems: HTEle;
-    private uniqueId : boolean;
+    private uniqueId : Boolean;
     private timeout: number;
-    private browser: string;
-    private browserCheck: boolean;
-    private ieCheck: boolean;
+    private keyTimeout: Boolean;
+    private keyTimer: number;
+    private browser: String;
+    private browserCheck: Boolean;
+    private ieCheck: Boolean;
+    private isDevice: Boolean;
     /**
      * Specifies the left or right scrolling distance of the horizontal scrollbar moving.
      * @default '40'
@@ -54,6 +60,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     protected preRender(): void {
         this.browser = Browser.info.name;
         this.browserCheck = this.browser === 'mozilla';
+        this.isDevice = Browser.isDevice;
         let element: HTEle = this.element;
         this.ieCheck = this.browser === 'edge' || this.browser === 'msie';
         this.initialize();
@@ -71,7 +78,15 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
      * @private
      */
     protected render(): void {
-        this.createNavIcon(this.element, CLS_NAVRIGHTARROW + ' ' + CLS_NAVARROW);
+        this.touchModule = new Touch(this.element, { scroll: this.touchHandler.bind(this) });
+        this.element.addEventListener('contextmenu', (e: Event) => {
+            e.preventDefault();
+        });
+        if ( !this.isDevice)  {
+             this.createNavIcon(this.element);
+             EventHandler.add(this.scrollEle, 'scroll', this.scrollHandler, this); } else {
+                 this.element.classList.add(CLS_DEVICE);
+             }
     }
     /**
      * Initializes a new instance of the HScroll class.
@@ -84,6 +99,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     private initialize(): void {
         let scrollEle: HTEle = buildTag('div', { className: CLS_HSCROLLCON });
         let scrollDiv: HTEle = buildTag('div', { className: CLS_HSCROLLBAR });
+        scrollDiv.setAttribute('tabindex', '-1');
         let ele: HTEle = this.element;
         let innerEle: HTEle[] = [].slice.call(ele.children);
         for (let ele of innerEle) {
@@ -115,51 +131,85 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         let ele: HTEle = this.element;
         ele.style.display = '';
         ele.classList.remove(CLS_ROOT);
-        let nav: HTEle = <HTEle>ele.querySelector('#' + ele.id + '_nav.e-' + ele.id + '_nav');
-        EventHandler.remove(nav, 'click', this.clickEventHandler);
+        let nav: HTEle[] =  selectAll('#' + ele.id + '_nav.e-' + ele.id + '_nav');
         for (let elem of [].slice.call(this.scrollItems.children)) {
             ele.appendChild(elem);
         }
         if (this.uniqueId) {
            this.element.removeAttribute('id'); }
         detach(this.scrollEle);
-        nav.parentElement.removeChild(nav);
+        if (nav.length > 0) {
+          detach(nav[0]);
+          detach(nav[1]); }
         EventHandler.remove(this.scrollEle, 'scroll', this.scrollHandler);
         this.touchModule.destroy();
         this.touchModule = null;
         super.destroy();
     }
-    private createNavIcon(element: HTEle, classList: string): void {
+    private createNavIcon(element: HTEle): void {
         let id: string = element.id.concat('_nav');
-        let className: string = 'e-' + element.id.concat('_nav ' + CLS_HSCROLLNAV);
-        let nav: HTEle = buildTag('div', { id: id, className: className });
-        let navItem: HTEle = buildTag('div', { className: classList + ' e-icons' });
+        let clsRight: string = 'e-' + element.id.concat('_nav ' + CLS_HSCROLLNAV + ' ' + CLS_HSCROLLNAVRIGHT);
+        let nav: HTEle = buildTag('div', { id: id, className: clsRight });
+        nav.setAttribute('aria-disabled', 'false');
+        let navItem: HTEle = buildTag('div', { className: CLS_NAVRIGHTARROW + ' ' + CLS_NAVARROW + ' e-icons' });
+        let clsLeft: string = 'e-' + element.id.concat('_nav ' + CLS_HSCROLLNAV + ' ' + CLS_HSCROLLNAVLEFT);
+        let navEle: HTEle = buildTag('div', { id: id, className: clsLeft + ' ' + CLS_DISABLE });
+        navEle.setAttribute('aria-disabled', 'true');
+        let navLeftItem: HTEle = buildTag('div', { className: CLS_NAVLEFTARROW + ' ' + CLS_NAVARROW + ' e-icons' });
+        navEle.appendChild(navLeftItem);
         nav.appendChild(navItem);
         nav.setAttribute('tabindex', '0');
-        element.insertBefore(nav, element.firstChild);
-        EventHandler.add(this.scrollEle, 'scroll', this.scrollHandler, this);
-        new Touch(nav, {tapHold: this.tabHoldHandler.bind(this) });
+        element.appendChild(nav);
+        element.insertBefore(navEle, element.firstChild);
         if (this.ieCheck ) {
-          nav.classList.add('e-ie-align'); }
-        nav.addEventListener('mouseup', this.repeatScroll.bind(this));
-        nav.addEventListener('touchend', this.repeatScroll.bind(this));
-        nav.addEventListener('contextmenu', (e: Event) => {
+          nav.classList.add('e-ie-align');
+          navEle.classList.add('e-ie-align'); }
+        this.eventBinding([nav, navEle]);
+    }
+    private onKeyPress(e: KeyboardEvent): void {
+        if (e.key === 'Enter') {
+         let timeoutFun: Function = () => {
+           this.keyTimeout = true;
+           this.eleScrolling(10, <HTEle>e.target);
+          };
+         this.keyTimer = window.setTimeout(
+             () => {
+              timeoutFun();
+          }, 100);
+    }}
+    private onKeyUp(e: KeyboardEvent): void {
+        if (e.key !== 'Enter') { return; }
+        if (this.keyTimeout) {
+            this.keyTimeout = false;
+        } else {
+            (<HTEle>e.target).click();
+        }
+        clearTimeout(this.keyTimer);
+    }
+    private eventBinding(ele: HTEle[]): void {
+     ele.forEach((el: HTEle) => {
+        new Touch(el, {tapHold: this.tabHoldHandler.bind(this), tapHoldThreshold: 500 });
+        el.addEventListener('keydown' , this.onKeyPress.bind(this));
+        el.addEventListener('keyup', this.onKeyUp.bind(this));
+        el.addEventListener('mouseup', this.repeatScroll.bind(this));
+        el.addEventListener('touchend', this.repeatScroll.bind(this));
+        el.addEventListener('contextmenu', (e: Event) => {
             e.preventDefault();
         });
-        EventHandler.add(nav, 'click', this.clickEventHandler, this);
-        this.touchModule = new Touch(element, { scroll: this.touchHandler.bind(this) });
+        EventHandler.add(el, 'click', this.clickEventHandler, this);
+      });
     }
-    private repeatScroll(e: Event ): void {
+    private repeatScroll(): void {
       clearInterval (this.timeout);
     }
     private tabHoldHandler(e: TapEventArgs): void {
        let trgt: HTEle = e.originalEvent.target as HTEle;
-       trgt = this.contains(trgt, CLS_HSCROLLNAV) ? <HTEle>trgt.firstElementChild : trgt ;
-       let timeoutFun: Function = () => {
+       trgt = this.contains(trgt, CLS_HSCROLLNAV) ? <HTEle>trgt.firstElementChild : trgt;
        let scrollDis: number = 10;
+       let timeoutFun: Function = () => {
        this.eleScrolling(scrollDis, trgt);
        };
-       this.timeout = setInterval(
+       this.timeout = window.setInterval(
            () => {
               timeoutFun();
         }, 50);
@@ -172,7 +222,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         let rootEle: HTEle = this.element;
         let classList: DOMTokenList = trgt.classList;
         if (classList.contains(CLS_HSCROLLNAV)) {
-            classList = this.element.querySelector('.' + CLS_NAVARROW).classList;
+            classList = trgt.querySelector('.' + CLS_NAVARROW).classList;
         }
         if (this.contains(rootEle, CLS_RTL) && this.browserCheck) {
             scrollDis = - scrollDis;
@@ -208,28 +258,44 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
                 ele.scrollLeft = ele.scrollLeft - distance;
             }
     }
+    private arrowDisabling(addDisable: HTEle, removeDisable: HTEle): void {
+      addDisable.classList.add(CLS_DISABLE);
+      addDisable.setAttribute('aria-disabled' , 'true');
+      addDisable.removeAttribute('tabindex');
+      clearInterval(this.timeout);
+      removeDisable.classList.remove(CLS_DISABLE);
+      removeDisable.setAttribute('aria-disabled' , 'false');
+      removeDisable.setAttribute('tabindex', '0');
+      this.repeatScroll();
+    }
     private scrollHandler(e: Event): void {
         let target: HTEle = <HTEle>e.target;
         let width: number = target.offsetWidth;
         let rootEle: HTEle = this.element;
-        let navEle: Element = (<Element>this.element.firstChild.firstChild);
-        if (navEle) {
-            let scrollLeft: number = target.scrollLeft;
-            if (scrollLeft <= 0) {
-                scrollLeft = -scrollLeft;
+        let navLeftEle: HTEle = (<HTEle>this.element.querySelector('.' + CLS_HSCROLLNAVLEFT));
+        let navRightEle: HTEle = (<HTEle>this.element.querySelector('.' + CLS_HSCROLLNAVRIGHT));
+        let scrollLeft: number = target.scrollLeft;
+        if (scrollLeft <= 0) {
+            scrollLeft = -scrollLeft;
+        }
+        if (scrollLeft === 0) {
+            if ((!this.contains(rootEle, CLS_RTL) || this.browserCheck) || this.ieCheck) {
+                this.arrowDisabling(navLeftEle, navRightEle);
+            } else {
+                this.arrowDisabling(navRightEle, navLeftEle);
             }
-            if (scrollLeft === 0) {
-                if ((!this.contains(rootEle, CLS_RTL) || this.browserCheck) || this.ieCheck) {
-                    classList(navEle, [CLS_NAVRIGHTARROW], [CLS_NAVLEFTARROW]);
-                } else {
-                    classList(navEle, [CLS_NAVLEFTARROW], [CLS_NAVRIGHTARROW]);
-                }
-            } else if (Math.ceil(width + scrollLeft) >= target.scrollWidth) {
-                if ((!this.contains(rootEle, CLS_RTL) || this.browserCheck) || this.ieCheck) {
-                    classList(navEle, [CLS_NAVLEFTARROW], [CLS_NAVRIGHTARROW]);
-                } else {
-                    classList(navEle, [CLS_NAVRIGHTARROW], [CLS_NAVLEFTARROW]);
-                }
+        } else if (Math.ceil(width + scrollLeft + .1) >= target.scrollWidth) {
+            if ((!this.contains(rootEle, CLS_RTL) || this.browserCheck) || this.ieCheck) {
+              this.arrowDisabling(navRightEle, navLeftEle);
+            } else {
+                this.arrowDisabling(navLeftEle, navRightEle);
+            }
+        } else {
+            let disEle: HTEle = <HTEle>this.element.querySelector('.' + CLS_DISABLE);
+            if (disEle) {
+                disEle.classList.remove(CLS_DISABLE);
+                disEle.setAttribute('aria-disabled', 'false');
+                disEle.setAttribute('tabindex', '0');
             }
         }
     }
