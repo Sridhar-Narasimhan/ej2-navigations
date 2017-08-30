@@ -4,7 +4,7 @@ import { createElement as buildTag, selectAll, setStyleAttribute as setStyle, Ke
 import { isNullOrUndefined as isNOU, getUniqueID, formatUnit, Collection } from '@syncfusion/ej2-base';
 import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty, Browser } from '@syncfusion/ej2-base';
 import { Popup } from '@syncfusion/ej2-popups';
-import { calculatePosition } from '@syncfusion/ej2-popups/src/common/position';
+import { calculatePosition } from '@syncfusion/ej2-popups';
 import { Button, IconPosition } from '@syncfusion/ej2-buttons';
 import { HScroll } from '../common/h-scroll';
 import { ToolbarModel, ItemModel } from './toolbar-model';
