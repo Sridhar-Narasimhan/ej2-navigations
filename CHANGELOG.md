@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Toolbar
+
+#### New Feature
+
+- Provided navigation support with two-side arrows in Toolbar. Previously, its configured with single side arrow.
+
+#### Bug Fixes
+
+- Issue with tab key focus was fixed.
+
 ## 1.0.11-preview (2017-08-03)
 
 ### Toolbar
