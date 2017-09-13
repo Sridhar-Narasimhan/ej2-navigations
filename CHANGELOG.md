@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Toolbar
+
+#### Bug Fixes
+
+- Toolbar items overlapping issue with grid is fixed.
+
 ## 1.0.14-preview (2017-08-31)
 
 ### Toolbar

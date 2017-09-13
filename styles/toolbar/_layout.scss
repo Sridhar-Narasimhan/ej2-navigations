@@ -157,7 +157,8 @@
     touch-action: none;
     user-select: none;
     white-space: nowrap;
-    @if $skin-name == 'fabric' {
+
+    &.e-control[class*='e-toolbar'] {
       box-sizing: content-box;
     }
 
