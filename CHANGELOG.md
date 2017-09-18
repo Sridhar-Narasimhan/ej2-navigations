@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Toolbar
+
+#### New Feature
+
+- Provided Ng-template support for toolbar item-template property.
+
 ## 1.0.17-preview (2017-09-14)
 
 ### Toolbar

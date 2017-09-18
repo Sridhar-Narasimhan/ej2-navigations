@@ -1,7 +1,7 @@
 import { Component, EventHandler, Property, Event, EmitType, BaseEventArgs } from '@syncfusion/ej2-base';
 import { addClass, removeClass, isVisible, closest, attributes, detach, classList, KeyboardEvents } from '@syncfusion/ej2-base';
 import { createElement as buildTag, selectAll, setStyleAttribute as setStyle, KeyboardEventArgs } from '@syncfusion/ej2-base';
-import { isNullOrUndefined as isNOU, getUniqueID, formatUnit, Collection } from '@syncfusion/ej2-base';
+import { isNullOrUndefined as isNOU, getUniqueID, formatUnit, Collection, compile as templateCompiler } from '@syncfusion/ej2-base';
 import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty, Browser } from '@syncfusion/ej2-base';
 import { Popup } from '@syncfusion/ej2-popups';
 import { calculatePosition } from '@syncfusion/ej2-popups';
@@ -57,6 +57,7 @@ const CLS_POPUPCLASS: Str = 'e-toolbar-pop';
 const CLS_POPUP: Str = 'e-toolbar-popup';
 const CLS_TBARBTNTEXT: Str = 'e-tbar-btn-text';
 const CLS_TBARNAVACT: Str = 'e-nav-active';
+const CLS_TBARIGNORE: Str = 'e-ignore';
 
 
 interface Template {
@@ -208,6 +209,7 @@ export class Item extends ChildProperty<Item>  {
 @NotifyPropertyChanges
 export class Toolbar extends Component<HTMLElement> implements INotifyPropertyChanged {
     private trgtEle: HTEle;
+    private ctrlTem: HTEle;
 
     /** @hidden */
     private popObj: Popup;
@@ -306,10 +308,17 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let ele: HTEle = this.element;
         super.destroy();
         this.unwireEvents();
-        if (ele.children.length > 0) {
-            ele.removeChild(ele.children[0]);
-        }
+        while (ele.firstChild) {
+            ele.removeChild(ele.firstChild); }
+        if (this.trgtEle) {
+            ele.appendChild(this.ctrlTem); }
+        this.clearProperty();
+        this.popObj = null;
+        this.remove(this.element, 'e-toolpop');
         ele.removeAttribute('style');
+        ['aria-disabled', 'aria-orientation', 'aria-haspopup', 'role'].forEach((attrb: string): void => {
+            this.element.removeAttribute(attrb);
+        });
     }
     /**
      * Initialize the event handler
@@ -340,7 +349,12 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 keyAction: this.keyActionHandler.bind(this),
                 keyConfigs: this.keyConfigs
             });
+        EventHandler.add(this.element, 'keydown', this.docKeyDown, this);
         this.element.setAttribute('tabIndex', '0');
+    }
+    private docKeyDown (e: KeyboardEvent): void {
+        if ((e.keyCode === 40 || e.keyCode === 38) && !isNOU(this.popObj) && isVisible(this.popObj.element)) {
+           e.preventDefault(); }
     }
     private unwireEvents(): void {
         EventHandler.remove(this.element, 'click', this.clickHandler);
@@ -348,8 +362,13 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         this.keyModule.destroy();
         if (this.popObj) {
           EventHandler.remove(document, 'scroll', this.docEvent);
+          EventHandler.remove(this.element, 'keydown', this.docKeyDown);
           EventHandler.remove(document, 'click', this.docEvent);
         }
+    }
+    private clearProperty(): void {
+        this.tbarEle = [];
+        this.tbarAlgEle = {lefts : [] , centers: [], rights: [] };
     }
     private docEvent(e: Event): void {
         let popEle: Element = closest(<Element>e.target, '.e-popup');
@@ -367,8 +386,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
        [].slice.call(this.element.querySelectorAll('.' + CLS_ITEM)).forEach ((el: HTEle) => {
            detach(el);
        });
-       this.tbarEle = [];
-       this.tbarAlgEle = {lefts : [] , centers: [], rights: [] };
+       this.clearProperty();
     }
     private destroyMode(): void {
         if (this.scrollModule) {
@@ -410,24 +428,14 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let popAnimate: Object = { name: 'SlideUp', duration: 100 };
         switch (e.action) {
             case 'moveRight':
-                if (rootEle === trgt || navChk) {
+                if (rootEle === trgt ) {
                     this.elementFocus(clst);
-                } else {
+                } else if (!navChk) {
                     this.eleFocus(clst, 'next');
                 }
                 break;
             case 'moveLeft':
-                if (popObj && navChk) {
-                    if (this.tbarAlign) {
-                        clst = <HTEle>closest(clst, '.' + CLS_ITEMS);
-                        let items: HTEle[] = selectAll('.' + CLS_ITEM, clst);
-                        clst = items[items.length - 1] as HTEle;
-                    } else {
-                        clst = clst.parentElement.lastElementChild as HTEle; }
-                }
-                if (navChk && !clst.classList.contains(CLS_SEPARATOR) && !clst.classList.contains(CLS_DISABLE)) {
-                    this.elementFocus(clst);
-                } else {
+                if (!navChk) {
                     this.eleFocus(clst, 'previous'); }
                 break;
             case 'home':
@@ -462,8 +470,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             case 'moveDown':
                 let value: Str = e.action === 'moveUp' ? 'previous' : 'next';
                 if (popObj && closest(trgt, '.e-popup')) {
-                    if (e.action === 'moveUp' && popObj.element.firstElementChild === clst) {
-                        (<HTEle>rootEle.querySelector('.' + CLS_TBARNAV)).focus();
+                    let popEle: HTEle = popObj.element;
+                    let popFrstEle: HTEle = popEle.firstElementChild as HTEle;
+                    if ((value === 'previous' && popFrstEle === clst) || (value === 'next' && popEle.lastElementChild === clst) ) {
+                        return;
                     } else {
                         this.eleFocus(clst, value);
                     }
@@ -472,9 +482,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 }
                 break;
             case 'tab':
-                if (!scrollChk) {
+                if (!scrollChk && !navChk) {
                     let ele: HTEle = (<HTEle>clst.firstElementChild);
-                    if (rootEle === trgt || navChk) {
+                    if (rootEle === trgt ) {
                         if (this.activeEle) {
                             this.activeEle.focus();
                         } else {
@@ -526,8 +536,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     skipEle = contains(sib);
                     if (skipEle) {
                         this.eleFocus(sib, pos); return; }
-                    } else if (this.popObj && pos === 'next') {
-                    (this.element.querySelector('.' + CLS_TBARNAV) as HTEle).focus(); return; }
+                    }
             }
          this.elementFocus(sib);
         } else if (this.tbarAlign) {
@@ -544,11 +553,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 if (contains(el)) {
                    this.eleFocus(el, pos); } else {
                    this.elementFocus(el); } }
-           } else if (this.popObj) {
-            (this.element.querySelector('.' + CLS_TBARNAV) as HTEle).focus();
-        }
-        } else if (this.popObj && pos === 'next') {
-            (this.element.querySelector('.' + CLS_TBARNAV) as HTEle).focus();
+           }
         }
    }
     private clickHandler(e: Event): void {
@@ -635,7 +640,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private itemWidthCal(items: HTEle): number {
       let width: number = 0;
-      [].slice.call(items.children).forEach ((el: HTEle) => {
+      [].slice.call( selectAll('.' + CLS_ITEM), items).forEach ((el: HTEle) => {
          width += el.offsetWidth;
       });
       return width;
@@ -646,7 +651,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         }
         let eleWidth: number = element.offsetWidth;
         let itemWidth: number;
-        if (this.tbarAlign) {
+        if (this.tbarAlign || this.scrollModule) {
           itemWidth = this.itemWidthCal(this.scrollModule ? <HTEle>innerItem.querySelector('.e-hscroll-content') : innerItem);
         } else {
          itemWidth = innerItem.offsetWidth; }
@@ -788,31 +793,37 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         setStyle(popObj.element, { height: 'auto', maxHeight: '' });
         popObj.element.style.maxHeight = popObj.element.clientHeight + 'px';
         let popupElePos: number = popupEle.offsetTop + popupEle.offsetHeight + calculatePosition(toolEle).top;
-        if (!isNOU(popupNav)) {
-            let popIcon: Element = (popupNav.firstElementChild as Element);
-            popupNav.classList.add(CLS_TBARNAVACT);
-            classList(popIcon, [CLS_POPUPICON], [CLS_POPUPDOWN]);
-        }
-        if ((window.innerHeight + window.scrollY) < popupElePos) {
-            let overflowHeight: number = (popupEle.offsetHeight - ((popupElePos - window.innerHeight - window.scrollY) + 5));
-            popObj.height = overflowHeight + 'px';
-            setStyle(popObj.element, { maxHeight: overflowHeight + 'px' });
+        let popIcon: Element = (popupNav.firstElementChild as Element);
+        popupNav.classList.add(CLS_TBARNAVACT);
+        classList(popIcon, [CLS_POPUPICON], [CLS_POPUPDOWN]);
+        let scrollVal: number = isNOU(window.scrollY) ?  0 : window.scrollY;
+        if ((window.innerHeight + scrollVal) < popupElePos) {
+        let overflowHeight: number = (popupEle.offsetHeight - ((popupElePos - window.innerHeight - scrollVal) + 5));
+        popObj.height = overflowHeight + 'px';
+        setStyle(popObj.element, { maxHeight: overflowHeight + 'px' });
         }
     }
 
     private popupClose(e: Event): void {
         let element: HTEle = this.element.parentElement;
         let popupNav: HTEle = <HTEle>element.querySelector('.' + CLS_TBARNAV);
-        if (popupNav) {
-            let popIcon: Element = (popupNav.firstElementChild as Element);
-            popupNav.classList.remove(CLS_TBARNAVACT);
-            classList(popIcon, [CLS_POPUPDOWN], [CLS_POPUPICON]);
-        }
+        let popIcon: Element = (popupNav.firstElementChild as Element);
+        popupNav.classList.remove(CLS_TBARNAVACT);
+        classList(popIcon, [CLS_POPUPDOWN], [CLS_POPUPICON]);
     }
    private checkPriority(ele: HTEle, inEle: HTEle[], eleWidth: number, pre: boolean): void {
         let len: number = inEle.length;
         let eleWid: number = eleWidth;
         let sepCheck: number = 0; let itemCount: number = 0; let itemPopCount: number = 0;
+        let checkClass: Function = (ele: HTEle, val : Str[]) => {
+          let rVal: Boolean = false;
+          val.forEach((cls: string) => {
+            if (ele.classList.contains(cls)) {
+                rVal = true;
+            }
+            });
+          return rVal;
+         };
         for (let i: number = len - 1; i >= 0; i--) {
             let mrgn: number = parseFloat((window.getComputedStyle(inEle[i])).marginRight);
             mrgn += parseFloat((window.getComputedStyle(inEle[i])).marginLeft);
@@ -821,7 +832,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 if (inEle[i].classList.contains(CLS_SEPARATOR)) {
                     if (sepCheck > 0 && itemCount === itemPopCount) {
                         let sepEle: HTEle = (inEle[i + itemCount + (sepCheck - 1)] as HTEle);
-                        if (sepEle.classList.contains(CLS_SEPARATOR)) {
+                        if (checkClass(sepEle, [CLS_SEPARATOR, CLS_TBARIGNORE])) {
                             setStyle(sepEle, { display: 'none' });
                         }
                     }
@@ -831,7 +842,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 }
                 if (inEle[i].classList.contains(CLS_TBAROVERFLOW) && pre) {
                     eleWidth -= (inEle[i].offsetWidth + (mrgn));
-                } else if (!inEle[i].classList.contains(CLS_SEPARATOR)) {
+                } else if (!checkClass(inEle[i], [CLS_SEPARATOR, CLS_TBARIGNORE] )) {
                     inEle[i].classList.add(CLS_POPUP);
                     setStyle(inEle[i], { display: 'none', minWidth: inEle[i].offsetWidth + 'px' });
                     itemPopCount++;
@@ -856,22 +867,26 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let navItem: HTEle = buildTag('div', { className: CLS_POPUPDOWN + ' e-icons' });
         nav.appendChild(navItem);
         nav.setAttribute('tabindex', '0');
-        element.insertBefore(nav, element.firstChild);
+        element.appendChild(nav);
     }
 
-    private tbarPriRef(inEle: HTEle, indx: number, sepPri: number, el: HTEle, des: boolean, elWid: number, wid: number): void {
+    private tbarPriRef(inEle: HTEle, indx: number, sepPri: number, el: HTEle, des: boolean, elWid: number, wid: number, ig: number): void {
+        let ignoreCount: number = ig;
         let popEle: HTEle = this.popObj.element;
         let query: Str = '.' + CLS_ITEM + ':not(.' + CLS_SEPARATOR + '):not(.' + CLS_TBAROVERFLOW + ')';
         let priEleCnt: number = selectAll('.' + CLS_POPUP + ':not(.' + CLS_TBAROVERFLOW + ')', popEle).length;
+        let checkClass: Function = (ele: HTEle, val : Str) => {
+             return ele.classList.contains(val); };
         if (selectAll(query, inEle).length === 0) {
             let eleSep: HTEle = inEle.children[indx - (indx - sepPri) - 1] as HTEle;
-            if (!isNOU(eleSep) && eleSep.classList.contains(CLS_SEPARATOR) && !isVisible(eleSep)) {
+            let ignoreCheck: Boolean = (!isNOU(eleSep) && checkClass(eleSep, CLS_TBARIGNORE));
+            if ((!isNOU(eleSep) && checkClass(eleSep, CLS_SEPARATOR) && !isVisible(eleSep)) || ignoreCheck  ) {
                 let sepDisplay: Str = 'none';
                 eleSep.style.display = 'inherit';
                 let eleSepWidth: number = eleSep.offsetWidth + (parseFloat(window.getComputedStyle(eleSep).marginRight) * 2);
                 let prevSep: HTEle = eleSep.previousElementSibling as HTEle;
                 if ((elWid + eleSepWidth) < wid || des) {
-                    inEle.insertBefore(el, inEle.children[indx - (indx - sepPri)]);
+                    inEle.insertBefore(el, inEle.children[(indx + ignoreCount) - (indx - sepPri)]);
                     if (!isNOU(prevSep)) {
                         prevSep.style.display = '';
                     }
@@ -882,10 +897,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 }
                 eleSep.style.display = '';
             } else {
-                inEle.insertBefore(el, inEle.children[indx - (indx - sepPri)]);
+                inEle.insertBefore(el, inEle.children[(indx + ignoreCount) - (indx - sepPri)]);
             }
         } else {
-            inEle.insertBefore(el, inEle.children[indx - priEleCnt]);
+            inEle.insertBefore(el, inEle.children[(indx + ignoreCount) - priEleCnt]);
         }
     }
 
@@ -910,11 +925,27 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             ele.classList.remove('e-toolpop');
         }
     }
+    private ignoreEleFetch (index: number, innerEle: HTEle): number {
+        let ignoreEle: HTEle[] = [].slice.call(innerEle.querySelectorAll('.' + CLS_TBARIGNORE));
+        let ignoreInx: number[] = [];
+        let count: number = 0;
+        if (ignoreEle.length > 0) {
+            ignoreEle.forEach((ele: HTEle): void => {
+             ignoreInx.push([].slice.call(innerEle.children).indexOf(ele));
+            });  } else {
+                return 0;
+            }
+        ignoreInx.forEach((val: number): void => {
+         if (val <= index) { count++; }
+        });
+        return count;
+    }
     private popupEleRefresh(width: number, popupEle: HTEle, destroy: boolean): void {
         let eleSplice: HTEle[] = this.tbarEle;
         let priEleCnt: number;
         let index: number;
         let innerEle: HTEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS);
+        let ignoreCount: number = 0;
         for (let el of [].slice.call(popupEle.children)) {
             el.style.position = 'absolute';
             let elWidth: number = el.offsetWidth;
@@ -957,15 +988,16 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                         sepBeforePri++;
                     }
                 });
+                ignoreCount = this.ignoreEleFetch(index, innerEle);
                 if (el.classList.contains(CLS_TBAROVERFLOW)) {
-                    this.tbarPriRef(innerEle, index, sepBeforePri, el, destroy, elWidth, width);
+                    this.tbarPriRef(innerEle, index, sepBeforePri, el, destroy, elWidth, width, ignoreCount);
                     width -= el.offsetWidth;
                 } else if (index === 0) {
                     innerEle.insertBefore(el, innerEle.firstChild);
                     width -= el.offsetWidth;
                 } else {
                     priEleCnt = selectAll('.' + CLS_TBAROVERFLOW, this.popObj.element).length;
-                    innerEle.insertBefore(el, innerEle.children[index - priEleCnt]);
+                    innerEle.insertBefore(el, innerEle.children[(index + ignoreCount) - priEleCnt]);
                     width -= el.offsetWidth;
                 }
                 el.style.height = '';
@@ -1034,6 +1066,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
       }
     }
     private ctrlTemplate(): void {
+        this.ctrlTem = <HTEle>this.trgtEle.cloneNode(true);
         this.add(this.trgtEle, CLS_ITEMS);
         this.tbarEle = [];
         let innerEle: HTEle[] = [].slice.call(this.trgtEle.children);
@@ -1147,10 +1180,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 if (this.tbarAlign) {
                  let algIndex: number = item.align[0] === 'l' ? 0 : item.align[0] === 'c' ? 1 : 2;
                  let ele: Element;
-                 if (this.scrollModule) {
-                 ele = closest(innerItems[0] , '.' + CLS_ITEMS + ' .' + CLS_TBARSCROLL).children[algIndex];
-                 } else {
-                 ele = closest(innerItems[0] , '.' + CLS_ITEMS).children[algIndex]; }
+                 ele = closest(innerItems[0] , '.' + CLS_ITEMS).children[algIndex];
                  ele.insertBefore(innerEle, ele.children[index]);
                  this.tbarAlgEle[(item.align + 's') as ItmAlign].splice(index, 0, innerEle);
                  this.refreshPositioning();
@@ -1207,20 +1237,37 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private templateRender(templateProp: Object | Str, innerEle: HTEle, item: ItemModel): void {
         let itemType: Str = item.type;
-        if (typeof (templateProp) === 'string') {
-            innerEle.innerHTML = templateProp;
-            let ele: HTEle = <HTEle>innerEle.childNodes[0];
-            if (!ele.tagName && innerEle.childElementCount === 0) {
-                let templateEle: Node = document.querySelector(templateProp);
-                innerEle.innerHTML = '';
-                innerEle.appendChild(templateEle);
+        let eleObj: Template = <Template>templateProp;
+        let isComponent: Boolean;
+        if (typeof (templateProp) === 'object') {
+            isComponent = typeof(eleObj.appendTo) === 'function';
+            }
+        if (typeof (templateProp) === 'string' || !isComponent) {
+            let templateFn: Function;
+            let val: Str = <Str>templateProp;
+            val  = (typeof (templateProp) === 'string') ? <Str>templateProp.trim() : <Str>templateProp;
+            let e: Object;
+            try {
+                if (document.querySelectorAll(val).length) {
+                    let ele: Element = document.querySelector(val);
+                    templateFn = templateCompiler(ele.outerHTML.trim());
+                    detach(ele);
+                }
+            } catch (e) {
+                templateFn = templateCompiler(val);
+            }
+            if (!isNOU(templateFn) && templateFn().length > 0) {
+               templateFn().forEach((ele: HTEle): void => {
+                   if (!isNOU(ele.tagName)) {
+                       ele.style.display = ''; }
+                   innerEle.appendChild(ele);
+               });
             }
         } else if (itemType === 'Input') {
-            let templateProperty: Template = <Template>templateProp;
             let ele: HTEle = buildTag('input');
             item.id ? (ele.id = item.id) : (ele.id = getUniqueID('tbr-ipt'));
             innerEle.appendChild(ele);
-            templateProperty.appendTo(ele);
+            eleObj.appendTo(ele);
         }
         this.add(innerEle, CLS_TEMPLATE);
         this.tbarEle.push(innerEle);
@@ -1344,7 +1391,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
            this.popObj.hide();
         }
         let checkOverflow: boolean = this.checkOverflow(ele, ele.getElementsByClassName(CLS_ITEMS)[0] as HTEle);
-        if (!checkOverflow && this.scrollModule) {
+        if (!checkOverflow) {
             this.destroyHScroll(); }
         if (checkOverflow && this.scrollModule && (this.offsetWid === ele.offsetWidth)) { return; }
         if (this.offsetWid > ele.offsetWidth || checkOverflow) {

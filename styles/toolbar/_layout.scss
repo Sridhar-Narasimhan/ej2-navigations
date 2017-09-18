@@ -353,7 +353,8 @@
     }
 
       .e-hor-nav {
-        float: left;
+        left: $tbar-zero-value;
+        right: auto;
     }
     }
 
@@ -361,11 +362,12 @@
       align-items: center;
       cursor: pointer;
       display: flex;
-      float: right;
       height: 100%;
       min-height: $tbar-nrml-size;
       overflow: hidden;
-      position: relative;
+      position: absolute;
+      right: $tbar-zero-value;
+      top: $tbar-zero-value;
       width: $tbar-nav-nrml-width;
       z-index: 100;
 
