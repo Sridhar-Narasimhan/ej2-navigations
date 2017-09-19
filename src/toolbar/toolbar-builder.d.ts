@@ -39,7 +39,7 @@ export interface  BuilderProperties {
 	height(value:string|number): BuilderProperties;
 	isDestroyed(value:boolean): BuilderProperties;
 	/**
-	* Overrides the global culture and localization value for this component. Default Global culture is 'en-US'
+	* Overrides the global culture and localization value for this component. Default global culture is 'en-US'.
 	*/
 	locale(value:string): BuilderProperties;
 	/**

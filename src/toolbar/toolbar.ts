@@ -301,7 +301,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     @Event()
     public beforeCreate: EmitType<Event>;
     /**
-     * Removes the widget safely from the DOM and also detaches all its related event handlers.
+     * Removes the control from the DOM and also removes all its related events.
      * @returns void
      */
     public destroy(): void {
@@ -1257,7 +1257,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 templateFn = templateCompiler(val);
             }
             if (!isNOU(templateFn) && templateFn().length > 0) {
-               templateFn().forEach((ele: HTEle): void => {
+                [].slice.call(templateFn()).forEach((ele: HTEle): void => {
                    if (!isNOU(ele.tagName)) {
                        ele.style.display = ''; }
                    innerEle.appendChild(ele);
