@@ -378,6 +378,9 @@
       .e-hor-nav {
         left: $tbar-zero-value;
         right: auto;
+        @if $skin-name == 'bootstrap' {
+          border-radius: $tbar-radius 0 0 $tbar-radius;
+        }
     }
     }
 

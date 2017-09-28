@@ -4,6 +4,10 @@
 
 ### Toolbar
 
+#### New Feature
+
+- Bootstrap theme support is provided for toolbar.
+
 #### Bug Fixes
 
 - Popup not closed issue when the control gets focus out is fixed.
