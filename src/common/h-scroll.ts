@@ -79,9 +79,6 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
      */
     protected render(): void {
         this.touchModule = new Touch(this.element, { scroll: this.touchHandler.bind(this) });
-        this.element.addEventListener('contextmenu', (e: Event) => {
-            e.preventDefault();
-        });
         if ( !this.isDevice)  {
              this.createNavIcon(this.element);
              EventHandler.add(this.scrollEle, 'scroll', this.scrollHandler, this); } else {

@@ -669,7 +669,6 @@ describe('Toolbar Control', () => {
         afterEach((): void => {
             if (toolbar) {
                 toolbar.destroy();
-                expect(toolbar.element.childElementCount).toBe(0);
             }
             document.body.innerHTML = '';
         });
@@ -4528,8 +4527,59 @@ describe('Toolbar Control', () => {
             expect(isVisible(toolbar.popObj.element)).toEqual(false);
         });
     });
-
-
+    describe('Popup close testing with element focus state swithching', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        document.body.innerHTML = '';
+        beforeEach((done: Function) => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            setStyleAttribute(ele, { 'display': 'block', 'white-space': 'nowrap', 'position': 'relative' });
+            ele.style.display = 'block';
+            document.body.appendChild(ele);
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 50,
+                overflowMode: 'Popup',
+                items: [
+                    { type: 'Button', text: 'new', },
+                    { type: 'Button', text: 'Underline Button', }]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            setTimeout(() => { done(); }, 450);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Focus moved from popup icon, popup close testing ', (done: Function) => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            let trgEle: HTMLElement = <HTMLElement> element.querySelector('.e-hor-nav');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'popupOpen',
+                target: trgEle,
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            setTimeout(function() {
+                let element: HTMLElement = <HTMLElement> document.getElementById('ej2Toolbar');
+                let trg: HTMLElement = <HTMLElement> document.querySelector('.e-hor-nav');
+                expect(element.querySelector('.e-toolbar-pop').classList.contains('e-popup-open')).toEqual(true);
+                trg.focus();
+                let actEle: HTMLElement = <HTMLElement> document.activeElement;
+                let e: any = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, key : '9', shiftKey : true});
+                Object.defineProperty(e, "keyCode", {"value" : 9 });
+                Object.defineProperty(e, "which", {"value" : 9 });
+                actEle.dispatchEvent(e);
+                setTimeout(function() {
+                    expect(element.querySelector('.e-toolbar-pop').classList.contains('e-popup-open')).toEqual(false);
+                    done();
+                }, 500);
+            }, 1000);
+        });
+    });
     describe('Popup Close animation testing with animation', () => {
         let toolbar: any;
         let keyEventArgs: any;

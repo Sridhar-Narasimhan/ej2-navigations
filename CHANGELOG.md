@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Toolbar
+
+#### Bug Fixes
+
+- Popup not closed issue when the control gets focus out is fixed.
+
 ## 1.0.18-preview (2017-09-20)
 
 ### Toolbar

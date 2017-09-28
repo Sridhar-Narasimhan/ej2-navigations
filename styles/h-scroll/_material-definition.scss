@@ -13,10 +13,14 @@ $hscroll-bgr-padding: 0 $hscroll-nav-bgr-width;
 $hscroll-border-type: $border-type;
 $hscroll-box-shadow: none;
 $hscroll-hover-bg: rgba($grey-black, .12);
-$hscroll-hover-border: rgba($grey-black, .12);
+$hscroll-hover-border-color: rgba($grey-black, .12);
 $hscroll-default-icon-color: rgba($grey-light-font, .54);
+$hscroll-focus-border: '';
+$hscroll-active-border: '';
+$hscroll-hover-border: '';
+$hscroll-active-box-shadow: '';
 
-$hscroll-default-border: $hscroll-hover-border;
+$hscroll-default-border: $hscroll-hover-border-color;
 $hscroll-ribble-animation-border-frame: rgba(255, 255, 255, .5);
 $hscroll-ribble-animation-shadow-frame: 0 0 0 0 $hscroll-ribble-animation-border-frame;
 $hscroll-ribble-animation-shadow-frame-end: 0 0 0 200px rgba(255, 255, 255, .12);

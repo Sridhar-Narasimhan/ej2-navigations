@@ -2,16 +2,25 @@
 $skin-name: 'material';
 $tbar-default-bg: $grey-50;
 $tbar-press-bg: $grey-400;
+$tbar-press-border-color: $tbar-press-bg;
 $tbar-active-bg: $grey-400;
 
 $tbar-nrml-size: 42px;
 $tbar-bgr-size: 56px;
+$tbar-nrml-items-size: 42px;
+$tbar-bgr-items-size: 56px;
+$tbar-nrml-item-size: 42px;
+$tbar-bgr-item-size: 48px;
+$tbar-item-nrml-minwidth: 34px;
 $tbar-btn-pop-nrml-minheight: 24px;
 $tbar-btn-pop-bgr-minheight: 30px;
 $tbar-item-nrml-mrgn: 18px;
 $tbar-item-bgr-mrgn: 24px;
 $tbar-nav-nrml-width: 32px;
 $tbar-nav-bgr-width: 40px;
+$tbar-popup-padding: 0;
+$tbar-btn-border-radius: '';
+$tbar-btn-pressed-box-shadow: '';
 
 $tbar-item-bgr-padding: 5px;
 $tbar-item-nrml-padding: 3.5px;
@@ -37,6 +46,11 @@ $tbar-btn-nrml-padding: $tbar-zero-value 1.5px ;
 $tbar-pop-btn-bgr-padding: $tbar-zero-value 4px;
 $tbar-pop-btn-nrml-padding: $tbar-zero-value 4px;
 
+$tbar-nav-press-border: '';
+$tbar-nav-hover-border: '';
+$tbar-nav-focus-border: '';
+$tbar-nav-pressed-box-shadow: '';
+$tbar-border-nav-active-type: '';
 $tbar-border-size: 1px;
 $tbar-border-type: none;
 $tbar-box-shadow: none;
@@ -46,7 +60,9 @@ $tbar-btn-family: 'Roboto', 'Segoe UI', 'GeezaPro', 'DejaVu Serif';;
 $tbar-btn-font-size: 14px;
 $tbar-btn-txt-font-size: $tbar-btn-font-size;
 $tbar-hover-bg: rgba($grey-black, .12);
-$tbar-hover-border: rgba($grey-black, .12);
+$tbar-hover-border-color: rgba($grey-black, .12);
+$tbar-focus-border-color: $tbar-hover-border-color;
+$tbar-focus-bg: $tbar-hover-bg;
 $tbar-default-icon-color: rgba($grey-light-font, .54);
 $tbar-default-font: rgba($grey-light-font, .87) ;
 $tbar-hover-font: $tbar-default-font;
@@ -54,7 +70,7 @@ $tbar-active-font-color: $tbar-default-font;
 $tbar-press-font: $tbar-default-font;
 
 $tbar-pressed-bg: $tbar-hover-bg;
-$tbar-pressed-border: $tbar-hover-border;
+$tbar-pressed-border: $tbar-hover-border-color;
 $tbar-pressed-font: $tbar-hover-font;
 $tbar-select-font: $tbar-hover-font;
 

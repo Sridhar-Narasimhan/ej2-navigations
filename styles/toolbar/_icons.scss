@@ -4,12 +4,12 @@
   .e-toolbar {
 
     .e-popup-down-icon::before {
-      content: '\e916';
+      content: $tbar-popup-down-icon;
       line-height: normal;
     }
 
     .e-popup-up-icon::before {
-      content: '\e910';
+      content: $tbar-popup-up-icon;
       line-height: normal;
     }
    }

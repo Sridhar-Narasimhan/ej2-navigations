@@ -353,6 +353,8 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         this.element.setAttribute('tabIndex', '0');
     }
     private docKeyDown (e: KeyboardEvent): void {
+        if (e.keyCode === 9 && (<HTEle> e.target).classList.contains('e-hor-nav') === true && isVisible(this.popObj.element)) {
+            this.popObj.hide({ name: 'SlideUp', duration: 100 }); }
         if ((e.keyCode === 40 || e.keyCode === 38) && !isNOU(this.popObj) && isVisible(this.popObj.element)) {
            e.preventDefault(); }
     }
@@ -360,11 +362,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         EventHandler.remove(this.element, 'click', this.clickHandler);
         this.destroyHScroll();
         this.keyModule.destroy();
-        if (this.popObj) {
-          EventHandler.remove(document, 'scroll', this.docEvent);
-          EventHandler.remove(this.element, 'keydown', this.docKeyDown);
-          EventHandler.remove(document, 'click', this.docEvent);
-        }
+        EventHandler.remove(document, 'scroll', this.docEvent);
+        EventHandler.remove(this.element, 'keydown', this.docKeyDown);
+        EventHandler.remove(document, 'click', this.docEvent);
     }
     private clearProperty(): void {
         this.tbarEle = [];

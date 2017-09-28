@@ -6,7 +6,7 @@
     min-height: $tbar-bgr-size;
 
     .e-icons {
-      font-size: 18px;
+      font-size: $tbar-icons-bgr-font-size;
     }
 
     &.e-rtl {
@@ -35,7 +35,7 @@
     }
 
     .e-hor-nav {
-      min-height: $tbar-bgr-size;
+      min-height: $tbar-bgr-items-size;
       min-width: $tbar-nav-bgr-width;
     }
 
@@ -62,6 +62,9 @@
         .e-tbar-btn.e-btn {
           min-height: $tbar-btn-pop-bgr-minheight;
           padding: $tbar-pop-btn-bgr-padding;
+          @if $skin-name == 'bootstrap' {
+            line-height: 34px;
+          }
 
           .e-icons {
             margin-left: $tbar-zero-value;
@@ -77,7 +80,7 @@
     }
 
     .e-toolbar-items {
-      min-height: $tbar-bgr-size;
+      min-height: $tbar-bgr-items-size;
 
       .e-toolbar-left {
 
@@ -94,10 +97,10 @@
       }
 
       .e-toolbar-item {
-        min-height: $tbar-bgr-size;
+        min-height: $tbar-bgr-items-size;
 
         &:not(.e-separator) {
-          min-width: 48px;
+          min-width: $tbar-bgr-item-size;
           padding: $tbar-item-bgr-padding;
         }
 
@@ -133,6 +136,19 @@
           min-width: $tbar-btn-bgr-minwidth;
           padding: $tbar-btn-bgr-padding;
 
+          @if $skin-name == 'bootstrap' {
+            &:focus {
+              padding: 0 6px;
+            }
+
+            &:hover {
+              padding: 0 6px;
+            }
+
+            &:active {
+              padding: 0 6px;
+            }
+          }
 
           &.e-tbtn-txt {
 
@@ -150,6 +166,7 @@
   }
 
   .e-toolbar {
+    border-radius: $tbar-radius;
     display: block;
     height: $tbar-nrml-size;
     min-height: $tbar-nrml-size;
@@ -187,8 +204,9 @@
     }
 
     .e-toolbar-pop {
-      border-radius: $tbar-border-radius;
+      border-radius: $tbar-pop-radius;
       overflow: hidden;
+      padding: $tbar-popup-padding;
       position: absolute;
 
       .e-toolbar-item  {
@@ -198,6 +216,11 @@
           justify-content: flex-start;
           min-height: $tbar-btn-pop-nrml-minheight;
           padding: $tbar-pop-btn-nrml-padding;
+          @if $skin-name == 'bootstrap' {
+            border: 0;
+            border-radius: 0;
+            margin: 0;
+          }
 
           .e-icons {
             line-height: inherit;
@@ -360,10 +383,11 @@
 
     .e-hor-nav {
       align-items: center;
+      border-radius: 0 $tbar-radius $tbar-radius 0 ;
       cursor: pointer;
       display: flex;
       height: 100%;
-      min-height: $tbar-nrml-size;
+      min-height: $tbar-nrml-items-size;
       overflow: hidden;
       position: absolute;
       right: $tbar-zero-value;
@@ -385,9 +409,10 @@
       }
 
     .e-toolbar-items {
+      border-radius:  $tbar-radius 0 0 $tbar-radius;
       display: inline-block;
       height: 100%;
-      min-height: $tbar-nrml-size;
+      min-height: $tbar-nrml-items-size;
       vertical-align: middle;
 
       &.e-tbar-pos {
@@ -497,7 +522,7 @@
         align-items: center;
         cursor: pointer;
         display: inline-flex;
-        min-height: $tbar-nrml-size;
+        min-height: $tbar-nrml-item-size;
         vertical-align: middle;
         width: auto;
 
@@ -507,7 +532,7 @@
 
         &:not(.e-separator) {
           height: 100%;
-          min-width: 34px;
+          min-width: $tbar-item-nrml-minwidth;
           padding: $tbar-item-nrml-padding;
         }
 
@@ -542,6 +567,19 @@
           min-width: $tbar-btn-nrml-minwidth;
           padding: $tbar-btn-nrml-padding;
 
+          @if $skin-name == 'bootstrap' {
+            &:focus {
+              padding: 0 1.5px;
+              }
+
+            &:hover {
+              padding: 0 1.5px;
+              }
+
+            &:active {
+              padding: 0 1.5px;
+              }
+            }
 
           &.e-tbtn-txt {
 
