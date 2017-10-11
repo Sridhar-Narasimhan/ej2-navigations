@@ -44,7 +44,9 @@
 		"navbar",
 		"navigation-bar",
 		"toolbar-customization",
-		"command-buttons"
+		"command-buttons",
+		"accordion",
+		"panelbar"
 	],
 	"repository": {
 		"type": "git",

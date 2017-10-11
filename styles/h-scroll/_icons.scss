@@ -16,13 +16,11 @@
     .e-nav-left-arrow::before {
       content: $hscroll-right-arrow-icon;
       line-height: normal;
-      vertical-align: middle;
     }
 
     .e-nav-right-arrow::before {
       content: $hscroll-left-arrow-icon;
       line-height: normal;
-      vertical-align: middle;
     }
 }
 }

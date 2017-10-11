@@ -1,0 +1,229 @@
+@include export-module('accordion-theme') {
+  /*! accordion theme */
+  // sass-lint:disable no-vendor-prefixes
+  .e-accordion {
+    -webkit-tap-highlight-color: $acrdn-tab-highlight-color;
+    background: $acrdn-bg-color;
+    border: $acrdn-border-size $acrdn-border-type $acrdn-default-border;
+
+    .e-active {
+      background: $acrdn-active-bg;
+    }
+
+    .e-acrdn-item {
+      @if $skin-name == 'fabric' {
+        border-bottom: 1px solid $neutral-white;
+        border-top: 1px solid $neutral-white;
+      }
+
+      &.e-item-focus {
+        @if $skin-name == 'fabric' {
+          border-bottom: 1px solid $acrdn-header-focus-bg;
+          border-top: 1px solid $acrdn-header-focus-bg;
+        }
+      }
+
+      &.e-item-focus.e-select.e-selected.e-expand-state {
+        @if $skin-name == 'fabric' or $skin-name == 'material' {
+          border-top: 1px solid $acrdn-selected-header-color;
+        }
+      }
+
+      &.e-item-focus.e-expand-state.e-select,
+      &.e-item-focus.e-select.e-selected.e-expand-state  {
+        @if $skin-name == 'material' {
+          border-color: $acrdn-header-focus-bg;
+        }
+      }
+
+      &.e-expand-state.e-select {
+        @if $skin-name == 'fabric' or $skin-name == 'material' {
+          border-bottom: 1px solid $acrdn-selected-header-color;
+          border-top: 1px solid $acrdn-selected-header-color;
+        }
+      }
+
+      .e-acrdn-header {
+        @if $skin-name == 'fabric' {
+          border: 1px solid $neutral-white;
+        }
+      }
+
+      &.e-overlay {
+        background: $acrdn-bg-color;
+      }
+
+      &.e-selected.e-select.e-expand-state > .e-acrdn-header {
+
+        &:focus {
+          @if $skin-name == 'fabric' {
+            border: 1px solid $neutral-secondary;
+          }
+          @else {
+            background: $acrdn-header-focus-bg;
+         }
+        }
+      }
+
+      .e-acrdn-panel.e-nested {
+
+        .e-acrdn-header .e-acrdn-header-content {
+          color: $acrdn-header-font;
+        }
+      }
+
+      &.e-select {
+
+        @if $skin-name == 'bootstrap' {
+          background: $grey-f5;
+          border: $acrdn-border-size solid $acrdn-default-border;
+        }
+
+        .e-acrdn-panel .e-content {
+          color: $acrdn-content-color;
+        }
+
+        @if $skin-name == 'material' {
+          .e-acrdn-panel .e-content .e-content-icon {
+            color: $acrdn-icon-color;
+        }
+      }
+
+      }
+
+      .e-acrdn-header {
+
+        .e-acrdn-header-content {
+          color: $acrdn-header-font;
+        }
+
+        .e-acrdn-header-icon {
+          color: $acrdn-icon-color;
+        }
+      }
+
+      &.e-expand-state.e-select:not(.e-selected) > .e-acrdn-header {
+
+        &:focus {
+          @if $skin-name == 'fabric' {
+            border: 1px solid $neutral-secondary;
+          }
+          @else {
+            background: $acrdn-header-focus-bg;
+           }
+        }
+      }
+
+      .e-acrdn-header {
+
+        &:hover {
+          @if $skin-name == 'fabric' {
+            border: 1px solid $acrdn-header-hover-bg;
+          }
+          background: $acrdn-header-hover-bg;
+        }
+
+        &:active {
+          @if $skin-name == 'fabric' {
+            border: 1px solid $acrdn-header-active-bg;
+          }
+          background: $acrdn-header-active-bg;
+        }
+
+        &:focus {
+          @if $skin-name == 'fabric' {
+            border: 1px solid $acrdn-header-focus-bg;
+          }
+          background: $acrdn-header-focus-bg;
+        }
+      }
+
+      &.e-select {
+
+        &.e-selected.e-expand-state > .e-acrdn-header,
+        &.e-expand-state > .e-acrdn-header {
+          @if $skin-name == 'fabric' {
+            border: 1px solid $acrdn-selected-header-color;
+          }
+          background: $acrdn-selected-header-color;
+
+          > .e-toggle-icon {
+            color: $acrdn-selected-icon-color;
+          }
+
+          .e-acrdn-header-content {
+            color: $acrdn-selected-header-font-color;
+           }
+        }
+      }
+
+      &.e-select {
+        @if $skin-name == 'material' {
+          border-bottom: $acrdn-selected-border-size $acrdn-selected-border-type  transparent;
+          border-top: $acrdn-selected-border-size $acrdn-selected-border-type  transparent;
+
+          &.e-item-focus {
+            border-color: $acrdn-header-focus-bg;
+          }
+        }
+      }
+
+      &.e-selected {
+        @if $skin-name == 'bootstrap' {
+          border:  $acrdn-border-size solid $acrdn-default-border;
+        }
+        @else {
+          &.e-select {
+            border-bottom: $acrdn-selected-border-size $acrdn-selected-border-type  $acrdn-selected-border-color;
+            border-top: $acrdn-selected-border-size $acrdn-selected-border-type  $acrdn-selected-border-color;
+          }
+        }
+
+        + .e-selected {
+          @if $skin-name == 'bootstrap' {
+            border:  $acrdn-border-size solid $acrdn-default-border;
+          }
+          @if $skin-name == 'material' {
+            border-top: $acrdn-selected-border-size solid  transparent;
+          }
+          @else {
+            border-top: $acrdn-selected-border-size none  $acrdn-selected-border-color;
+          }
+        }
+        @if $skin-name != 'bootstrap' {
+          .e-selected:last-child {
+            border-bottom: $acrdn-selected-border-size none  $acrdn-selected-border-color;
+          }
+         }
+
+        &.e-select > .e-acrdn-header {
+          @if $skin-name == 'bootstrap' {
+            background: $acrdn-selected-header-color;
+            border: 0;
+            border-bottom:  $acrdn-border-size solid $acrdn-default-border;
+            border-radius: 0;
+          }
+         }
+
+        > .e-acrdn-panel {
+
+          .e-content {
+            color: $acrdn-content-color;
+          }
+
+          .e-acrdn-header-content {
+            color: $acrdn-nested-header-font;
+          }
+        }
+      }
+
+      .e-toggle-icon {
+        color: $acrdn-icon-color;
+      }
+
+      .e-acrdn-panel {
+        font-size: $acrdn-content-font-size;
+      }
+    }
+  }
+}

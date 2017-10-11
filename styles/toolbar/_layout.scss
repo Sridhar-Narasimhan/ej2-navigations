@@ -155,6 +155,10 @@
             .e-icons {
               padding: $tbar-btn-icn-bgr-padding;
             }
+
+            .e-icons.e-icon-right {
+              padding: $tbar-btn-icn-right-bgr-padding;
+            }
           }
 
           .e-tbar-btn-text {
@@ -588,6 +592,10 @@
 
             .e-icons {
               padding: $tbar-btn-icn-nrml-padding;
+            }
+
+            .e-icons.e-icon-right {
+              padding: $tbar-btn-icn-right-nrml-padding;
             }
           }
 

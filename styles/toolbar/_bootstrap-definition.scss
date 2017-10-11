@@ -40,11 +40,16 @@ $tbar-btn-pop-nrml-minheight: 40px;
 $tbar-btn-pop-bgr-minheight: 40px;
 $tbar-pop-icon-bgr-padding: 0 12px 0 15px;
 $tbar-pop-icon-nrml-padding: 0 12px 0 15px;
+$tbar-pop-btn-txt-nrml-pad: 0 12px 0 15px;
+$tbar-pop-btn-txt-bgr-pad: 0 12px 0 15px;
+
 $tbar-nav-nrml-width: 38px;
 $tbar-nav-bgr-width: 38px;
 $tbar-popup-padding: 5px 0;
 $tbar-btn-icn-nrml-padding: 0 0 0 12px;
 $tbar-btn-icn-bgr-padding: 0 0 0 12px;
+$tbar-btn-icn-right-bgr-padding: 0 12px 0 0;
+$tbar-btn-icn-right-nrml-padding: 0 12px 0 0;
 $btn-txt-nrml-padding: 0 12px 0 6px;
 $btn-txt-bgr-padding: 0 12px 0 6px;
 $tbar-item-pop-nrml-padding: 0;
@@ -65,8 +70,8 @@ $tbar-btn-icon-nrml-width: 27px;
 $tbar-item-bgr-padding: 2.5px 5px;
 $tbar-nrml-item-size: 0;
 $tbar-bgr-item-size: 0;
-$tbar-item-bgr-padding: 3px 2.5px;
-$tbar-item-nrml-padding: 3.5px 2.5px;
+$tbar-item-bgr-padding: 3.5px 2.5px;
+$tbar-item-nrml-padding: 4px 2.5px;
 $tbar-item-nrml-minwidth: 30px;
 
 $tbar-separator-bgr-height: calc(100% - 12px);
