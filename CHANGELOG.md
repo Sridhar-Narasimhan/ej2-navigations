@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### New Components
+
+- Added Accordion component [Demos](http://ej2.syncfusion.com/demos/#/material/accordion/default.html)
+
 ## 1.0.19-preview (2017-09-28)
 
 ### Toolbar
@@ -62,4 +66,4 @@
 
 - Toolbar Item Alignment
 
-  - Toolbar commands can be aligned in `left`, `right`, and `center` positions. By default, all the commands are aligned in left position.
+- Toolbar commands can be aligned in `left`, `right`, and `center` positions. By default, all the commands are aligned in left position.
