@@ -1274,6 +1274,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private buttonRendering(item: ItemModel, innerEle: HTEle): HTEle {
         let dom: HTEle = buildTag('button', { className: CLS_TBARBTN });
+        dom.setAttribute('type', 'button');
         let textStr: Str = item.text;
         let iconCss: Str;
         let iconPos: Str;

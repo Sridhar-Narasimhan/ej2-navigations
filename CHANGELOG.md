@@ -10,6 +10,12 @@
 
 ContextMenu is a graphical user interface that appears on the user right click / touch hold action. It has support to provide nested level menu items.
 
+### Toolbar
+
+#### Bug Fixes
+
+- Toolbar button click form submit issue is fixed by changing button type as  ‘button’.
+
 ## 1.0.19-preview (2017-09-28)
 
 ### Toolbar

@@ -105,6 +105,7 @@ describe('Toolbar Control', () => {
             expect(element.getElementsByClassName('e-toolbar-item').length).toEqual(1);
             if (toolbar.items[0].type.toString() === 'Button') {
                 expect(element.getElementsByClassName('e-toolbar-item')[0].getElementsByTagName('button').length).toEqual(1);
+                expect(element.querySelector('.e-toolbar-item').firstElementChild.getAttribute('type')).toBe('button');
             }
         });
     });
