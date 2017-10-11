@@ -1,0 +1,60 @@
+@include export-module('contextmenu-theme') {
+  /*! contextmenu theme */
+  .e-contextmenu-wrapper {
+    @at-root {
+      & ul {
+        background-color: $ul-bgcolor;
+        color: $color;
+
+        & .e-menu-item  {
+
+          & .e-menu-url {
+            color: $color;
+          }
+
+          &.e-selected {
+            background-color: $li-selection-bgcolor;
+            color: $selected-color;
+          }
+
+          &.e-focused {
+            background-color: $li-bgcolor;
+            color: $li-selection-font-color;
+          }
+
+          &.e-menuheader {
+            border-bottom-color: $li-border-color;
+          }
+
+          & .e-menu-icon {
+            color: $menu-icon-color;
+          }
+
+          & .e-caret {
+            color: $caret-color;
+          }
+        }
+
+        & .e-separator {
+          border-bottom-color: $li-border-color;
+        }
+
+        & .e-disable {
+          color: $disable-text;
+
+          & .e-menu-icon {
+            color: $menu-icon-disabled-color;
+          }
+
+          & .e-caret {
+            color: $menu-icon-disabled-color;
+          }
+
+          & .e-menu-url {
+            color: $disable-text;
+          }
+        }
+      }
+    }
+  }
+}

@@ -7,8 +7,10 @@
 	"module": "dist/es6/index.js",
 	"dependencies": {
 		"@syncfusion/ej2-base": "*",
+		"@syncfusion/ej2-data": "*",
 		"@syncfusion/ej2-buttons": "*",
-		"@syncfusion/ej2-popups": "*"
+		"@syncfusion/ej2-popups": "*",
+		"@syncfusion/ej2-lists": "*"
 	},
 	"devDependencies": {
 		"@types/chai": "^3.4.28",

@@ -6,6 +6,10 @@
 
 - Added Accordion component [Demos](http://ej2.syncfusion.com/demos/#/material/accordion/default.html)
 
+### ContextMenu
+
+ContextMenu is a graphical user interface that appears on the user right click / touch hold action. It has support to provide nested level menu items.
+
 ## 1.0.19-preview (2017-09-28)
 
 ### Toolbar
