@@ -5,6 +5,7 @@
 ### New Components
 
 - Added Accordion component [Demos](http://ej2.syncfusion.com/demos/#/material/accordion/default.html)
+- Added Tab component [Demos](http://ej2.syncfusion.com/demos/#/material/tab/default.html)
 
 ### ContextMenu
 

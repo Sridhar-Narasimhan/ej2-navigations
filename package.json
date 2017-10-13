@@ -48,7 +48,16 @@
 		"toolbar-customization",
 		"command-buttons",
 		"accordion",
-		"panelbar"
+		"panelbar",
+		"ejTab",
+		"tab",
+		"TabStrip",
+		"Scrollable Tab",
+		"Mutlirow Tab",
+		"Header orientation",
+		"close tab",
+		"Tab wizard",
+		"Tab with menu"
 	],
 	"repository": {
 		"type": "git",
