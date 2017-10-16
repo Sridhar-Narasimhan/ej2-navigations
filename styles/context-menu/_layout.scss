@@ -81,6 +81,10 @@
             cursor: auto;
             pointer-events: none;
           }
+
+          &.e-menu-caret-icon {
+            padding-right: 8px;
+          }
         }
 
         & .e-menu-icon {
@@ -91,6 +95,7 @@
         & .e-separator {
           border-bottom-style: $li-border-style;
           border-bottom-width: $li-border-width;
+          line-height: normal;
           margin: $seperator-padding;
         }
       }
@@ -113,6 +118,10 @@
           &::before {
             content: $caret-icon-rtl;
          }
+        }
+
+        &.e-menu-caret-icon {
+          padding-left: 8px;
         }
       }
     }

@@ -294,7 +294,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
 
     private mouseDownHandler(e: MouseEvent): void {
         if (closest(e.target as Element, '.' + WRAPPER) !== this.getWrapper()) {
-            this.closeMenu();
+            this.closeMenu(this.navIdx.length);
         }
     }
 
@@ -380,7 +380,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             let index: number;
             let item: MenuItemModel = this.getItem(navIdx);
             if (item.items.length) {
-                this.openMenu(fli, item);
+                this.openMenu(fli, item, null, null, e);
                 fli.classList.remove(FOCUSED);
                 fli.classList.add(SELECTED);
                 this.trigger('select', { element: fli, item: this.toRawObject([item]) });
@@ -431,9 +431,9 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         this.closeMenu();
         if (this.canOpen(e.target as Element)) {
             if (e.changedTouches) {
-                this.open(e.changedTouches[0].clientY, e.changedTouches[0].clientX);
+                this.openMenu(null, null, e.changedTouches[0].clientY, e.changedTouches[0].clientX, e);
             } else {
-                this.open(e.clientY, e.clientX);
+                this.openMenu(null, null, e.clientY, e.clientX, e);
             }
         }
     }
@@ -448,10 +448,11 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private closeMenu(ulIndex: number = 0): void {
         if (this.isMenuVisible()) {
             let wrapper: Element = this.getWrapper();
-            let items: MenuItemModel[] = this.getItems(this.navIdx);
-            this.navIdx.length = ulIndex ? ulIndex - 1 : ulIndex;
+            let items: MenuItemModel[];
             for (let cnt: number = wrapper.childElementCount; cnt > ulIndex; cnt--) {
                 this.toggleAnimation(wrapper.children[cnt - 1] as HTMLElement, false);
+                items = this.getItems(this.navIdx);
+                this.navIdx.length = ulIndex ? ulIndex - 1 : ulIndex;
                 this.trigger('onClose', { items: items });
             }
         }
@@ -486,8 +487,11 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         this.openMenu(null, null, top, left);
     }
 
-    private openMenu(li: Element, item: MenuItemModel, top: number = 0, left: number = 0): void {
+    private openMenu(li: Element, item: MenuItemModel, top: number = 0, left: number = 0, e : MouseEvent | KeyboardEvent = null): void {
         let ul: HTMLElement;
+        let navIdx: number[];
+        let liItem: MenuItemModel;
+        let beforeOpenEventArgs: BeforeOpenEventArgs;
         let wrapper: Element = this.getWrapper();
         if (li) {
             ul = this.createItems(item.items);
@@ -503,9 +507,14 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         } else {
             ul = this.element;
         }
-        this.trigger('beforeOpen', { element: ul, items: li ? item.items : this.getItems([]) });
-        this.setPosition(li, ul, top, left);
-        this.toggleAnimation(ul);
+        navIdx = this.getIndex(li ? li.textContent : null);
+        liItem = li ? this.getItem(navIdx) : null;
+        beforeOpenEventArgs = { element: ul, items: li ? item.items : this.getItems([]), parentItem: liItem, event: e, cancel: false };
+        this.trigger('beforeOpen', beforeOpenEventArgs );
+        if (!beforeOpenEventArgs.cancel) {
+             this.setPosition(li, ul, top, left);
+             this.toggleAnimation(ul);
+        }
     }
 
     private createItem(item: MenuItemModel[], showIcon: boolean, moduleName: string, isHeader: boolean = true): Element {
@@ -593,6 +602,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     args.item.setAttribute('aria-haspopup', 'true');
                     args.item.setAttribute('aria-expanded', 'false');
                     args.item.removeAttribute('role');
+                    (args.item as HTMLElement).classList.add('e-menu-caret-icon');
                 }
                 this.trigger('beforeItemRender', { data: args.curData, item: args.item });
             }
@@ -700,7 +710,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                                     let liItem: MenuItemModel = this.getItem(navIdx);
                                     this.trigger('select', { element: cli, item: liItem });
                                     cli.setAttribute('aria-expanded', 'true');
-                                    this.openMenu(cli, item);
+                                    this.openMenu(cli, item, null, null, e);
                                     this.navIdx.push(cliIdx);
                                 } else {
                                     if (e.type !== 'mouseover') {
@@ -967,9 +977,17 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             ul = wrapper.children[navIdx.length];
             if (ul) {
                 if (enable) {
-                    ul.children[idx].classList.remove(disabled);
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.remove(disabled);
+                    } else {
+                       ul.children[idx].classList.remove(disabled);
+                    }
                 } else {
-                    ul.children[idx].classList.add(disabled);
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.add(disabled);
+                    } else {
+                        ul.children[idx].classList.add(disabled);
+                    }
                 }
             }
         }
@@ -1004,9 +1022,17 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             ul = wrapper.children[navIdx.length];
             if (ul) {
                 if (ishide) {
-                    ul.children[idx].classList.add(HIDE);
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.add(HIDE);
+                    } else {
+                        ul.children[idx].classList.add(HIDE);
+                    }
                 } else {
-                    ul.children[idx].classList.remove(HIDE);
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.remove(HIDE);
+                    } else {
+                        ul.children[idx].classList.remove(HIDE);
+                    }
                 }
             }
         }
@@ -1132,6 +1158,9 @@ export interface BeforeItemRenderEventArgs extends EventArgs {
  */
 export interface BeforeOpenEventArgs extends EventArgs {
     items: MenuItemModel[];
+    parentItem: MenuItemModel;
+    event: Event;
+    cancel: boolean;
 }
 
 /**

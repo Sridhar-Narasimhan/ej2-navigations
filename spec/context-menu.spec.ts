@@ -171,6 +171,7 @@ describe('ContextMenu', () => {
             contextMenu.touchHandler(touchEventArgs);
             contextMenu.close();
             contextMenu.open(10, 10);
+            contextMenu.openMenu(null,null);
         });
         it('showItemOnClick Checking', () => {
             document.body.appendChild(div);
@@ -440,6 +441,104 @@ describe('ContextMenu', () => {
         });
     });
 
+    describe('Public Methods Checking', () => {
+        afterEach(() => {
+            contextMenu.destroy();
+        });
+        it('enableItems', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.enableItems(['Copy'], false);
+            expect(contextMenu.element.children[3].classList.contains('e-disabled')).toBe(true);
+            contextMenu.enableItems(['Copy']);
+            expect(contextMenu.element.children[3].classList.contains('e-disabled')).toBe(false);
+        });
+        it('hideItems', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.hideItems(['Copy']);
+            contextMenu.hideItems(['Facebook']);
+            let wrap: HTMLElement = contextMenu.getWrapper();
+        });
+        it('showItems', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.showItems(['Copy']);
+            contextMenu.showItems(['Facebook']);
+            let wrap: HTMLElement = contextMenu.getWrapper();
+        });
+        it('removeItems', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.removeItems(['Copy']);
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);            
+        });
+        it('removeItems for child', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.removeItems(['Download']);
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+        });
+        it('insertAfter', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.insertAfter([{ text: 'Enable' }], 'Copy');
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+            contextMenu.insertAfter([{ text: 'Enable' }], 'Copy');
+        });
+        it('insertAfter for Child', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.insertAfter([{ text: 'App' }], 'Facebook');
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+        });
+        it('insertBefore', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.insertBefore([{ text: 'Disable' }], 'Copy');
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+            contextMenu.insertBefore([{ text: 'Disable' }], 'Copy');
+        });
+        it('insertBefore for child', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.insertBefore([{ text: 'App' }], 'Facebook');
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+        });
+        it('enableItems for Child', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+            let li: Element[] = <Element[] & NodeListOf<HTMLLIElement>>ul.querySelectorAll('li');
+            contextMenu.moverHandler({type: 'mouseover', target: li[1]});
+            contextMenu.enableItems(['Share All'], true);
+        });
+    });
+
     describe('Device Mode Checking', () => {
         afterEach(() => {
             contextMenu.destroy();
@@ -513,6 +612,42 @@ describe('ContextMenu', () => {
             expect(headerLI.classList.contains('e-menuheader')).toEqual(true);
             mouseEventArgs.target = childUL.children[1];
             contextMenu.clickHandler(mouseEventArgs);
+        });
+         it('enableItems', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.enableItems(['Copy'], false);
+            expect(contextMenu.element.children[3].classList.contains('e-disabled')).toBe(true);
+            contextMenu.enableItems(['Copy']);
+            expect(contextMenu.element.children[3].classList.contains('e-disabled')).toBe(false);
+        });
+        let clickEventArgs: any = {
+            preventDefault: (): void => { /** NO Code */ },
+            target: null,
+            type: 'click',
+            changedTouches: [{ clientX: 0, clientY: 0 }]
+        };
+        it('enableItems for Child', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
+            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
+            EventHandler.trigger(div, 'contextmenu', contextmenu);
+            let li: Element[] = <Element[] & NodeListOf<HTMLLIElement>>ul.querySelectorAll('li');
+            clickEventArgs.target = li[1];
+            contextMenu.clickHandler(clickEventArgs);
+            contextMenu.navIdx = [1, 0];
+            contextMenu.enableItems(['Share All'], false);
+        });
+        it('hideItems', () => {
+            document.body.appendChild(div);
+            document.body.appendChild(ul);
+            contextMenu = new ContextMenu(options, '#contextmenu');
+            contextMenu.hideItems(['Copy']);
+            contextMenu.hideItems(['Facebook']);
+            let wrap: HTMLElement = contextMenu.getWrapper();
         });
     });
 
@@ -926,103 +1061,6 @@ describe('ContextMenu', () => {
         });
     });
 
-    describe('Public Methods Checking', () => {
-        afterEach(() => {
-            contextMenu.destroy();
-        });
-        it('enableItems', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.enableItems(['Copy'], false);
-            expect(contextMenu.element.children[3].classList.contains('e-disabled')).toBe(true);
-            contextMenu.enableItems(['Copy']);
-            expect(contextMenu.element.children[3].classList.contains('e-disabled')).toBe(false);
-        });
-        it('hideItems', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.hideItems(['Copy']);
-            contextMenu.hideItems(['Facebook']);
-            let wrap: HTMLElement = contextMenu.getWrapper();
-        });
-        it('showItems', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.showItems(['Copy']);
-            contextMenu.showItems(['Facebook']);
-            let wrap: HTMLElement = contextMenu.getWrapper();
-        });
-        it('removeItems', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.removeItems(['Copy']);
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);            
-        });
-        it('removeItems for child', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.removeItems(['Download']);
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);
-        });
-        it('insertAfter', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.insertAfter([{ text: 'Enable' }], 'Copy');
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);
-            contextMenu.insertAfter([{ text: 'Enable' }], 'Copy');
-        });
-        it('insertAfter for Child', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.insertAfter([{ text: 'App' }], 'Facebook');
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);
-        });
-        it('insertBefore', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.insertBefore([{ text: 'Disable' }], 'Copy');
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);
-            contextMenu.insertBefore([{ text: 'Disable' }], 'Copy');
-        });
-        it('insertBefore for child', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.insertBefore([{ text: 'App' }], 'Facebook');
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);
-        });
-        it('enableItems for Child', () => {
-            document.body.appendChild(div);
-            document.body.appendChild(ul);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.enableItems(['Facebook'], true);
-            let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
-            contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
-            EventHandler.trigger(div, 'contextmenu', contextmenu);
-            contextMenu = new ContextMenu(options, '#contextmenu');
-            contextMenu.enableItems(['Share All'], true);
-        });
-    });
     describe('Methods Checking', () => {
         afterEach(() => {
             contextMenu.destroy();
