@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 1.0.22-preview (2017-10-16)
+
 ### Accordion
 
 - The Accordion is a vertically collapsible content panel which is displaying panels, one or multiple at a time within the available space.
