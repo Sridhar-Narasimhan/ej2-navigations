@@ -171,8 +171,9 @@
         }
       }
 
-      .e-scroll-nav.e-overlay .e-nav-arrow {
-        opacity: $tab-disable-nav-icon-color;
+      .e-scroll-nav.e-overlay .e-nav-arrow,
+      .e-scroll-nav.e-overlay:hover .e-nav-arrow {
+        color: $tab-disable-nav-icon-color;
       }
 
       .e-hor-nav,

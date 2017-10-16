@@ -311,7 +311,7 @@ $tab-alt-nav-icon-color: $tab-alt-text-color;
 $tab-active-nav-icon-color: $tab-active-text-color;
 $tab-hover-nav-icon-color: $tab-hover-text-color;
 $tab-alt-hover-nav-icon-color: $tab-alt-hover-text-color;
-$tab-disable-nav-icon-color: $tab-disable-text-color;
+$tab-disable-nav-icon-color: rgba($grey-light-font, .54);
 $tab-nav-focus-bg-color: rgba($grey-light-font, .12);
 $tab-nav-focus-icon-color: rgba($grey-light-font, .87);
 $tab-bg-nav-focus-icon-color: rgba($grey-white, .87);

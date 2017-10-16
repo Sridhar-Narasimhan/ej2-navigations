@@ -791,7 +791,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let toolEle: HTEle = this.popObj.element.parentElement;
         let popupNav: HTEle = <HTEle>toolEle.querySelector('.' + CLS_TBARNAV);
         setStyle(popObj.element, { height: 'auto', maxHeight: '' });
-        popObj.element.style.maxHeight = popObj.element.clientHeight + 'px';
+        popObj.element.style.maxHeight = popObj.element.offsetHeight + 'px';
         let popupElePos: number = popupEle.offsetTop + popupEle.offsetHeight + calculatePosition(toolEle).top;
         let popIcon: Element = (popupNav.firstElementChild as Element);
         popupNav.classList.add(CLS_TBARNAVACT);

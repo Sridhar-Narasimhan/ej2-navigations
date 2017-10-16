@@ -240,6 +240,12 @@
         }
       }
 
+      .e-toolbar-items:not(.e-tbar-pos) .e-indicator + .e-toolbar-item:nth-last-child(1).e-active {
+        @if $skin-name == 'bootstrap' {
+          margin: 1px 2px 0 0;
+        }
+      }
+
       &.e-close-show {
 
         .e-toolbar-item.e-itop .e-text-wrap,
@@ -286,6 +292,11 @@
             @media screen and (max-width: 480px) {
               padding-right: 0;
             }
+          }
+
+          .e-tab-text {
+            height: $tab-big-pop-item-height;
+            line-height: $tab-big-pop-item-height;
           }
 
           &.e-itop,
@@ -759,11 +770,6 @@
           line-height: $tab-big-height;
         }
 
-        &.e-active.e-ileft .e-tab-wrap:focus .e-tab-text,
-        &.e-active.e-iright .e-tab-wrap:focus .e-tab-text {
-          line-height: $tab-big-active-text-container-height - 1;
-        }
-
         &.e-active {
 
           @if $skin-name == 'fabric' {
@@ -814,6 +820,12 @@
       }
 
       .e-toolbar-pop {
+
+        .e-toolbar-item .e-tab-wrap:focus,
+        .e-toolbar-item .e-tab-wrap:focus .e-text-wrap {
+          height: $tab-big-pop-item-height;
+          line-height: $tab-big-pop-item-height;
+        }
 
         .e-toolbar-item.e-itop .e-tab-wrap:focus,
         .e-toolbar-item.e-ibottom .e-tab-wrap:focus {
@@ -1291,6 +1303,12 @@
       @media screen and (max-width: 480px) {
         height: $tab-big-height;
         min-height: $tab-big-height;
+      }
+
+      @if $skin-name == 'fabric' {
+        &[style*= 'overflow: hidden'] .e-toolbar-item:last-child {
+          padding-right: 1px;
+        }
       }
 
       .e-toolbar-items {
@@ -1817,6 +1835,11 @@
           &.e-itop .e-text-wrap,
           &.e-ibottom .e-text-wrap {
             height: auto;
+          }
+
+          .e-tab-text {
+            height: $tab-nrml-pop-item-height;
+            line-height: $tab-nrml-pop-item-height;
           }
         }
       }
@@ -2476,6 +2499,12 @@
       }
 
       .e-toolbar-pop {
+
+        .e-toolbar-item .e-tab-wrap:focus,
+        .e-toolbar-item .e-tab-wrap:focus .e-text-wrap {
+          height: $tab-nrml-pop-item-height;
+          line-height: $tab-nrml-pop-item-height;
+        }
 
         .e-toolbar-item.e-itop .e-tab-wrap:focus,
         .e-toolbar-item.e-ibottom .e-tab-wrap:focus {

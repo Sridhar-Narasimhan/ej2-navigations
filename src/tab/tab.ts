@@ -547,6 +547,18 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             let trg: HTEle = this.findEle(select('.e-content', this.element).children, CLS_CONTENT + '_' + no);
         }
     }
+    private checkPopupOverflow(ele: HTEle): boolean {
+        this.tbPop = <HTEle> select('.' +  CLS_TB_POP, this.element);
+        let popIcon: HTEle = (<HTEle> select('.e-hor-nav', this.element));
+        let tbrItems: HTEle = (<HTEle> select('.' + CLS_TB_ITEMS, this.element));
+        if ((this.enableRtl && ((popIcon.offsetLeft + popIcon.offsetWidth) > tbrItems.offsetLeft))
+        || (!this.enableRtl && popIcon.offsetLeft < tbrItems.offsetWidth)) {
+            ele.classList.add(CLS_TB_POPUP);
+            this.tbPop.insertBefore(<Node> ele.cloneNode(true), selectAll('.' +  CLS_TB_POPUP, this.tbPop)[0]);
+            ele.outerHTML = '';
+        }
+        return true;
+    }
     private popupHandler(target: HTEle): number {
         let ripEle: HTEle = <HTEle> target.querySelector('.e-ripple-element');
         if (!isNOU(ripEle)) {
@@ -554,23 +566,17 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             target.querySelector('.' + CLS_WRAP).classList.remove('e-ripple');
         }
         this.tbItem = selectAll('.' + CLS_TB_ITEMS + ' .' + CLS_TB_ITEM, this.hdrEle);
+        let lastChild: HTEle = <HTEle> this.tbItem[this.tbItem.length - 1];
         if (this.tbItem.length !== 0) {
-            this.tbPop = <HTEle> select('.' +  CLS_TB_POP, this.element);
-            let lastChild: HTEle = <HTEle> this.tbItem[this.tbItem.length - 1];
-            lastChild.classList.add(CLS_TB_POPUP);
-            this.tbPop.insertBefore(<Node> lastChild.cloneNode(true), selectAll('.' +  CLS_TB_POPUP, this.tbPop)[0]);
-            lastChild.outerHTML = '';
-        }
-        target.classList.remove(CLS_TB_POPUP);
-        this.tbItems.appendChild(target.cloneNode(true));
-        this.actEleId = target.id;
-        target.outerHTML = '';
-        this.isPopup = true;
-        let popIcon: HTEle = (<HTEle> select('.e-hor-nav', this.element));
-        let tbrItems: HTEle = (<HTEle> select('.' + CLS_TB_ITEMS, this.element));
-        if ((this.enableRtl && ((popIcon.offsetLeft + popIcon.offsetWidth) > tbrItems.offsetLeft))
-            || (!this.enableRtl && popIcon.offsetLeft < tbrItems.offsetWidth)) {
-            this.tbObj.refreshOverflow();
+            target.classList.remove(CLS_TB_POPUP);
+            this.tbItems.appendChild(target.cloneNode(true));
+            this.actEleId = target.id;
+            target.outerHTML = '';
+            if (this.checkPopupOverflow(lastChild)) {
+                let prevEle: HTEle = <HTEle> (<HTEle>this.tbItems.lastChild).previousElementSibling;
+                this.checkPopupOverflow(prevEle);
+            }
+            this.isPopup = true;
         }
         return selectAll('.' + CLS_TB_ITEM, this.tbItems).length - 1;
     }
@@ -583,7 +589,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     private prevCtnAnimation(prev: number, current: number): AnimationModel {
         let animation: AnimationModel;
         let checkRTL: boolean = this.enableRtl || this.element.classList.contains(CLS_RTL);
-        if (prev <= current) {
+        if (this.isPopup || prev <= current) {
             if (this.animation.previous.effect === <TabEffect>'SlideLeftIn') {
                 animation = { name: 'SlideLeftOut',
                  duration: this.animation.previous.duration, timingFunction: this.animation.previous.easing };
@@ -629,14 +635,14 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             return; }
         let cnt: HTEle = <HTEle> select('.' + CLS_CONTENT, this.element);
         let animateObj: AnimationModel;
-        if (this.prevIndex > this.selectedItem) {
+        if (this.prevIndex > this.selectedItem && !this.isPopup) {
             let openEff: Effect = <Effect> this.animation.previous.effect;
             animateObj = {
                 name: <Effect> ((openEff === <Effect> 'None') ? '' : ((openEff !== <Effect> 'SlideLeftIn') ? openEff : 'SlideLeftIn')),
                 duration: this.animation.previous.duration,
                 timingFunction: this.animation.previous.easing
             };
-        } else if (this.prevIndex < this.selectedItem  || this.prevIndex === this.selectedItem) {
+        } else if (this.isPopup || this.prevIndex < this.selectedItem  || this.prevIndex === this.selectedItem) {
             let clsEff: Effect = <Effect> this.animation.next.effect;
             animateObj = {
                 name: <Effect> ((clsEff === <Effect> 'None') ? '' : ((clsEff !== <Effect> 'SlideRightIn') ? clsEff : 'SlideRightIn')),
@@ -654,6 +660,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (!this.initRender) {
           this.triggerPrevAnimation(oldCnt, prevIndex); }
         this.prevActiveEle = newCnt.id;
+        this.isPopup = false;
         new Animation(animateObj).animate(newCnt);
     }
     private keyPressed(trg: HTEle): void {
@@ -708,7 +715,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (cls === '') { return; }
         let list: Str[] = cls.split(' ');
         for (let i: number = 0; i < list.length; i++) {
-            if (val === true) {
+            if (val) {
                 ele.classList.add(list[i]);
             } else {
                 ele.classList.remove(list[i]);

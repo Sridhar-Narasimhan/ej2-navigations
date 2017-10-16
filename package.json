@@ -57,7 +57,14 @@
 		"Header orientation",
 		"close tab",
 		"Tab wizard",
-		"Tab with menu"
+		"Tab with menu",
+		"ejAccordion",
+		"Accordion",
+		"Multiple open panel bar",
+		"Multiple open Accordion",
+		"Panel Bar",
+		"Collapsible panel bar",
+		"AJAX Load accordion"
 	],
 	"repository": {
 		"type": "git",
