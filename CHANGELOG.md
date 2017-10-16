@@ -2,11 +2,18 @@
 
 ## [Unreleased]
 
-### New Components
+### Accordion
 
-- Added Accordion component [Demos](http://ej2.syncfusion.com/demos/#/material/accordion/default.html)
-- Added Tab component [Demos](http://ej2.syncfusion.com/demos/#/material/tab/default.html)
-- Added TreeView component [Demos](http://ej2.syncfusion.com/demos/#/material/treeview/default.html)
+- The Accordion is a vertically collapsible content panel which is displaying panels, one or multiple at a time within the available space.
+
+### Tab
+
+- The Tab is a content panel to show multiple contents in specific space one at a time.
+
+### TreeView
+
+- The TreeView component is used to represent the hierarchical data in tree like structure with advanced functions to perform edit, drag and drop, selection with CheckBox and more.
+- TreeView can be populated from a data source, such as array of JavaScript objects, or DataManager.
 
 ### ContextMenu
 
