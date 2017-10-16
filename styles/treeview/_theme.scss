@@ -1,0 +1,206 @@
+@mixin sibling-theme($left, $right) {
+  @if $treeview-skin-name == 'material' {
+    background: $treeview-drag-line-bg;
+  }
+  @else {
+    border-#{$right}-color: transparent;
+    border-#{$left}-color: $treeview-drag-line-bg;
+  }
+}
+@include export-module('treeview-theme') {
+  // sass-lint:disable no-vendor-prefixes
+  .e-bigger .e-treeview,
+  .e-treeview.e-bigger {
+
+    .e-list-text {
+      font-size: $treeview-big-font-size;
+
+      .e-tree-input {
+        font-size: $treeview-big-font-size;
+      }
+    }
+
+    .e-icon-collapsible::before,
+    .e-icon-expandable::before {
+      font-size: $treeview-big-icon-font-size;
+    }
+  }
+
+  .e-treeview {
+    -webkit-tap-highlight-color: transparent;
+
+    .e-text-content,
+    .e-fullrow {
+      border-color: $treeview-item-border-color;
+    }
+
+    .e-list-text {
+      color: $treeview-text-color;
+      font-size: $treeview-font-size;
+
+      .e-tree-input {
+        border-color: $treeview-input-border-color;
+        font-size: $treeview-font-size;
+
+        &::selection {
+          background: $treeview-input-selction-bg;
+          color: $treeview-input-selction-color;
+        }
+      }
+    }
+
+    .e-list-icon,
+    .e-list-img {
+      font-size: $treeview-image-font-size;
+    }
+
+    .e-list-item.e-active,
+    .e-list-item.e-hover {
+      background: transparent;
+    }
+
+    .e-list-item.e-hover > .e-text-content {
+      color: $treeview-text-hover-color;
+
+      .e-list-text {
+        color: $treeview-text-hover-color;
+      }
+
+      .e-icon-collapsible,
+      .e-icon-expandable {
+        color: $treeview-icon-hover-color;
+      }
+    }
+
+    .e-list-item.e-active > .e-text-content {
+      color: $treeview-text-active-color;
+
+      .e-list-text {
+        color: $treeview-text-active-color;
+      }
+
+      .e-icon-collapsible,
+      .e-icon-expandable {
+        color: $treeview-icon-active-color;
+      }
+    }
+
+    .e-list-item.e-hover > .e-fullrow {
+      background-color: $treeview-item-hover-bg;
+      border-color: $treeview-item-hover-border-color;
+    }
+
+    .e-list-item.e-active > .e-fullrow {
+      background-color: $treeview-item-active-bg;
+      border-color: $treeview-item-active-border-color;
+    }
+
+    .e-icon-collapsible,
+    .e-icon-expandable {
+      color: $treeview-icon-color;
+    }
+
+    .e-icon-collapsible::before,
+    .e-icon-expandable::before {
+      font-size: $treeview-icon-font-size;
+    }
+
+    .e-list-item.e-disable {
+
+      .e-list-text {
+        color: $treeview-text-disable-color;
+      }
+
+      .e-icon-collapsible,
+      .e-icon-expandable {
+        color: $treeview-icon-disable-color;
+      }
+    }
+
+    .e-sibling {
+      @include sibling-theme(left, right);
+    }
+
+    .e-sibling::before {
+      background: $treeview-drag-line-color;
+    }
+
+    .e-popup {
+
+      .e-content {
+        background-color: $treeview-popup-bg-color;
+        border-color: $treeview-popup-border-color;
+      }
+
+      &.e-select {
+
+        .e-icons {
+          border-color: $treeview-popup-border-color;
+        }
+      }
+
+      .e-downtail {
+
+        &::before {
+          border-top-color: $treeview-popup-border-color;
+        }
+
+        &::after {
+          border-top-color: $treeview-popup-bg-color;
+        }
+      }
+    }
+
+    &:not(.e-fullrow-wrap) {
+
+      .e-list-item.e-hover > .e-text-content {
+        background-color: $treeview-item-hover-bg;
+        border-color: $treeview-item-hover-border-color;
+      }
+
+      .e-list-item.e-active > .e-text-content {
+        background-color: $treeview-item-active-bg;
+        border-color: $treeview-item-active-border-color;
+      }
+    }
+
+    &.e-fullrow-wrap {
+
+      .e-text-content {
+        border-color: transparent;
+      }
+    }
+
+    &.e-drag-item {
+      background-color: $treeview-drag-item-bg;
+      font-family: $treeview-font-family;
+
+      .e-icon-collapsible::before,
+      .e-icon-expandable::before {
+        font-size: $treeview-drag-icon-font-size;
+      }
+
+      .e-list-text {
+        color: $treeview-drag-item-color;
+
+        .e-icons {
+          color: $treeview-drag-icon-color;
+        }
+      }
+
+      .e-drop-count {
+        background-color: $treeview-drop-count-bg;
+        border-color: $treeview-drop-count-border;
+        color: $treeview-drop-count-color;
+      }
+    }
+
+    &.e-rtl {
+
+      .e-sibling {
+        @include sibling-theme(right, left);
+      }
+    }
+  }
+  // sass-lint:enable no-vendor-prefixes
+}
