@@ -9,9 +9,44 @@
       font-size: $tbar-icons-bgr-font-size;
     }
 
+    &.e-toolpop.e-rtl {
+
+      .e-toolbar-items:not(.e-tbar-pos) {
+
+        .e-toolbar-center .e-toolbar-item {
+          margin: 0;
+        }
+
+        .e-toolbar-right .e-toolbar-item:last-child {
+          margin: 0;
+          margin-left: $tbar-item-nrml-mrgn;
+        }
+
+        .e-toolbar-right .e-toolbar-item {
+          margin: 0;
+        }
+      }
+    }
+
     &.e-rtl {
 
       .e-toolbar-items {
+
+        .e-hscroll-bar .e-hscroll-content {
+
+          .e-toolbar-center .e-toolbar-item {
+            margin: 0;
+          }
+
+          .e-toolbar-right .e-toolbar-item:last-child {
+            margin-left: $tbar-item-bgr-mrgn;
+            margin-right: 0;
+          }
+
+          .e-toolbar-right .e-toolbar-item {
+            margin: 0;
+          }
+        }
 
         .e-toolbar-left {
 
@@ -81,6 +116,21 @@
 
     .e-toolbar-items {
       min-height: $tbar-bgr-items-size;
+
+      .e-hscroll-bar .e-hscroll-content {
+
+        .e-toolbar-center .e-toolbar-item {
+          margin: 0;
+        }
+
+        .e-toolbar-right .e-toolbar-item:last-child {
+          margin-right: $tbar-item-bgr-mrgn;
+        }
+
+        .e-toolbar-right .e-toolbar-item {
+          margin: 0;
+        }
+      }
 
       .e-toolbar-left {
 
@@ -285,7 +335,41 @@
       text-align: center;
     }
 
+    &.e-toolpop.e-rtl {
+
+      .e-toolbar-items:not(.e-tbar-pos) {
+
+        .e-toolbar-center .e-toolbar-item {
+          margin: 0;
+          }
+
+        .e-toolbar-right .e-toolbar-item:last-child {
+          margin: 0;
+          margin-left: $tbar-item-nrml-mrgn;
+         }
+
+        .e-toolbar-right .e-toolbar-item {
+          margin: 0;
+         }
+      }
+    }
+
     &.e-rtl {
+
+      .e-hscroll-bar .e-hscroll-content {
+
+        .e-toolbar-center .e-toolbar-item {
+          margin: 0;
+        }
+
+        .e-toolbar-right .e-toolbar-item:last-child {
+          margin-right: $tbar-item-nrml-mrgn;
+        }
+
+        .e-toolbar-right .e-toolbar-item {
+          margin: 0;
+        }
+      }
 
       .e-toolbar-items {
 
@@ -523,6 +607,21 @@
           margin-right: $tbar-item-nrml-mrgn;
      }
     }
+
+      .e-hscroll-bar .e-hscroll-content {
+
+        .e-toolbar-center .e-toolbar-item {
+          margin: 0;
+        }
+
+        .e-toolbar-right .e-toolbar-item:last-child {
+          margin-right: $tbar-item-nrml-mrgn;
+        }
+
+        .e-toolbar-right .e-toolbar-item {
+          margin: 0;
+        }
+      }
 
       .e-toolbar-item  {
         align-content: center;

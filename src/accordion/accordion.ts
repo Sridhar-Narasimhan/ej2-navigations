@@ -889,7 +889,7 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     /**
      * Show or hide the specified item from Accordion.
      * @param  {number} index - Number value that determines which item to be hide/show.
-     * @param  {Boolean} isHidden - Boolean value that determines the action either hide(false) or show(true). Default value is false.
+     * @param  {Boolean} isHidden - Boolean value that determines the action either hide(true) or show(false). Default value is false.
      *  `isHidden` value is false then the item is shown or else item is hidden.
      * @returns void
      */

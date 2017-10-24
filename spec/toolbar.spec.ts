@@ -2691,6 +2691,82 @@ describe('Toolbar Control', () => {
             toolbar.resize();
         });
     });
+    describe('Toolbar item alignment with RTL mode', () => {
+        let toolbar: any;
+        document.body.innerHTML = '';
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            setStyleAttribute(ele, { 'display': 'block', 'white-space': 'nowrap', 'position': 'relative' });
+            ele.style.display = 'block';
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.removeAttribute('style');
+            document.body.innerHTML = '';
+        });
+        it('Positioning with toolbar alignment item ', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                enableRtl: true,
+                items: [
+                    { type: 'Button', text: 'new', align: 'left' },
+                    { type: 'Button', text: 'Underline Button', align: 'right' },
+                    { type: 'Button', text: 'Underline Right', align: 'right' }]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            element.style.width = '250px';
+            toolbar.resize();
+            expect(toolbar.element.querySelector('.e-toolbar-right').style.left === "").toBe(false);
+            expect(toolbar.element.querySelector('.e-toolbar-right').style.right === "").toBe(true);
+            toolbar.enableRtl = false;
+            toolbar.dataBind();
+            expect(toolbar.element.querySelector('.e-toolbar-right').style.left === "").toBe(true);
+            expect(toolbar.element.querySelector('.e-toolbar-right').style.right === "").toBe(false);
+        });
+    });
+    describe(' Keyboard Interaction testing with alignment', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        document.body.innerHTML = '';
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            setStyleAttribute(ele, { 'display': 'block', 'white-space': 'nowrap', 'position': 'relative' });
+            ele.style.display = 'block';
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.removeAttribute('style');
+            document.body.innerHTML = '';
+        });
+        it('allowKeyboardInteraction Property testing ', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                items: [
+                    { type: 'Button', text: 'new', align: 'left' },
+                    { type: 'Button', text: 'Underline Button', align: 'right' },
+                    { type: 'Button', text: 'Underline Right', align: 'right' }]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            toolbar.element.querySelector('.e-toolbar-item').children[0].focus();
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveRight',
+                target: toolbar.element.querySelector('.e-toolbar-item').children[0],
+            };
+            expect(element.classList.contains('e-keyboard')).toEqual(true);
+            toolbar.keyActionHandler(keyEventArgs);
+            expect(document.activeElement.children[0].innerHTML).toEqual('Underline Button');
+        });
+    });
 
 
     describe(' Keyboard Interaction testing', () => {
@@ -4406,7 +4482,89 @@ describe('Toolbar Control', () => {
             expect(popupNav.classList.contains('e-ie-align')).toEqual(true);
         });
     });
-
+    describe('Popup Close Click event testing', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        document.body.innerHTML = '';
+        beforeEach((done: Function) => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            setStyleAttribute(ele, { 'display': 'block', 'white-space': 'nowrap', 'position': 'relative' });
+            ele.style.display = 'block';
+            document.body.appendChild(ele);
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 50,
+                overflowMode: 'Popup',
+                items: [
+                    { type: 'Button', text: 'new', },
+                    { type: 'Button', text: 'Underline Button', }]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'popupOpen',
+                target: toolbar.element.querySelector('.e-hor-nav'),
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            setTimeout(() => { done(); }, 450);
+        });
+        afterEach((): void => {
+            expect(isVisible(toolbar.popObj.element)).toEqual(false);
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Popup  Close throught Click event  testing ',(done: Function) => {
+            expect(isVisible(toolbar.popObj.element)).toEqual(true);
+            toolbar.popObj.element.children[0].click();
+            setTimeout(() => { done(); }, 450);
+        });
+    });
+    describe('Popup not Close Click event args testing', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        document.body.innerHTML = '';
+        function clicked (e: ClickEventArgs) {
+          e.cancel = true; }
+        beforeEach((done: Function) => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            setStyleAttribute(ele, { 'display': 'block', 'white-space': 'nowrap', 'position': 'relative' });
+            ele.style.display = 'block';
+            document.body.appendChild(ele);
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                clicked: clicked,
+                width: 50,
+                overflowMode: 'Popup',
+                items: [
+                    { type: 'Button', text: 'new', },
+                    { type: 'Button', text: 'Underline Button', }]
+            });
+            toolbar.appendTo('#ej2Toolbar');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'popupOpen',
+                target: toolbar.element.querySelector('.e-hor-nav'),
+            };
+            toolbar.keyActionHandler(keyEventArgs);
+            setTimeout(() => { done(); }, 450);
+        });
+        afterEach((): void => {
+            expect(isVisible(toolbar.popObj.element)).toEqual(true);
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Popup not close throught Click event  testing ',(done: Function) => {
+            expect(isVisible(toolbar.popObj.element)).toEqual(true);
+            toolbar.popObj.element.children[0].click();
+            setTimeout(() => { done(); }, 450);
+        });
+    });
     describe('Popup Open animation testing with animation', () => {
         let toolbar: any;
         let keyEventArgs: any;

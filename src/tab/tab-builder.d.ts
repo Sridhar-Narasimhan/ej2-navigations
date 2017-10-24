@@ -76,7 +76,7 @@ Possible values are:
 - None - Based on height property given, content panel height is set.
 - Auto - Tallest panel height of given Tab contents is set to all other panels.
 - Content - Based on the corresponding content height, content panel height is set.
-- Fill - Based on the parent height, content panel hight is set.
+- Fill - Based on the parent height, content panel height is set.
 	*/
 	heightAdjustMode(value:heightStyles): BuilderProperties;
 	isDestroyed(value:boolean): BuilderProperties;

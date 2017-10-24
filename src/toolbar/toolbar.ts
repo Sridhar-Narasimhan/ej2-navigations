@@ -64,15 +64,18 @@ interface Template {
     appendTo: Function;
 }
 
-/** @hidden */
-export interface ToolbarItemAlignIn {
+interface ToolbarItemAlignIn {
     lefts: HTMLElement[];
     centers: HTMLElement[];
     rights: HTMLElement[];
 }
 export interface ClickEventArgs extends BaseEventArgs {
+  /** Defines the current Toolbar Item Object. */
   item: ItemModel;
+  /** Defines the current Event arguments. */
   originalEvent: Event;
+  /** Defines the prevent action. */
+  cancel?: boolean;
 }
 /**
  * An item object that is used to configure toolbar commands.
@@ -355,7 +358,8 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     private docKeyDown (e: KeyboardEvent): void {
         if (e.keyCode === 9 && (<HTEle> e.target).classList.contains('e-hor-nav') === true && isVisible(this.popObj.element)) {
             this.popObj.hide({ name: 'SlideUp', duration: 100 }); }
-        if ((e.keyCode === 40 || e.keyCode === 38) && !isNOU(this.popObj) && isVisible(this.popObj.element)) {
+        let keyCheck: boolean = (e.keyCode === 40 || e.keyCode === 38 || e.keyCode === 35 || e.keyCode === 36);
+        if (keyCheck) {
            e.preventDefault(); }
     }
     private unwireEvents(): void {
@@ -477,7 +481,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     } else {
                         this.eleFocus(clst, value);
                     }
-                } else if (e.action === 'moveDown') {
+                } else if (e.action === 'moveDown' && popObj && isVisible(popObj.element) ) {
                     this.elementFocus(clst);
                 }
                 break;
@@ -541,6 +545,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
          this.elementFocus(sib);
         } else if (this.tbarAlign) {
            let elem: HTEle = Object( closest.parentElement)[pos + 'ElementSibling'] as HTEle;
+           if (!isNOU(elem) && elem.children.length === 0) {
+            elem = Object(elem)[pos + 'ElementSibling'] as HTEle;
+           }
            if (!isNOU(elem) && elem.children.length > 0) {
              if (pos === 'next') {
                 let el: HTEle = <HTEle>elem.querySelector('.' + CLS_ITEM);
@@ -560,6 +567,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let trgt: HTEle = <HTEle>e.target;
         let clsList: DOMTokenList = trgt.classList;
         let ele: HTEle = this.element;
+        let isPopupElement: boolean = !isNOU(closest(trgt, '.' + CLS_POPUPCLASS));
         let popupNav: HTEle = <HTEle>closest(trgt, ('.' + CLS_TBARNAV));
         if (!popupNav) {
             popupNav = trgt;
@@ -579,6 +587,8 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         }
         let eventArgs: ClickEventArgs = {originalEvent: e, item: itemObj};
         this.trigger('clicked', eventArgs);
+        if (isPopupElement && !eventArgs.cancel) {
+          this.popObj.hide({ name: 'SlideUp', duration: 100 }); }
     };
 
     private popupClickHandler(ele: HTMLElement, popupNav: HTMLElement, CLS_RTL: Str): void {
@@ -641,7 +651,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     private itemWidthCal(items: HTEle): number {
       let width: number = 0;
       [].slice.call( selectAll('.' + CLS_ITEM), items).forEach ((el: HTEle) => {
-         width += el.offsetWidth;
+         width += (el.offsetWidth + parseFloat(window.getComputedStyle(el).marginRight));
       });
       return width;
     }
@@ -1032,7 +1042,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
       let tbarWid: number = this.element.offsetWidth;
       if (popupNav) {
           tbarWid -= popupNav.offsetWidth;
-          innerItem[2].style.right = popupNav.offsetWidth + 'px';
+          let popWid: string = popupNav.offsetWidth + 'px';
+          innerItem[2].removeAttribute('style');
+          this.enableRtl ? innerItem[2].style.left = popWid :  innerItem[2].style.right = popWid;
       }
       if (tbarWid <= margin) { return; }
       let value: number = (((tbarWid - margin)) - innerItem[1].offsetWidth) / 2;
@@ -1197,8 +1209,8 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     /**
      * Removes the items from the toolbar. Acceptable arguments are index of item / HTMLElement / Node list.
-     * @param  {number|HTMLElement|NodeList|HTMLElement[]}
-     * @args - Index or DOM element or an Array of item which is to be removed from the toolbar.
+     * @param  {number|HTMLElement|NodeList|HTMLElement[]} args
+     * Index or DOM element or an Array of item which is to be removed from the toolbar.
      * @returns void
      */
     public removeItems(args: number | HTMLElement | NodeList | Element | HTMLElement[]): void {
@@ -1449,6 +1461,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     if (!isNOU(this.popObj)) {
                      newProp.enableRtl ? this.add(this.popObj.element, CLS_RTL) : this.remove(this.popObj.element, CLS_RTL);
                     }
+                    if (this.tbarAlign) { this.itemPositioning(); }
                     break;
             }
         }

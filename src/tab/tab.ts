@@ -282,7 +282,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
      * - None - Based on height property given, content panel height is set.
      * - Auto - Tallest panel height of given Tab contents is set to all other panels.
      * - Content - Based on the corresponding content height, content panel height is set.
-     * - Fill - Based on the parent height, content panel hight is set.
+     * - Fill - Based on the parent height, content panel height is set.
      * @default 'Content'
      */
     @Property('Content')
@@ -986,7 +986,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     /**
      * Adds new items to the Tab which accepts an array as Tab items.
      * @param  {TabItemsModel[]} items - An array of item which to be added to the tab.
-     * @param  {number} index - Number value that determines where the items to be added. By default index is 0.
+     * @param  {number} index - Number value that determines where the items to be added. By default item is added in last index.
      * @returns void
      */
     public addTab(items: TabItemModel[], index?: number): void {
@@ -1033,7 +1033,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     /**
      * Show or hide the Tab which is in the specified index.
      * @param  {number} index - Index value of target item.
-     * @param  {boolean} value - Based on this boolean value, item will be hide(false) or show(true). By default value is true.
+     * @param  {boolean} value - Based on this boolean value, item will be hide(true) or show(false). By default value is true.
      * @returns void
      */
     public hideTab(index: number, value?: boolean): void {

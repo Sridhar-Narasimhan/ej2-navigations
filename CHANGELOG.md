@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Toolbar
+
+#### Bug Fixes
+
+- Toolbar alignment feature issue with RTL mode is fixed.
+
+- The popup is not closed when its items are gets clicked issue fixed.
+
+- Issue with an arrow key focus in alignment feature is fixed.
+
 ## 1.0.22-preview (2017-10-16)
 
 ### Accordion
