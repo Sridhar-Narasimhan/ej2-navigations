@@ -1,5 +1,5 @@
-﻿import { Component, EmitType, isUndefined, CreateBuilder, Browser, compile } from '@syncfusion/ej2-base';import { Property, INotifyPropertyChanged, NotifyPropertyChanges, ChildProperty, Complex } from '@syncfusion/ej2-base';import { Event, EventHandler, KeyboardEvents, KeyboardEventArgs } from '@syncfusion/ej2-base';import { rippleEffect, Effect, Animation, AnimationOptions, RippleOptions } from '@syncfusion/ej2-base';import { Draggable, DragEventArgs, Droppable, DropEventArgs } from '@syncfusion/ej2-base';import { addClass, removeClass, closest, matches, detach, select, selectAll, isVisible, createElement, append } from '@syncfusion/ej2-base';import { DataManager, Query } from '@syncfusion/ej2-data';import { isNullOrUndefined as isNOU, Touch, TapEventArgs } from '@syncfusion/ej2-base';import { ListBase, ListBaseOptions, SortOrder, AriaAttributesMapping, FieldsMapping } from '@syncfusion/ej2-lists';import { createCheckBox } from '@syncfusion/ej2-buttons';import { TreeViewHelper } from './treeview-builder';
-import {ExpandOnSettings,DataBoundEventArgs,DrawNodeEventArgs,NodeKeyPressEventArgs,NodeCheckEventArgs,NodeClickEventArgs,NodeExpandEventArgs,DragAndDropEventArgs,NodeEditEventArgs,NodeSelectEventArgs} from "./treeview";
+﻿import { Component, EmitType, isUndefined, CreateBuilder, Browser, compile } from '@syncfusion/ej2-base';import { Property, INotifyPropertyChanged, NotifyPropertyChanges, ChildProperty, Complex } from '@syncfusion/ej2-base';import { Event, EventHandler, KeyboardEvents, KeyboardEventArgs } from '@syncfusion/ej2-base';import { rippleEffect, Effect, Animation, AnimationOptions, RippleOptions } from '@syncfusion/ej2-base';import { Draggable, DragEventArgs, Droppable, DropEventArgs } from '@syncfusion/ej2-base';import { addClass, removeClass, closest, matches, detach, select, selectAll, isVisible, createElement, append } from '@syncfusion/ej2-base';import { DataManager, Query } from '@syncfusion/ej2-data';import { isNullOrUndefined as isNOU, Touch, TapEventArgs } from '@syncfusion/ej2-base';import { ListBase, ListBaseOptions, AriaAttributesMapping, FieldsMapping } from '@syncfusion/ej2-lists';import { createCheckBox } from '@syncfusion/ej2-buttons';import { TreeViewHelper } from './treeview-builder';
+import {ExpandOnSettings,SortOrder,DataBoundEventArgs,DrawNodeEventArgs,NodeKeyPressEventArgs,NodeCheckEventArgs,NodeClickEventArgs,NodeExpandEventArgs,DragAndDropEventArgs,NodeEditEventArgs,NodeSelectEventArgs} from "./treeview";
 import {ComponentModel} from '@syncfusion/ej2-base';
 
 /**
@@ -123,13 +123,13 @@ export interface ActionSettingsModel {
 export interface NodeAnimationSettingsModel {
 
     /**
-     * Specifies child dataSource field that mapped in dataSource
+     * Specifies the animation settings for collapsing node.
      * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
      */
     collapse?: ActionSettingsModel;
 
     /**
-     * Specifies child dataSource field that mapped in dataSource
+     * Specifies the animation settings for expanding node.
      * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
      */
     expand?: ActionSettingsModel;

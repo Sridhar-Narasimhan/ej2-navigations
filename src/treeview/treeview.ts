@@ -6,7 +6,7 @@ import { Draggable, DragEventArgs, Droppable, DropEventArgs } from '@syncfusion/
 import { addClass, removeClass, closest, matches, detach, select, selectAll, isVisible, createElement, append } from '@syncfusion/ej2-base';
 import { DataManager, Query } from '@syncfusion/ej2-data';
 import { isNullOrUndefined as isNOU, Touch, TapEventArgs } from '@syncfusion/ej2-base';
-import { ListBase, ListBaseOptions, SortOrder, AriaAttributesMapping, FieldsMapping } from '@syncfusion/ej2-lists';
+import { ListBase, ListBaseOptions, AriaAttributesMapping, FieldsMapping } from '@syncfusion/ej2-lists';
 import { createCheckBox } from '@syncfusion/ej2-buttons';
 import { TreeViewModel, FieldsSettingsModel, NodeAnimationSettingsModel, ActionSettingsModel } from './treeview-model';
 import { TreeViewHelper } from './treeview-builder';
@@ -350,6 +350,11 @@ export class FieldsSettings extends ChildProperty<FieldsSettings> {
 
 export type ExpandOnSettings = 'auto' | 'click' | 'dblclick';
 
+export type SortOrder = 'None' | 'Ascending' | 'Descending';
+
+/**
+ * Configures the animation settings for TreeView node.
+ */
 export class ActionSettings extends ChildProperty<ActionSettings> {
     /**
      * Specify the type of animation.
@@ -371,15 +376,18 @@ export class ActionSettings extends ChildProperty<ActionSettings> {
     public easing: string;
 }
 
+/**
+ * Configures the animation settings for expanding and collapsing node in TreeView.
+ */
 export class NodeAnimationSettings extends ChildProperty<NodeAnimationSettings> {
     /**
-     * Specifies child dataSource field that mapped in dataSource
+     * Specifies the animation settings for collapsing node.
      * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
      */
     @Complex<ActionSettingsModel>({ effect: 'SlideUp', duration: 400, easing: 'linear' }, ActionSettings)
     public collapse: ActionSettingsModel;
     /**
-     * Specifies child dataSource field that mapped in dataSource
+     * Specifies the animation settings for expanding node.
      * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
      */
     @Complex<ActionSettingsModel>({ effect: 'SlideDown', duration: 400, easing: 'linear' }, ActionSettings)
@@ -924,7 +932,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
 
     private beforeNodeCreate(e: ItemCreatedArgs): void {
         if (this.showCheckBox) {
-            let checkboxEle: Element = createCheckBox();
+            let checkboxEle: Element = createCheckBox(true);
             let icon: Element = select('div.' + ICON, e.item);
             let id: string = e.item.getAttribute('data-uid');
             e.item.childNodes[0].insertBefore(checkboxEle, e.item.childNodes[0].childNodes[isNOU(icon) ? 0 : 1]);

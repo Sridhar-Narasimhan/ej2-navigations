@@ -2970,7 +2970,7 @@ describe('TreeView control', () => {
                 setTimeout(function() {
                     treeObj.clickHandler({target:li[2].querySelector('.e-ripple-container')});
                     setTimeout(function() {
-                        expect(treeObj.checkedNodes.length === 1).toBe(true);
+                        expect(treeObj.checkedNodes.length === 7 ).toBe(true);
                         done();
                     },100);
                 }, 100);

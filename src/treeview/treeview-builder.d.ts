@@ -2,8 +2,7 @@ import{TreeView} from "./treeview";
 import { rippleEffect, Effect, Animation, AnimationOptions, RippleOptions } from '@syncfusion/ej2-base';
 import { TreeViewModel, FieldsSettingsModel, NodeAnimationSettingsModel, ActionSettingsModel } from './treeview-model';
 import { DataManager, Query } from '@syncfusion/ej2-data';
-import { ListBase, ListBaseOptions, SortOrder, AriaAttributesMapping, FieldsMapping } from '@syncfusion/ej2-lists';
-import{ ExpandOnSettings} from "./treeview";
+import{ ExpandOnSettings, SortOrder} from "./treeview";
 
 export interface TreeViewHelper {
 	new(id: string | HTMLElement): BuilderProperties
@@ -166,11 +165,11 @@ export interface ActionSettingsModel {
 }
 export interface NodeAnimationSettingsModel {
 	/**
-	* Specifies child dataSource field that mapped in dataSource
+	* Specifies the animation settings for collapsing node.
 	*/
 	collapse(value: (val:ActionSettingsModel) => void | Object): NodeAnimationSettingsModel;
 	/**
-	* Specifies child dataSource field that mapped in dataSource
+	* Specifies the animation settings for expanding node.
 	*/
 	expand(value: (val:ActionSettingsModel) => void | Object): NodeAnimationSettingsModel;
 }
