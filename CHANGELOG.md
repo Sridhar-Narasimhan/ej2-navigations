@@ -12,6 +12,12 @@
 
 - Issue with an arrow key focus in alignment feature is fixed.
 
+### TreeView
+
+#### Bug Fixes
+
+- In TreeView, the issue with ripple animation in CheckBox was fixed.
+
 ## 1.0.22-preview (2017-10-16)
 
 ### Accordion
