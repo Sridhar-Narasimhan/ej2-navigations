@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### ContextMenu
+
+#### Bug Fixes
+
+- ContextMenu open issue on continuous right click issue fixed.
+
 ### Toolbar
 
 #### Bug Fixes
