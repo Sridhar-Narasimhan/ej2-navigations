@@ -383,7 +383,9 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 this.openMenu(fli, item, null, null, e);
                 fli.classList.remove(FOCUSED);
                 fli.classList.add(SELECTED);
-                this.trigger('select', { element: fli, item: this.toRawObject([item]) });
+                if (e.action === ENTER) {
+                    this.trigger('select', { element: fli, item: this.toRawObject([item]) });
+                }
                 (fli as HTMLElement).focus();
                 this.navIdx.push(fliIdx);
                 cul = wrapper.children[this.navIdx.length];
@@ -487,7 +489,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         this.openMenu(null, null, top, left);
     }
 
-    private openMenu(li: Element, item: MenuItemModel, top: number = 0, left: number = 0, e : MouseEvent | KeyboardEvent = null): void {
+    private openMenu(li: Element, item: MenuItemModel, top: number = 0, left: number = 0, e: MouseEvent | KeyboardEvent = null): void {
         let ul: HTMLElement;
         let navIdx: number[];
         let liItem: MenuItemModel;
@@ -510,10 +512,10 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         navIdx = this.getIndex(li ? li.textContent : null);
         liItem = li ? this.getItem(navIdx) : null;
         beforeOpenEventArgs = { element: ul, items: li ? item.items : this.getItems([]), parentItem: liItem, event: e, cancel: false };
-        this.trigger('beforeOpen', beforeOpenEventArgs );
+        this.trigger('beforeOpen', beforeOpenEventArgs);
         if (!beforeOpenEventArgs.cancel) {
-             this.setPosition(li, ul, top, left);
-             this.toggleAnimation(ul);
+            this.setPosition(li, ul, top, left);
+            this.toggleAnimation(ul);
         }
     }
 
@@ -528,8 +530,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
 
     private setPosition(li: Element, ul: HTMLElement, top: number, left: number): void {
         let px: string = 'px';
+        this.toggleVisiblity(ul);
         if (ul === this.element) {
-            this.toggleVisiblity(ul);
             let collide: string[] = isCollide(ul, null, left, top);
             if (collide.indexOf('right') > -1) {
                 left = left - ul.offsetWidth;
@@ -543,7 +545,6 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 let offset: OffsetPosition = fit(ul, null, { X: true, Y: false }, { top: top, left: left });
                 left = offset.left;
             }
-            this.toggleVisiblity(ul, false);
         } else {
             if (Browser.isDevice) {
                 top = Number(this.element.style.top.replace(px, ''));
@@ -553,20 +554,22 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 let offset: OffsetPosition = calculatePosition(li, x, 'top');
                 top = offset.top;
                 left = offset.left;
-                this.toggleVisiblity(ul);
                 let collide: string[] = isCollide(ul, null, this.enableRtl ? left - ul.offsetWidth : left, top);
-                this.toggleVisiblity(ul, false);
-                if (collide.length) {
-                   offset = calculatePosition(li, this.enableRtl ? 'right' : 'left', 'top');
-                   left = offset.left;
+                let xCollision: boolean = collide.indexOf('left') > -1 || collide.indexOf('right') > -1;
+                if (xCollision) {
+                    offset = calculatePosition(li, this.enableRtl ? 'right' : 'left', 'top');
+                    left = offset.left;
                 }
-                if (this.enableRtl || collide.length) {
-                    this.toggleVisiblity(ul);
-                    left = (this.enableRtl && collide.length) ? left : left - ul.offsetWidth;
-                    this.toggleVisiblity(ul, false);
+                if (this.enableRtl || xCollision) {
+                    left = (this.enableRtl && xCollision) ? left : left - ul.offsetWidth;
+                }
+                if (collide.indexOf('bottom') > -1) {
+                    offset = fit(ul, null, { X: false, Y: true }, { top: top, left: left });
+                    top = offset.top;
                 }
             }
         }
+        this.toggleVisiblity(ul, false);
         ul.style.top = top + px;
         ul.style.left = left + px;
     }
@@ -658,13 +661,14 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             let wrapper: Element = this.getWrapper();
             let trgt: Element = e.target as Element;
             let cli: Element = this.getLI(trgt);
-            if (cli && e.type === 'click' && !cli.querySelector('.' + CARET)) {
+            let isInstLI: boolean = cli && !isNullOrUndefined(closest(cli, '.' + WRAPPER));
+            if (isInstLI && e.type === 'click' && !cli.classList.contains(HEADER)) {
                 this.setLISelected(cli);
                 let navIdx: number[] = this.getIndex(cli.textContent);
                 let item: MenuItemModel = this.getItem(navIdx);
                 this.trigger('select', { element: cli, item: item });
             }
-            if (cli && closest(cli, '.' + WRAPPER) && (e.type === 'mouseover' || Browser.isDevice || this.showItemOnClick)) {
+            if (isInstLI && (e.type === 'mouseover' || Browser.isDevice || this.showItemOnClick)) {
                 let ul: HTMLElement;
                 if (cli.classList.contains(HEADER)) {
                     ul = wrapper.children[this.navIdx.length - 1] as HTMLElement;
@@ -695,27 +699,18 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                             }
                         }
                         if (showSubMenu) {
-                            let count: number = 0;
                             let idx: number[] = this.navIdx.concat(cliIdx);
-                            for (let i: number = 0; i < idx.length; i++) {
-                                if (isNullOrUndefined(idx[i])) {
-                                    count = i;
-                                }
-                            }
-                            if (!isNullOrUndefined(idx[count])) {
-                                let item: MenuItemModel = this.getItem(idx);
-                                if (item.items.length) {
+                            let item: MenuItemModel = this.getItem(idx);
+                            if (item.items.length) {
+                                if (e.type === 'mouseover') {
                                     this.setLISelected(cli);
-                                    let navIdx: number[] = this.getIndex(cli.textContent);
-                                    let liItem: MenuItemModel = this.getItem(navIdx);
-                                    this.trigger('select', { element: cli, item: liItem });
-                                    cli.setAttribute('aria-expanded', 'true');
-                                    this.openMenu(cli, item, null, null, e);
-                                    this.navIdx.push(cliIdx);
-                                } else {
-                                    if (e.type !== 'mouseover') {
-                                        this.closeMenu();
-                                    }
+                                }
+                                cli.setAttribute('aria-expanded', 'true');
+                                this.openMenu(cli, item, null, null, e);
+                                this.navIdx.push(cliIdx);
+                            } else {
+                                if (e.type !== 'mouseover') {
+                                    this.closeMenu();
                                 }
                             }
                         }
@@ -852,10 +847,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 duration: this.animationSettings.duration,
                 timingFunction: this.animationSettings.easing,
                 begin: (options: AnimationOptions) => {
-                    if (isMenuOpen) {
-                        options.element.style.display = 'block';
-                        options.element.style.maxHeight = options.element.getBoundingClientRect().height + 'px';
-                    }
+                    options.element.style.display = 'block';
+                    options.element.style.maxHeight = options.element.getBoundingClientRect().height + 'px';
                 },
                 end: (options: AnimationOptions) => {
                     this.end(options.element, isMenuOpen);
@@ -867,6 +860,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private end(ul: HTMLElement, isMenuOpen: boolean): void {
         if (isMenuOpen) {
             ul.style.display = 'block';
+            ul.style.maxHeight = '';
             this.trigger('onOpen', { element: ul });
             if (ul.querySelector('.' + FOCUSED)) {
                 (ul.querySelector('.' + FOCUSED) as HTMLElement).focus();
@@ -913,50 +907,30 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         return 'contextmenu';
     }
 
-    private checkIndex(data: string, items: MenuItemModel[]): number {
-        let index: number = -1;
-        for (let i: number = 0; i < items.length; i++) {
-            if (items[i].text === data) {
-                index = i;
-            }
-        }
-        return index;
-    }
-
-    private getIndex(data: string): number[] {
-        let index: number[] = [];
-        let count: number = 0;
-        let indexCount: number = 0;
-        let items: MenuItemModel[] = this.items;
-        index.push(this.checkIndex(data, items));
-        if (index.indexOf(-1) < 0) {
-            return index;
-        } else {
-            index = [];
-            items = items.filter((item: MenuItemModel) => { return item.items.length > 0; });
-            items.forEach((item: MenuItemModel) => {
-                index.push(this.items.indexOf(item));
-                index.push(this.checkIndex(data, item.items));
-            });
-            if (index.indexOf(-1) < 0) {
-                return index;
+    private getIndex(data: string, items: MenuItemModel[] = this.items, navIdx: number[] = [], isCallBack: boolean = false): number[] {
+        let item: MenuItemModel;
+        for (let i: number = 0, len: number = items.length; i < len; i++) {
+            item = items[i];
+            if (item.text === data) {
+                navIdx.push(i);
+                break;
+            } else if (item.items.length) {
+                navIdx = this.getIndex(data, item.items, navIdx, true);
+                if (navIdx[navIdx.length - 1] === -1) {
+                    if (i !== len - 1) {
+                        navIdx.pop();
+                    }
+                } else {
+                    navIdx.unshift(i);
+                    break;
+                }
             } else {
-                index.pop();
-                for (let k: number = 0; k < items.length; k++) {
-                    let itemss: MenuItemModel[];
-                    itemss = items[k].items;
-                    itemss.forEach((item: MenuItemModel) => {
-                        index.push(itemss.indexOf(item));
-                        index.push(this.checkIndex(data, item.items));
-                        if (index.indexOf(-1) > -1) {
-                            index.pop();
-                            index.pop();
-                        }
-                    });
+                if (i === len - 1) {
+                    navIdx.push(-1);
                 }
             }
         }
-        return index;
+        return (!isCallBack && navIdx[0] === -1) ? [] : navIdx;
     }
 
     /**
@@ -980,7 +954,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
                         ul.children[idx + 1].classList.remove(disabled);
                     } else {
-                       ul.children[idx].classList.remove(disabled);
+                        ul.children[idx].classList.remove(disabled);
                     }
                 } else {
                     if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {

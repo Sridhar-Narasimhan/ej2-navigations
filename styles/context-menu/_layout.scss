@@ -73,8 +73,8 @@
 
           & .e-blankicon {
             display: inline-block;
-            height: 10px;
-            width: 10px;
+            height: $li-height;
+            width: $menu-icon-font-size;
           }
 
           &.e-disabled {
@@ -83,7 +83,7 @@
           }
 
           &.e-menu-caret-icon {
-            padding-right: 8px;
+            padding-right: $caret-li-padding;
           }
         }
 
@@ -121,7 +121,8 @@
         }
 
         &.e-menu-caret-icon {
-          padding-left: 8px;
+          padding-left: $caret-li-padding;
+          padding-right: $li-right-padding;
         }
       }
     }
@@ -150,6 +151,11 @@
         & .e-caret {
           font-size: $bigger-caret-font-size;
           line-height: $bigger-li-height;
+        }
+
+        & .e-blankicon {
+          height: $bigger-li-height;
+          width: $menu-icon-bigger-font-size;
         }
       }
     }
