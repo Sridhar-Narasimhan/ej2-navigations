@@ -1268,8 +1268,12 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             } catch (e) {
                 templateFn = templateCompiler(val);
             }
-            if (!isNOU(templateFn) && templateFn().length > 0) {
-                [].slice.call(templateFn()).forEach((ele: HTEle): void => {
+            let tempArray: HTEle[];
+            if (!isNOU(templateFn)) {
+                tempArray = templateFn({}, this, 'template');
+            }
+            if (!isNOU(tempArray) && tempArray.length > 0) {
+                [].slice.call(tempArray).forEach((ele: HTEle): void => {
                    if (!isNOU(ele.tagName)) {
                        ele.style.display = ''; }
                    innerEle.appendChild(ele);
