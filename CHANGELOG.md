@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 1.0.25-preview (2017-10-26)
+
 ### ContextMenu
 
 #### Bug Fixes
