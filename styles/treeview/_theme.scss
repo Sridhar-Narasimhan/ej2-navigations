@@ -1,3 +1,4 @@
+// sass-lint:disable no-vendor-prefixes
 @mixin sibling-theme($left, $right) {
   @if $treeview-skin-name == 'material' {
     background: $treeview-drag-line-bg;
@@ -7,17 +8,20 @@
     border-#{$left}-color: $treeview-drag-line-bg;
   }
 }
+@mixin active-hover-theme {
+  background-color: $treeview-item-active-hover-bg;
+  border-color: $treeview-item-active-hover-border-color;
+  @if $treeview-skin-name == 'bootstrap' {
+    -webkit-box-shadow: $treeview-border-shadow;
+    box-shadow: $treeview-border-shadow;
+  }
+}
 @include export-module('treeview-theme') {
-  // sass-lint:disable no-vendor-prefixes
   .e-bigger .e-treeview,
   .e-treeview.e-bigger {
 
     .e-list-text {
       font-size: $treeview-big-font-size;
-
-      .e-tree-input {
-        font-size: $treeview-big-font-size;
-      }
     }
 
     .e-icon-collapsible::before,
@@ -37,16 +41,6 @@
     .e-list-text {
       color: $treeview-text-color;
       font-size: $treeview-font-size;
-
-      .e-tree-input {
-        border-color: $treeview-input-border-color;
-        font-size: $treeview-font-size;
-
-        &::selection {
-          background: $treeview-input-selction-bg;
-          color: $treeview-input-selction-color;
-        }
-      }
     }
 
     .e-list-icon,
@@ -85,6 +79,19 @@
       }
     }
 
+    .e-list-item.e-active.e-hover > .e-text-content {
+      color: $treeview-text-active-hover-color;
+
+      .e-list-text {
+        color: $treeview-text-active-hover-color;
+      }
+
+      .e-icon-collapsible,
+      .e-icon-expandable {
+        color: $treeview-icon-active-hover-color;
+      }
+    }
+
     .e-list-item.e-hover > .e-fullrow {
       background-color: $treeview-item-hover-bg;
       border-color: $treeview-item-hover-border-color;
@@ -93,6 +100,10 @@
     .e-list-item.e-active > .e-fullrow {
       background-color: $treeview-item-active-bg;
       border-color: $treeview-item-active-border-color;
+    }
+
+    .e-list-item.e-active.e-hover > .e-fullrow {
+      @include active-hover-theme;
     }
 
     .e-icon-collapsible,
@@ -161,6 +172,10 @@
       .e-list-item.e-active > .e-text-content {
         background-color: $treeview-item-active-bg;
         border-color: $treeview-item-active-border-color;
+      }
+
+      .e-list-item.e-active.e-hover > .e-text-content {
+        @include active-hover-theme;
       }
     }
 

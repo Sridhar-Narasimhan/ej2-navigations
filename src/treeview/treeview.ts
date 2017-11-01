@@ -8,6 +8,7 @@ import { DataManager, Query } from '@syncfusion/ej2-data';
 import { isNullOrUndefined as isNOU, Touch, TapEventArgs } from '@syncfusion/ej2-base';
 import { ListBase, ListBaseOptions, AriaAttributesMapping, FieldsMapping } from '@syncfusion/ej2-lists';
 import { createCheckBox } from '@syncfusion/ej2-buttons';
+import { Input, InputObject } from '@syncfusion/ej2-inputs';
 import { TreeViewModel, FieldsSettingsModel, NodeAnimationSettingsModel, ActionSettingsModel } from './treeview-model';
 import { TreeViewHelper } from './treeview-builder';
 
@@ -23,7 +24,8 @@ const LOAD: string = 'e-load';
 const PROCESS: string = 'e-process';
 const ICON: string = 'e-icons';
 const TEXTWRAP: string = 'e-text-content';
-const INPUT: string = 'e-tree-input';
+const INPUT: string = 'e-input';
+const INPUTGROUP: string = 'e-input-group';
 const EDITING: string = 'e-editing';
 const RTL: string = 'e-rtl';
 const DRAGITEM: string = 'e-drag-item';
@@ -382,7 +384,7 @@ export class ActionSettings extends ChildProperty<ActionSettings> {
 export class NodeAnimationSettings extends ChildProperty<NodeAnimationSettings> {
     /**
      * Specifies the animation settings for collapsing node.
-     * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
+     * @default { effect: 'SlideUp', duration: 400, easing: 'linear' }
      */
     @Complex<ActionSettingsModel>({ effect: 'SlideUp', duration: 400, easing: 'linear' }, ActionSettings)
     public collapse: ActionSettingsModel;
@@ -441,6 +443,8 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     private touchClickObj: Touch;
     private dragStartAction: boolean = false;
     private touchExpandObj: Touch;
+    private inputObj: InputObject;
+    private isAnimate: boolean = false;
     private keyConfigs: { [key: string]: string } = {
         escape: 'escape',
         end: 'end',
@@ -761,6 +765,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
      * To Initialize the control rendering
      */
     public render(): void {
+        this.isAnimate = true;
         this.initialize();
         this.setDataBinding();
         this.setExpandOnType();
@@ -772,12 +777,11 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
 
     private initialize(): void {
         this.element.setAttribute('tabindex', '0');
-        this.element.setAttribute('role', treeAriaAttr.treeRole);
+        this.element.setAttribute('aria-activedescendant', 'node_active');
         this.setCssClass(null, this.cssClass);
         this.setEnableRtl();
         this.setFullRow(this.fullRowSelect);
         this.setTouchPopup(this.allowMultiSelection);
-        this.setMultiSelect(this.allowMultiSelection);
         this.nodeTemplateFn = this.templateComplier(this.nodeTemplate);
     }
 
@@ -789,7 +793,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         let tempStr: string = '.' + FULLROW + ',.' + TEXTWRAP;
         let rippleModel: RippleOptions = {
             selector: tempStr,
-            ignore: '.' + TEXTWRAP + ' > .' + ICON + ',.' + INPUT + ', .' + CHECKBOXWRAP
+            ignore: '.' + TEXTWRAP + ' > .' + ICON + ',.' + INPUTGROUP + ',.' + INPUT + ', .' + CHECKBOXWRAP
         };
         this.rippleFn = rippleEffect(this.element, rippleModel);
         let iconModel: RippleOptions = {
@@ -821,10 +825,11 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     }
 
     private setMultiSelect(isEnabled: boolean): void {
+        let firstUl: Element = select('.' + PARENTITEM, this.element);
         if (isEnabled) {
-            this.element.setAttribute('aria-multiselectable', 'true');
+            firstUl.setAttribute('aria-multiselectable', 'true');
         } else {
-            this.element.removeAttribute('aria-multiselectable');
+            firstUl.removeAttribute('aria-multiselectable');
         }
     }
 
@@ -1177,12 +1182,17 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     }
 
     private finalize(): void {
+        let firstUl: Element = select('.' + PARENTITEM, this.element);
+        firstUl.setAttribute('role', treeAriaAttr.treeRole);
+        this.setMultiSelect(this.allowMultiSelection);
         let firstNode: Element = select('.' + LISTITEM, this.element);
         if (firstNode) {
             addClass([firstNode], FOCUS);
+            this.updateIdAttr(null, firstNode);
         }
         this.doSelectionAction();
         this.isLoaded = true;
+        this.isAnimate = false;
         let eventArgs: DataBoundEventArgs = { data: this.treeData };
         this.trigger('dataBound', eventArgs);
     }
@@ -1304,31 +1314,41 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         let ul: HTMLElement = <HTMLElement>select('.' + PARENTITEM, currLi);
         let liEle: HTMLElement = <HTMLElement>currLi;
         this.setHeight(liEle, ul);
-        this.aniObj.animate(ul, {
-            name: this.animation.expand.effect,
-            duration: this.animation.expand.duration,
-            timingFunction: this.animation.expand.easing,
-            begin: (args: AnimationOptions): void => {
-                liEle.style.overflow = 'hidden';
-                start = liEle.offsetHeight;
-                end = (<HTMLElement>select('.' + TEXTWRAP, currLi)).offsetHeight;
-            },
-            progress: (args: AnimationOptions): void => {
-                args.element.style.display = 'block';
-                proxy.animateHeight(args, start, end);
-            },
-            end: (args: AnimationOptions): void => {
-                args.element.style.display = 'block';
-                liEle.style.overflow = '';
-                liEle.style.height = '';
-                removeClass([icon], PROCESS);
-                currLi.setAttribute('aria-expanded', 'true');
-                removeClass([currLi], NODECOLLAPSED);
-                if (this.isLoaded && this.expandArgs) {
-                    this.trigger('nodeExpanded', this.expandArgs);
+        if (!this.isAnimate) {
+            this.aniObj.animate(ul, {
+                name: this.animation.expand.effect,
+                duration: this.animation.expand.duration,
+                timingFunction: this.animation.expand.easing,
+                begin: (args: AnimationOptions): void => {
+                    liEle.style.overflow = 'hidden';
+                    start = liEle.offsetHeight;
+                    end = (<HTMLElement>select('.' + TEXTWRAP, currLi)).offsetHeight;
+                },
+                progress: (args: AnimationOptions): void => {
+                    args.element.style.display = 'block';
+                    proxy.animateHeight(args, start, end);
+                },
+                end: (args: AnimationOptions): void => {
+                    args.element.style.display = 'block';
+                    this.expandedNode(liEle, ul, icon);
                 }
-            }
-        });
+            });
+    } else {
+        this.expandedNode(liEle, ul, icon);
+      }
+    }
+
+    private expandedNode(currLi: HTMLElement, ul: HTMLElement, icon: Element): void {
+        ul.style.display = 'block';
+        currLi.style.display = 'block';
+        currLi.style.overflow = '';
+        currLi.style.height = '';
+        removeClass([icon], PROCESS);
+        currLi.setAttribute('aria-expanded', 'true');
+        removeClass([currLi], NODECOLLAPSED);
+        if (this.isLoaded && this.expandArgs) {
+            this.trigger('nodeExpanded', this.expandArgs);
+        }
     }
 
     private collapseNode(currLi: Element, icon: Element, e: MouseEvent | KeyboardEventArgs): void {
@@ -1600,6 +1620,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                 removeClass([focusedNode], FOCUS);
             }
             addClass([li], FOCUS);
+            this.updateIdAttr(focusedNode, li);
         }
     }
 
@@ -1732,15 +1753,19 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             case 'moveLeft':
                 this.openNode(this.enableRtl ? true : false, e);
                 break;
+            case 'shiftDown':
+                this.shiftKeySelect(true, e);
+                break;
             case 'moveDown':
             case 'ctrlDown':
-            case 'shiftDown':
             case 'csDown':
                 this.navigateNode(true);
                 break;
+            case 'shiftUp':
+                this.shiftKeySelect(false, e);
+                break;
             case 'moveUp':
             case 'ctrlUp':
-            case 'shiftUp':
             case 'csUp':
                 this.navigateNode(false);
                 break;
@@ -1773,6 +1798,18 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                     this.selectGivenNodes(sNodes);
                 }
                 break;
+        }
+    }
+
+    private shiftKeySelect(isTowards: boolean, e: KeyboardEventArgs): void {
+        if (this.allowMultiSelection) {
+            let focusedNode: Element = this.getFocusedNode();
+            let nextNode: Element = isTowards ? this.getNextNode(focusedNode) : this.getPrevNode(focusedNode);
+            this.removeHover();
+            this.setFocusElement(nextNode);
+            this.toggleSelect(nextNode, e, false);
+        } else {
+            this.navigateNode(isTowards);
         }
     }
 
@@ -1894,6 +1931,16 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     private setFocus(preNode: Element, nextNode: Element): void {
         removeClass([preNode], [HOVER, FOCUS]);
         addClass([nextNode], [HOVER, FOCUS]);
+        this.updateIdAttr(preNode, nextNode);
+    }
+
+    private updateIdAttr(preNode: Element, nextNode: Element): void {
+        this.element.removeAttribute('aria-activedescendant');
+        if (preNode) {
+            preNode.removeAttribute('id');
+        }
+        nextNode.setAttribute('id', 'node_active');
+        this.element.setAttribute('aria-activedescendant', 'node_active');
     }
 
     private focusIn(): void {
@@ -1979,7 +2026,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         let target: Element = <Element>e.target;
         if (!target || target.classList.contains(ROOT) || target.classList.contains(PARENTITEM) ||
             target.classList.contains(LISTITEM) || target.classList.contains(ICON) ||
-            target.classList.contains(INPUT)) {
+            target.classList.contains(INPUT) || target.classList.contains(INPUTGROUP)) {
             return;
         } else {
             e.stopImmediatePropagation();
@@ -1996,11 +2043,19 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         if (eventArgs.cancel) {
             return;
         }
-        let style: string = 'width:' + (<HTMLElement>textEle).offsetWidth + 'px';
-        let inpEle: HTMLElement = createElement('input', { className: INPUT, styles: style, attrs: { value: this.oldText } });
+        let inpWidth: Number = (<HTMLElement>textEle).offsetWidth + 5;
+        let style: string = 'width:' + inpWidth + 'px';
+        let inpEle: HTMLElement = createElement('input', { attrs: { value: this.oldText } });
         addClass([liEle], EDITING);
         textEle.childNodes[0].nodeValue = '';
         textEle.appendChild(inpEle);
+        this.inputObj = Input.createInput({
+            element: inpEle as HTMLInputElement,
+            properties: {
+                enableRtl: this.enableRtl,
+            }
+        });
+        this.inputObj.container.setAttribute('style', style);
         inpEle.focus();
         let inputEle: HTMLInputElement = <HTMLInputElement>inpEle;
         inputEle.setSelectionRange(0, inputEle.value.length);
@@ -2013,7 +2068,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         let txtEle: Element = closest(target, '.' + LISTTEXT);
         let liEle: Element = closest(target, '.' + LISTITEM);
         txtEle.childNodes[0].nodeValue = newText;
-        detach(target);
+        detach(this.inputObj.container);
         removeClass([liEle], EDITING);
         (<HTMLElement>txtEle).focus();
         this.trigger('nodeEdited', this.getEditEvent(liEle, newText));
@@ -2049,7 +2104,6 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         this.dragObj = new Draggable(this.element, {
             enableTailMode: true,
             preventDefault: Browser.isIos ? true : false,
-            cursorAt: { top: -20 },
             dragTarget: '.' + TEXTWRAP,
             helper: (e: { sender: MouseEvent & TouchEvent, element: HTMLElement }) => {
                 this.dragTarget = <Element>e.sender.target;
@@ -2093,6 +2147,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                 this.dragStartAction = true;
             },
             drag: (e: DragEventArgs) => {
+                this.dragObj.setProperties({ cursorAt: { top: (!isNOU(e.event.targetTouches) || Browser.isDevice) ? 60 : -20 } });
                 this.dragAction(e, virtualEle);
             },
             dragStop: (e: { event: MouseEvent & TouchEvent, element: HTMLElement, target: Element, helper: HTMLElement }) => {
@@ -2172,6 +2227,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     }
 
     private dropAction(e: DropEventArgs): void {
+        let offsetY: number = e.event.offsetY;
         let dropTarget: Element = <Element>e.target;
         let dragObj: TreeView = ((e.dragData.draggable as EJ2Instance).ej2_instances[0] as TreeView);
         let dragTarget: Element = dragObj.dragTarget;
@@ -2182,26 +2238,26 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         if (!dropLi || dropLi.isSameNode(dragLi) || this.isDescendant(dragLi, dropLi)) {
             return;
         }
-        if (dragObj.allowMultiSelection && (dragLi.classList.contains(ACTIVE) || (e.event.offsetY < 7 ||
-            (e.target.offsetHeight > 0 && e.event.offsetY > (e.target.offsetHeight - 10))))) {
+        if (dragObj.allowMultiSelection && (dragLi.classList.contains(ACTIVE) || (offsetY < 7 ||
+            (e.target.offsetHeight > 0 && offsetY > (e.target.offsetHeight - 10))))) {
             let sNodes: HTMLElement[] = selectAll('.' + ACTIVE, dragObj.element);
             for (let i: number = 0; i < sNodes.length; i++) {
                 if (dropLi.isSameNode(sNodes[i]) || this.isDescendant(sNodes[i], dropLi)) {
                     continue;
                 }
-                this.appendNode(dropTarget, sNodes[i], dropLi, e, dragObj);
+                this.appendNode(dropTarget, sNodes[i], dropLi, e, dragObj, offsetY);
             }
         } else {
-            this.appendNode(dropTarget, dragLi, dropLi, e, dragObj);
+            this.appendNode(dropTarget, dragLi, dropLi, e, dragObj, offsetY);
         }
         this.trigger('nodeDropped', this.getDragEvent(e.event, dragObj, dropTarget, e.target));
     }
 
-    private appendNode(dropTarget: Element, dragLi: Element, dropLi: Element, e: DropEventArgs, dragObj: TreeView): void {
+    private appendNode(dropTarget: Element, dragLi: Element, dropLi: Element, e: DropEventArgs, dragObj: TreeView, offsetY: number): void {
         if (dropTarget.nodeName === 'LI') {
             this.dropAsSiblingNode(dragLi, dropLi, e, dragObj);
         } else {
-            this.dropAsChildNode(dragLi, dropLi, dragObj, null, e);
+            this.dropAsChildNode(dragLi, dropLi, dragObj, null, e, offsetY);
         }
     }
 
@@ -2225,13 +2281,13 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         }
     }
 
-    private dropAsChildNode(dragLi: Element, dropLi: Element, dragObj: TreeView, index?: number, e?: DropEventArgs): void {
+    private dropAsChildNode(dragLi: Element, dropLi: Element, dragObj: TreeView, index?: number, e?: DropEventArgs, pos?: number): void {
         let dragParentUl: Element = closest(dragLi, '.' + PARENTITEM);
         let dragParentLi: Element = closest(dragParentUl, '.' + LISTITEM);
         let dropParentUl: Element  = closest(dropLi, '.' + PARENTITEM);
-        if (e && (e.event.offsetY < 7)) {
+        if (e && (pos < 7)) {
             dropParentUl.insertBefore(dragLi, dropLi);
-        } else if (e && (e.target.offsetHeight > 0 && e.event.offsetY > (e.target.offsetHeight - 10))) {
+        } else if (e && (e.target.offsetHeight > 0 && pos > (e.target.offsetHeight - 10))) {
             dropParentUl.insertBefore(dragLi, dropLi.nextElementSibling);
         } else {
             let dropUl: Element = this.expandParent(dropLi);
@@ -2709,7 +2765,8 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
      * Removes the component from the DOM and detaches all its related event handlers. Also, it removes the attributes and classes.
      */
     public destroy(): void {
-        this.element.removeAttribute('role');
+        this.element.removeAttribute('aria-activedescendant');
+        this.element.removeAttribute('tabindex');
         this.unWireEvents();
         this.wireEditingEvents(false);
         this.rippleFn();
@@ -2718,7 +2775,6 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         this.setDragAndDrop(false);
         this.setFullRow(false);
         this.setTouchPopup(false);
-        this.setMultiSelect(false);
         this.element.innerHTML = '';
         super.destroy();
     }

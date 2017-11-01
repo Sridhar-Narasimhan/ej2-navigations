@@ -27,6 +27,7 @@ module.exports = function (config) {
       { pattern: "node_modules/@syncfusion/ej2-buttons/**/*.js", included: false },  
       { pattern: "node_modules/@syncfusion/ej2-popups/**/*.js", included: false },      
       { pattern: "node_modules/@syncfusion/ej2-lists/**/*.js", included: false },
+      { pattern: "node_modules/@syncfusion/ej2-inputs/**/*.js", included: false },
       { pattern: "node_modules/es6-promise/dist/es6-promise.js", included: false }
       // Add dependent package's script files here              
     ],

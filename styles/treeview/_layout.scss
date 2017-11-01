@@ -66,10 +66,14 @@
       min-height: $treeview-big-text-height;
       padding: $treeview-big-text-padding;
 
-      .e-tree-input {
-        line-height: $treeview-big-input-height / 2;
-        min-height: $treeview-big-input-height;
-        padding: $treeview-big-input-padding;
+      .e-input-group {
+        height: $treeview-big-input-height;
+
+        @if $treeview-skin-name != 'material' {
+          .e-input {
+            height: 36px;
+          }
+        }
       }
     }
 
@@ -148,10 +152,6 @@
     overflow: hidden;
     position: relative;
     white-space: nowrap;
-
-    .e-tree-input::-ms-clear {
-      display: none;
-    }
 
     & > .e-ul {
       overflow: auto;
@@ -239,19 +239,18 @@
       text-decoration: none;
       vertical-align: middle;
 
-      .e-tree-input {
-        border-radius: 2px;
-        border-style: solid;
-        border-width: 1px;
-        box-sizing: content-box;
-        line-height: $treeview-input-height / 2;
-        min-height: $treeview-input-height;
-        padding: $treeview-input-padding;
-      }
-    }
+      .e-input-group {
+        height: $treeview-input-height;
+        margin-bottom: 0;
+        min-width: 150px;
+        vertical-align: bottom;
 
-    .e-editing > .e-text-content > .e-list-text {
-      padding: 0;
+        @if $treeview-skin-name != 'material' {
+          .e-input {
+            height: 28px;
+          }
+        }
+      }
     }
 
     .e-list-icon,
@@ -361,7 +360,7 @@
 
       .e-icon-collapsible,
       .e-icon-expandable,
-      .e-tree-input,
+      .e-input,
       .e-list-url {
         pointer-events: auto;
       }

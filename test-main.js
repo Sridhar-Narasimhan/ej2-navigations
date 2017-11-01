@@ -41,6 +41,11 @@ require.config({
       name: '@syncfusion/ej2-lists',
       location: 'node_modules/@syncfusion/ej2-lists',
       main: 'src/common/index.js'      
+    },
+    {
+      name: '@syncfusion/ej2-inputs',
+      location: 'node_modules/@syncfusion/ej2-inputs',
+      main: 'index.js'
     }
 
     // Include dependent packages
