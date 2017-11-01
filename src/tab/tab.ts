@@ -62,6 +62,10 @@ export interface SelectEventArgs extends BaseEventArgs {
     selectedItem: HTMLElement;
     /** Defines the selected Tab item index. */
     selectedIndex: number;
+    /** Defines the content selection done through swiping. */
+    isSwiped: boolean;
+    /** Defines the prevent action. */
+    cancel?: boolean;
 }
 export interface RemoveEventArgs extends BaseEventArgs {
     /** Defines the removed Tab item element. */
@@ -202,6 +206,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     private title: Str = 'Close';
     private initRender: boolean;
     private prevActiveEle: string;
+    private isSwipeed: boolean;
     /**
      * Contains the keyboard configuration of the Tab.
      */
@@ -394,6 +399,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     protected preRender(): void {
         this.isPopup = false;
         this.initRender = true;
+        this.isSwipeed = false;
         let name: Str = Browser.info.name;
         let css: Str = (name === 'msie') ? 'e-ie' : (name === 'edge') ? 'e-edge' : (name === 'safari') ? 'e-safari' : '';
         setStyle(this.element, { 'width': formatUnit(this.width), 'height': formatUnit(this.height) });
@@ -419,13 +425,17 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         this.initRender = false;
     }
     private renderContainer(): void {
-        if (this.items.length > 0 && this.element.children.length === 0) {
-            this.element.appendChild(buildTag('div', { className: CLS_CONTENT }));
+        let ele: HTEle = this.element;
+        if (this.items.length > 0 && ele.children.length === 0) {
+            ele.appendChild(buildTag('div', { className: CLS_CONTENT }));
             this.setOrientation(this.headerPlacement, buildTag('div', { className: CLS_HEADER }));
             this.isTemplate = false;
         } else if (this.element.children.length > 0) {
             this.isTemplate = true;
-            this.element.classList.add(CLS_TEMPLATE);
+            ele.classList.add(CLS_TEMPLATE);
+            let header: HTEle = <HTEle>ele.querySelector('.' + CLS_HEADER);
+            if (header && this.headerPlacement === 'Bottom') {
+                this.setOrientation(this.headerPlacement, header); }
         }
         if (!isNOU(select('.' + CLS_HEADER, this.element)) && !isNOU(select('.' + CLS_CONTENT, this.element))) {
             this.renderHeader();
@@ -541,6 +551,9 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     }
     private removeActiveClass(id: string): void {
         let hdrActEle: HTEle = <HTEle> selectAll(':root .' + CLS_HEADER + ' .' + CLS_TB_ITEM + '.' + CLS_ACTIVE, this.element)[0];
+        if (this.headerPlacement === 'Bottom') {
+            hdrActEle = <HTEle> selectAll(':root .' + CLS_HEADER + ' .' + CLS_TB_ITEM + '.' + CLS_ACTIVE, this.element.children[1])[0];
+        }
         if (!isNOU(hdrActEle)) {
             hdrActEle.classList.remove(CLS_ACTIVE);
             let no: Str = this.extIndex(hdrActEle.id);
@@ -617,11 +630,16 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             oldCnt.classList.remove('e-view');
             setStyle(oldCnt , { 'display': '' , 'position': '' });
         };
-        new Animation(animateObj).animate(oldCnt); }
+        new Animation(animateObj).animate(oldCnt);
+    } else {
+        oldCnt.classList.remove(CLS_ACTIVE);
+    }
     }
     private triggerAnimation(id: Str, value: boolean): void {
         let prevIndex : number = this.prevIndex;
-        let oldCnt: HTEle = <HTEle> select ('#' + this.prevActiveEle, this.element);
+        let oldCnt: HTEle = <HTEle> this.element.querySelector('.' + CLS_CONTENT).children[prevIndex];
+        if (isNOU(oldCnt)) {
+            oldCnt = <HTEle> select ('#' + this.prevActiveEle, this.element); }
         let prevEle: HTEle = this.tbItem[prevIndex];
         let no: Str = this.extIndex(this.tbItem[this.selectedItem].id);
         let newCnt: HTEle;
@@ -771,21 +789,38 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         return ele.offsetHeight + parseFloat(cs.getPropertyValue('padding-top')) + parseFloat(cs.getPropertyValue('padding-bottom')) +
             parseFloat(cs.getPropertyValue('margin-top')) + parseFloat(cs.getPropertyValue('margin-bottom'));
     }
-    public setActiveBorder(): void {
+    private setActiveBorder(): void {
         let trg: HTEle = <HTEle> select('.' + CLS_TB_ITEM + '.' + CLS_ACTIVE, this.element);
+        if (this.headerPlacement === 'Bottom') {
+            trg = <HTEle> select('.' + CLS_TB_ITEM + '.' + CLS_ACTIVE, this.element.children[1]);
+        }
         if (trg === null) { return; }
+        let root: HTEle = <HTEle>closest(trg, '.' + CLS_TAB);
+        if (this.element !== root) {return; }
         let hsCnt: HTEle = <HTEle> select('.' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element);
         this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
         let bar: HTEle = <HTEle> select('.' + CLS_INDICATOR, this.element);
+        if (this.headerPlacement === 'Bottom') {
+            hsCnt = <HTEle> select('.' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element.children[1]);
+            this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element.children[1]);
+            bar = <HTEle> select('.' + CLS_INDICATOR, this.element.children[1]); }
         let tbWidth: number = (isNOU(hsCnt)) ? this.tbItems.offsetWidth : hsCnt.offsetWidth;
-        setStyle(bar, {'left': trg.offsetLeft + 'px', 'right': tbWidth - (trg.offsetLeft + trg.offsetWidth) + 'px'});
-        this.bdrLine.classList.remove(CLS_HIDDEN);
+        if (tbWidth !== 0) {
+          setStyle(bar, {'left': trg.offsetLeft + 'px', 'right': tbWidth - (trg.offsetLeft + trg.offsetWidth) + 'px'});
+        } else {
+          setStyle(bar, {'left': 'auto', 'right': 'auto'});
+        }
+        if (!isNOU(this.bdrLine)) {
+          this.bdrLine.classList.remove(CLS_HIDDEN); }
     }
     private setActive(value: number): void {
         this.tbItem = selectAll('.' + CLS_TB_ITEM, this.element);
         let trg: HTEle = this.tbItem[value];
         if (value >= 0) { this.setProperties({ selectedItem: value }, true); }
-        if (value < 0 || isNaN(value) || this.tbItem.length === 0 || trg.classList.contains(CLS_ACTIVE)) { return; }
+        if (value < 0 || isNaN(value) || this.tbItem.length === 0 ) { return; }
+        if ( trg.classList.contains(CLS_ACTIVE)) {
+            this.setActiveBorder();
+            return; }
         if (!this.isTemplate) {
             let prev: HTEle = this.tbItem[this.prevIndex];
             if (!isNOU(prev)) { prev.removeAttribute('aria-controls'); }
@@ -824,7 +859,8 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             previousItem: this.prevItem,
             previousIndex: this.prevIndex,
             selectedItem: trg,
-            selectedIndex: value
+            selectedIndex: value,
+            isSwiped: this.isSwipeed
         };
         this.trigger('selected', eventArg);
     }
@@ -878,15 +914,20 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     }
     private swipeHandler(e: SwipeEventArgs): void {
         if (e.velocity < 3 && isNOU(e.originalEvent.changedTouches)) { return; }
+        this.isSwipeed = true;
         if (e.swipeDirection === 'Right') {
             this.select(this.selectedItem - 1);
         } else {
             if (e.swipeDirection === 'Left' && (this.selectedItem !== selectAll('.' + CLS_TB_ITEM, this.element).length - 1)) {
                 this.select(this.selectedItem + 1); }
         }
+        this.isSwipeed = false;
     }
     private spaceKeyDown(e: KeyboardEvent): void {
-        if ((e.keyCode === 32 && e.which === 32) || (e.keyCode === 35 && e.which === 35)) { e.preventDefault(); }
+        if ((e.keyCode === 32 && e.which === 32) || (e.keyCode === 35 && e.which === 35)) {
+            let clstHead: HTEle = <HTEle>closest(<Element>e.target, '.' + CLS_HEADER);
+            if (!isNOU(clstHead)) {
+            e.preventDefault(); } }
     }
     private keyHandler(e: KeyboardEventArgs): void {
         this.element.classList.add(CLS_FOCUS);
@@ -1064,9 +1105,12 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             previousItem: this.prevItem,
             previousIndex: this.prevIndex,
             selectedItem: this.tbItem[this.selectedItem],
-            selectedIndex: this.selectedItem
+            selectedIndex: this.selectedItem,
+            isSwiped: this.isSwipeed
         };
         this.trigger('selecting', eventArg);
+        if (eventArg.cancel) {
+            return; }
         if (typeof args === 'number') {
             if (this.tbItem.length > args && args >= 0 && !isNaN(args)) {
                 this.prevIndex = this.selectedItem;
@@ -1135,6 +1179,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                     this.setCloseButton(newProp.showCloseButton);
                     break;
                 case 'selectedItem':
+                    this.selectedItem = oldProp.selectedItem;
                     this.select(newProp.selectedItem);
                     break;
                 case 'headerPlacement':

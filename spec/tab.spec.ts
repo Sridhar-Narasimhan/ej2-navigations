@@ -4848,6 +4848,7 @@ describe('Tab Control', () => {
             Object.defineProperty(e, "keyCode", {"value" : 32});
             Object.defineProperty(e, "which", {"value" : 32});
             actEle5.dispatchEvent(e);
+            (<HTMLElement>element.children[1].children[0]).dispatchEvent(e);
             expect(document.documentElement.scrollTop).toEqual(0);
             let eve: any = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, key : '32', shiftKey : true});
             Object.defineProperty(eve, "keyCode", {"value" : 32});
@@ -6206,6 +6207,449 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let ele: HTMLElement = document.getElementById('ej2Tab');
             expect(ele.classList.contains('e-safari')).toEqual(true);
+        });
+    });
+
+    describe('Nested Tab testing', () => {
+        let tabObj: Tab
+        beforeAll((): void => {
+            let css: string = ".e-hor-nav { position: absolute }";
+            let style: HTMLStyleElement = document.createElement('style'); 
+            style.type = 'text/css';
+            style.id = 'scroll';
+            let styleNode: Node = style.appendChild(document.createTextNode(css));
+            document.getElementsByTagName('head')[0].appendChild(style);
+        });
+        beforeEach((): void => {
+            let rootDiv: HTMLElement = createElement('div', {id:'temTab'});
+            let header: HTMLElement = createElement('div', {className: 'e-header'});
+            let itemHead1: HTMLElement = createElement ('div', {innerHTML: 'India'});
+            let itemHead2: HTMLElement = createElement ('div', {innerHTML: 'Canada'});
+            let itemHead3: HTMLElement = createElement ('div', {innerHTML: 'Australia'});
+            let itemHead4: HTMLElement = createElement ('div', {innerHTML: 'USA'});
+            let content: HTMLElement = createElement('div', {className: 'e-content'});
+            let contentItem1: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "India, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab1'></div>"}));
+            let contentItem2: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "Canada, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab2'></div>"}));
+            let contentItem3: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "Australia, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab3'></div>"}));
+            let contentItem4: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "USA, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab4'></div>"}));
+            content.appendChild(contentItem1);
+            content.appendChild(contentItem2);
+            content.appendChild(contentItem3);
+            content.appendChild(contentItem4);
+            header.appendChild(itemHead1);
+            header.appendChild(itemHead2);
+            header.appendChild(itemHead3);
+            header.appendChild(itemHead4);
+            rootDiv.appendChild(header);
+            rootDiv.appendChild(content);
+            document.body.appendChild(rootDiv);
+            tabObj = new Tab({
+                overflowMode: 'Popup',
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tabObj.appendTo(rootDiv);
+            let tabObj1: Tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                items: [
+                    {
+                        header: { 'text': 'India1' },
+                        content: '1India'
+                    },
+                    {
+                        header: { 'text': 'Australia1' },
+                        content: '1Australia'
+                    },
+                    {
+                        header: { 'text': 'USA1' },
+                        content: '1The United States of America'
+                    },
+                    {
+                        header: { 'text': 'France1' },
+                        content: '1France'
+                    }
+                ],
+            });
+            tabObj1.appendTo('#Tab1')
+            let tabObj2: Tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                items: [
+                    {
+                        header: { 'text': 'India2' },
+                        content: '2India'
+                    },
+                    {
+                        header: { 'text': 'Australia2' },
+                        content: '2Australia'
+                    },
+                    {
+                        header: { 'text': 'USA2' },
+                        content: '2The United States of America'
+                    },
+                    {
+                        header: { 'text': 'France2' },
+                        content: '2France'
+                    }
+                ],
+            });
+            tabObj2.appendTo('#Tab2')
+            let tabObj3: Tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                items: [
+                    {
+                        header: { 'text': 'India3' },
+                        content: '3India'
+                    },
+                    {
+                        header: { 'text': 'Australia3' },
+                        content: '3Australia'
+                    },
+                    {
+                        header: { 'text': 'USA3' },
+                        content: '3The United States of America'
+                    },
+                    {
+                        header: { 'text': 'France3' },
+                        content: '3France'
+                    }
+                ],
+            });
+            tabObj3.appendTo('#Tab3');
+        });
+        afterEach((): void => {
+            if (tabObj) {
+                tabObj.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Nested tab Testing', () => {
+            let rootEle: HTMLElement = document.getElementById('temTab');
+            let rootCon: HTMLElement = rootEle.children[1] as HTMLElement;
+            let fNested: HTMLElement = rootCon.querySelector('#Tab1') as HTMLElement;
+            let fNestContent: HTMLElement = rootCon.querySelector('#Tab1').children[1] as HTMLElement;
+            expect(rootCon.children[0].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[0].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[0].children[0].innerHTML).toBe('1India');
+            (<HTMLElement>fNested.children[0].children[0].children[2]).click();
+            expect(fNestContent.children[1].children[0].innerHTML).toBe('1Australia');
+            expect(fNestContent.children[1].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[0].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>fNested.children[0].children[0].children[3]).click();
+            expect(fNestContent.children[2].children[0].innerHTML).toBe('1The United States of America');
+            expect(fNestContent.children[2].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[1].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>fNested.children[0].children[0].children[4]).click();
+            expect(fNestContent.children[3].children[0].innerHTML).toBe('1France');
+            expect(fNestContent.children[3].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[2].classList.contains('e-active')).toBe(false);
+            let sNested: HTMLElement = rootCon.querySelector('#Tab2') as HTMLElement;
+            let sNestContent: HTMLElement = rootCon.querySelector('#Tab2').children[1] as HTMLElement;
+            (<HTMLElement>rootEle.children[0].children[0].children[2]).click();
+            expect(rootCon.children[1].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[0].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[0].children[0].innerHTML).toBe('2India');
+            (<HTMLElement>sNested.children[0].children[0].children[2]).click();
+            expect(sNestContent.children[1].children[0].innerHTML).toBe('2Australia');
+            expect(sNestContent.children[1].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[0].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>sNested.children[0].children[0].children[3]).click();
+            expect(sNestContent.children[2].children[0].innerHTML).toBe('2The United States of America');
+            expect(sNestContent.children[2].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[1].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>sNested.children[0].children[0].children[4]).click();
+            expect(sNestContent.children[3].children[0].innerHTML).toBe('2France');
+            expect(sNestContent.children[3].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[2].classList.contains('e-active')).toBe(false);
+            let tNested: HTMLElement = rootCon.querySelector('#Tab3') as HTMLElement;
+            let tNestContent: HTMLElement = rootCon.querySelector('#Tab3').children[1] as HTMLElement;
+            (<HTMLElement>rootEle.children[0].children[0].children[3]).click();
+            expect(rootCon.children[2].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[0].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[0].children[0].innerHTML).toBe('3India');
+            (<HTMLElement>tNested.children[0].children[0].children[2]).click();
+            expect(tNestContent.children[1].children[0].innerHTML).toBe('3Australia');
+            expect(tNestContent.children[1].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[0].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>tNested.children[0].children[0].children[3]).click();
+            expect(tNestContent.children[2].children[0].innerHTML).toBe('3The United States of America');
+            expect(tNestContent.children[2].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[1].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>tNested.children[0].children[0].children[4]).click();
+            expect(tNestContent.children[3].children[0].innerHTML).toBe('3France');
+            expect(tNestContent.children[3].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[2].classList.contains('e-active')).toBe(false);
+        });
+    });
+    describe('Nested Tab testing with headerplacement', () => {
+        let tabObj: Tab
+        beforeAll((): void => {
+            let css: string = ".e-hor-nav { position: absolute }";
+            let style: HTMLStyleElement = document.createElement('style'); 
+            style.type = 'text/css';
+            style.id = 'scroll';
+            let styleNode: Node = style.appendChild(document.createTextNode(css));
+            document.getElementsByTagName('head')[0].appendChild(style);
+        });
+        beforeEach((): void => {
+            let rootDiv: HTMLElement = createElement('div', {id:'temTab'});
+            let header: HTMLElement = createElement('div', {className: 'e-header'});
+            let itemHead1: HTMLElement = createElement ('div', {innerHTML: 'India'});
+            let itemHead2: HTMLElement = createElement ('div', {innerHTML: 'Canada'});
+            let itemHead3: HTMLElement = createElement ('div', {innerHTML: 'Australia'});
+            let itemHead4: HTMLElement = createElement ('div', {innerHTML: 'USA'});
+            let content: HTMLElement = createElement('div', {className: 'e-content'});
+            let contentItem1: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "India, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab1'></div>"}));
+            let contentItem2: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "Canada, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab2'></div>"}));
+            let contentItem3: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "Australia, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab3'></div>"}));
+            let contentItem4: HTMLElement = createElement('div').appendChild(createElement('div', { innerHTML : "USA, officially the Commonwealth of Australia, is a country comprising the mainland of the Australian continent, the island of Tasmania and numerous smaller islands. It is the world's sixth-largest country by total area. Neighboring countries include Indonesia, East Timor and Papua New Guinea to the north; the Solomon Islands, Vanuatu and New Caledonia to the north-east; and New Zealand to the south-east. <div id='Tab4'></div>"}));
+            content.appendChild(contentItem1);
+            content.appendChild(contentItem2);
+            content.appendChild(contentItem3);
+            content.appendChild(contentItem4);
+            header.appendChild(itemHead1);
+            header.appendChild(itemHead2);
+            header.appendChild(itemHead3);
+            header.appendChild(itemHead4);
+            rootDiv.appendChild(header);
+            rootDiv.appendChild(content);
+            document.body.appendChild(rootDiv);
+            tabObj = new Tab({
+                overflowMode: 'Popup',
+                headerPlacement: 'Bottom',
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tabObj.appendTo(rootDiv);
+            let tabObj1: Tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                items: [
+                    {
+                        header: { 'text': 'India1' },
+                        content: '1India'
+                    },
+                    {
+                        header: { 'text': 'Australia1' },
+                        content: '1Australia'
+                    },
+                    {
+                        header: { 'text': 'USA1' },
+                        content: '1The United States of America'
+                    },
+                    {
+                        header: { 'text': 'France1' },
+                        content: '1France'
+                    }
+                ],
+            });
+            tabObj1.appendTo('#Tab1')
+            let tabObj2: Tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                items: [
+                    {
+                        header: { 'text': 'India2' },
+                        content: '2India'
+                    },
+                    {
+                        header: { 'text': 'Australia2' },
+                        content: '2Australia'
+                    },
+                    {
+                        header: { 'text': 'USA2' },
+                        content: '2The United States of America'
+                    },
+                    {
+                        header: { 'text': 'France2' },
+                        content: '2France'
+                    }
+                ],
+            });
+            tabObj2.appendTo('#Tab2')
+            let tabObj3: Tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                items: [
+                    {
+                        header: { 'text': 'India3' },
+                        content: '3India'
+                    },
+                    {
+                        header: { 'text': 'Australia3' },
+                        content: '3Australia'
+                    },
+                    {
+                        header: { 'text': 'USA3' },
+                        content: '3The United States of America'
+                    },
+                    {
+                        header: { 'text': 'France3' },
+                        content: '3France'
+                    }
+                ],
+            });
+            tabObj3.appendTo('#Tab3');
+        });
+        afterEach((): void => {
+            if (tabObj) {
+                tabObj.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Nested tab Testing with headerplacement testing', () => {
+            let rootEle: HTMLElement = document.getElementById('temTab');
+            let rootCon: HTMLElement = rootEle.children[0] as HTMLElement;
+            let fNested: HTMLElement = rootCon.querySelector('#Tab1') as HTMLElement;
+            let fNestContent: HTMLElement = rootCon.querySelector('#Tab1').children[1] as HTMLElement;
+            expect(rootCon.children[0].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[0].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[0].children[0].innerHTML).toBe('1India');
+            (<HTMLElement>fNested.children[0].children[0].children[2]).click();
+            expect(fNestContent.children[1].children[0].innerHTML).toBe('1Australia');
+            expect(fNestContent.children[1].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[0].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>fNested.children[0].children[0].children[3]).click();
+            expect(fNestContent.children[2].children[0].innerHTML).toBe('1The United States of America');
+            expect(fNestContent.children[2].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[1].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>fNested.children[0].children[0].children[4]).click();
+            expect(fNestContent.children[3].children[0].innerHTML).toBe('1France');
+            expect(fNestContent.children[3].classList.contains('e-active')).toBe(true);
+            expect(fNestContent.children[2].classList.contains('e-active')).toBe(false);
+            let sNested: HTMLElement = rootCon.querySelector('#Tab2') as HTMLElement;
+            let sNestContent: HTMLElement = rootCon.querySelector('#Tab2').children[1] as HTMLElement;
+            (<HTMLElement>rootEle.children[1].children[0].children[2]).click();
+            expect(rootCon.children[1].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[0].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[0].children[0].innerHTML).toBe('2India');
+            (<HTMLElement>sNested.children[0].children[0].children[2]).click();
+            expect(sNestContent.children[1].children[0].innerHTML).toBe('2Australia');
+            expect(sNestContent.children[1].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[0].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>sNested.children[0].children[0].children[3]).click();
+            expect(sNestContent.children[2].children[0].innerHTML).toBe('2The United States of America');
+            expect(sNestContent.children[2].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[1].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>sNested.children[0].children[0].children[4]).click();
+            expect(sNestContent.children[3].children[0].innerHTML).toBe('2France');
+            expect(sNestContent.children[3].classList.contains('e-active')).toBe(true);
+            expect(sNestContent.children[2].classList.contains('e-active')).toBe(false);
+            let tNested: HTMLElement = rootCon.querySelector('#Tab3') as HTMLElement;
+            let tNestContent: HTMLElement = rootCon.querySelector('#Tab3').children[1] as HTMLElement;
+            (<HTMLElement>rootEle.children[1].children[0].children[3]).click();
+            expect(rootCon.children[2].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[0].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[0].children[0].innerHTML).toBe('3India');
+            (<HTMLElement>tNested.children[0].children[0].children[2]).click();
+            expect(tNestContent.children[1].children[0].innerHTML).toBe('3Australia');
+            expect(tNestContent.children[1].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[0].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>tNested.children[0].children[0].children[3]).click();
+            expect(tNestContent.children[2].children[0].innerHTML).toBe('3The United States of America');
+            expect(tNestContent.children[2].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[1].classList.contains('e-active')).toBe(false);
+            (<HTMLElement>tNested.children[0].children[0].children[4]).click();
+            expect(tNestContent.children[3].children[0].innerHTML).toBe('3France');
+            expect(tNestContent.children[3].classList.contains('e-active')).toBe(true);
+            expect(tNestContent.children[2].classList.contains('e-active')).toBe(false);
+        });
+    });
+    describe('prevent selection in tab select while swiping', () => {
+        let tab: any;
+        let swipeEventArgs: any;
+        beforeEach((): void => {
+            tab = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (tab) {
+                tab.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('selection pervention in tab', () => {
+            tab = new Tab({
+                selecting: (e: any) => {
+                        e.cancel = true;
+                },
+                items: [
+                    { header: { "text": "item1" }, content: "Content1" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ],
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            (<HTMLElement>element.children[0].children[0].children[2]).click();
+            expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(false);
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(false);
+        });
+        it('Swipe content selection prevention', () => {
+            tab = new Tab({
+                selecting: (e: any) => {
+                    if (e.isSwiped) {
+                        e.cancel = true;
+                    }
+                },
+                items: [
+                    { header: { "text": "item1" }, content: "Content1" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ],animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            swipeEventArgs = {
+                preventDefault: function () { },
+                swipeDirection: 'Left',
+                originalEvent: {
+                    changedTouches: {}
+                }
+            };
+            tab.swipeHandler(swipeEventArgs);
+            expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(false);
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            (<HTMLElement>element.children[0].children[0].children[2]).click();
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(false);
+            expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(true);
+            swipeEventArgs = {
+                preventDefault: function () { },
+                swipeDirection: 'Left',
+                originalEvent: {
+                    changedTouches: {}
+                }
+            };
+            tab.swipeHandler(swipeEventArgs);
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(false);
+            expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(true);
+        });
+    });
+    describe('SelectedItem onPropertychange testing with navigating zeroth index', () => {
+        let tab: any;
+        let swipeEventArgs: any;
+        beforeEach((): void => {
+            tab = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (tab) {
+                tab.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('SelectedItem onPropertychange testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: "Content1" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ],
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            (<HTMLElement>element.children[0].children[0].children[2]).click();
+            expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(false);
+            tab.selectedItem = 0;
+            tab.dataBind();
+            expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(false);
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
         });
     });
 });

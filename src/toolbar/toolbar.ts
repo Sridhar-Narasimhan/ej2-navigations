@@ -708,10 +708,11 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         innerNav = <HTEle>ele.querySelector('.' + CLS_TBARNAV);
         let eleWidth: number = (ele.offsetWidth - (innerNav.offsetWidth));
         this.element.classList.remove('e-rtl');
+        setStyle(this.element, {direction: 'initial'});
         this.checkPriority(ele, innerEle, eleWidth, true);
         if (this.enableRtl) {
-            this.element.classList.add('e-rtl');
-        }
+            this.element.classList.add('e-rtl'); }
+        this.element.style.removeProperty('direction');
         this.createPopup();
     }
     private pushingPoppedEle(tbarObj: Toolbar, popupPri: Element[], ele: HTEle, eleHeight: number): void {

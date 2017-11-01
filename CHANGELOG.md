@@ -34,7 +34,7 @@ The Tab is a content panel to show multiple contents in specific space one at a 
 
 ### Toolbar
 
-Toolbar is a graphical control on which commands / buttons will be displayed in horizontal order. By default scrolling display mode enabled when content exceeds the available viewing area.
+Displays a group of command buttons arranged horizontally.
 
 #### Key features
 
