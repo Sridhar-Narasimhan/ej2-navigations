@@ -16,6 +16,18 @@ The Accordion is a vertically collapsible content panel which is displaying pane
 
 - Provided with built-in accessibility support which helps to access all the Accordion component features through the keyboard, screen readers, or other assistive technology devices.
 
+### ContextMenu
+
+ContextMenu is a graphical user interface that appears on the user right click / touch hold action.
+
+#### Key Features
+
+- Separator
+
+- Icons and Navigation
+
+- Template and Multilevel nesting
+
 ### Tab
 
 The Tab is a content panel to show multiple contents in specific space one at a time.
