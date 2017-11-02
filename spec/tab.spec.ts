@@ -1,7 +1,7 @@
 /**
  * tab spec document
  */
-import { Browser, createElement, closest, DomElements, L10n, Animation, isVisible } from '@syncfusion/ej2-base';
+import { Browser, createElement, closest, DomElements, L10n, Animation, isVisible, isNullOrUndefined } from '@syncfusion/ej2-base';
 import { Tab } from '../src/tab/tab';
 import { TabActionSettingsModel, TabAnimationSettingsModel } from '../src/tab/tab-model';
 import { Toolbar } from '../src/toolbar/toolbar';
@@ -6650,6 +6650,58 @@ describe('Tab Control', () => {
             tab.dataBind();
             expect(element.querySelector('#e-item_1').classList.contains('e-active')).toEqual(false);
             expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+        });
+    });
+    describe('Onproperty change with zero items to any item', () => {
+        let tab: any;
+        let swipeEventArgs: any;
+        beforeEach((): void => {
+            tab = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (tab) {
+                tab.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('items onpropertychange testing with zeor item', () => {
+            tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items.length).toBe(0);
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.childElementCount).toBe(0);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(true);
+            tab.items =  [
+                { header: { "text": "item1" }, content: "Content1" },
+                { header: { "text": "item2" }, content: "Content2" }
+            ];
+            tab.dataBind();
+            expect(tab.items.length).toBe(2);
+            expect(element.childElementCount).toBe(2);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(false);
+        });
+        it('items onpropertychange testing with zeor item', () => {
+            tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}}
+            });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items.length).toBe(0);
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.childElementCount).toBe(0);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(true);
+            tab.items =  [
+                { header: { "text": "item1" } },
+                { header: { "text": "item2" } }
+            ];
+            tab.dataBind();
+            expect(tab.items.length).toBe(2);
+            expect(element.childElementCount).toBe(2);
+            expect(element.children[1].childElementCount).toBe(1);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(false);
         });
     });
 });

@@ -1172,8 +1172,12 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                     this.setCssClass(this.element, newProp.cssClass, true);
                     break;
                 case 'items':
+                    if (isNOU(this.tbObj)) {
+                     this.renderContainer();
+                     if (!isNOU(this.cntEle)) { this.touchModule = new Touch(this.cntEle, { swipe: this.swipeHandler.bind(this) }); }
+                    } else {
                     this.setItems(newProp.items);
-                    this.select(this.selectedItem);
+                    this.select(this.selectedItem); }
                     break;
                 case 'showCloseButton':
                     this.setCloseButton(newProp.showCloseButton);
