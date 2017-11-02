@@ -1,5 +1,5 @@
 import { Component, CreateBuilder, Property, ChildProperty, NotifyPropertyChanges, INotifyPropertyChanged } from '@syncfusion/ej2-base';import { Event, EventHandler, EmitType, BaseEventArgs, KeyboardEvents, KeyboardEventArgs, Touch, TapEventArgs } from '@syncfusion/ej2-base';import { attributes, Animation, AnimationOptions, TouchEventArgs, MouseEventArgs, isNullOrUndefined } from '@syncfusion/ej2-base';import { Browser, Collection, setValue, getValue, getUniqueID } from '@syncfusion/ej2-base';import { select, closest, createElement, detach, append, rippleEffect, isVisible } from '@syncfusion/ej2-base';import { ListBase, ListBaseOptions } from '@syncfusion/ej2-lists';import { calculatePosition, OffsetPosition, isCollide, fit } from '@syncfusion/ej2-popups';import { ContextMenuHelper } from './context-menu-builder';
-import {MenuAnimationSettings,EventArgs,BeforeItemRenderEventArgs,BeforeOpenEventArgs,CloseMenuEventArgs,SelectMenuEventArgs} from "./context-menu";
+import {MenuAnimationSettings,MenuEventArgs,BeforeOpenCloseMenuEventArgs,OpenCloseMenuEventArgs} from "./context-menu";
 import {ComponentModel} from '@syncfusion/ej2-base';
 
 /**
@@ -93,30 +93,36 @@ export interface ContextMenuModel extends ComponentModel{
      * Triggers while rendering each menu item.
      * @event
      */
-    beforeItemRender?: EmitType<BeforeItemRenderEventArgs>;
+    beforeItemRender?: EmitType<MenuEventArgs>;
 
     /**
      * Triggers before opening the menu item.
      * @event
      */
-    beforeOpen?: EmitType<BeforeOpenEventArgs>;
+    beforeOpen?: EmitType<BeforeOpenCloseMenuEventArgs>;
 
     /**
-     * Triggers while opening menu item.
+     * Triggers while opening the menu item.
      * @event
      */
-    onOpen?: EmitType<EventArgs>;
+    onOpen?: EmitType<OpenCloseMenuEventArgs>;
 
     /**
-     * Triggers while closing menu item.
+     * Triggers before closing the menu.
      * @event
      */
-    onClose?: EmitType<CloseMenuEventArgs>;
+    beforeClose?: EmitType<BeforeOpenCloseMenuEventArgs>;
+
+    /**
+     * Triggers while closing the menu.
+     * @event
+     */
+    onClose?: EmitType<OpenCloseMenuEventArgs>;
 
     /**
      * Triggers while selecting menu item.
      * @event
      */
-    select?: EmitType<SelectMenuEventArgs>;
+    select?: EmitType<MenuEventArgs>;
 
 }

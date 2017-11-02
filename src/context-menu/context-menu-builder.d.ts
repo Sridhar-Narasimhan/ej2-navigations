@@ -10,6 +10,10 @@ export interface ContextMenuHelper {
 export interface  BuilderProperties {
 	create(): ContextMenu
 	/**
+	* Triggers before closing the menu.
+	*/
+	beforeClose(value:Function): BuilderProperties;
+	/**
 	* Triggers while rendering each menu item.
 	*/
 	beforeItemRender(value:Function): BuilderProperties;
@@ -18,11 +22,11 @@ export interface  BuilderProperties {
 	*/
 	beforeOpen(value:Function): BuilderProperties;
 	/**
-	* Triggers while closing menu item.
+	* Triggers while closing the menu.
 	*/
 	onClose(value:Function): BuilderProperties;
 	/**
-	* Triggers while opening menu item.
+	* Triggers while opening the menu item.
 	*/
 	onOpen(value:Function): BuilderProperties;
 	/**

@@ -164,35 +164,42 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
      * @event
      */
     @Event()
-    public beforeItemRender: EmitType<BeforeItemRenderEventArgs>;
+    public beforeItemRender: EmitType<MenuEventArgs>;
 
     /**
      * Triggers before opening the menu item.
      * @event
      */
     @Event()
-    public beforeOpen: EmitType<BeforeOpenEventArgs>;
+    public beforeOpen: EmitType<BeforeOpenCloseMenuEventArgs>;
 
     /**
-     * Triggers while opening menu item.
+     * Triggers while opening the menu item.
      * @event
      */
     @Event()
-    public onOpen: EmitType<EventArgs>;
+    public onOpen: EmitType<OpenCloseMenuEventArgs>;
 
     /**
-     * Triggers while closing menu item.
+     * Triggers before closing the menu.
      * @event
      */
     @Event()
-    public onClose: EmitType<CloseMenuEventArgs>;
+    public beforeClose: EmitType<BeforeOpenCloseMenuEventArgs>;
+
+    /**
+     * Triggers while closing the menu.
+     * @event
+     */
+    @Event()
+    public onClose: EmitType<OpenCloseMenuEventArgs>;
 
     /**
      * Triggers while selecting menu item.
      * @event
      */
     @Event()
-    public select: EmitType<SelectMenuEventArgs>;
+    public select: EmitType<MenuEventArgs>;
 
     /**
      * Constructor for creating the widget.
@@ -294,7 +301,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
 
     private mouseDownHandler(e: MouseEvent): void {
         if (closest(e.target as Element, '.' + WRAPPER) !== this.getWrapper()) {
-            this.closeMenu(this.navIdx.length);
+            this.closeMenu(this.navIdx.length, e);
         }
     }
 
@@ -380,14 +387,15 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             let index: number;
             let item: MenuItemModel = this.getItem(navIdx);
             if (item.items.length) {
+                this.navIdx.push(fliIdx);
                 this.openMenu(fli, item, null, null, e);
                 fli.classList.remove(FOCUSED);
                 fli.classList.add(SELECTED);
                 if (e.action === ENTER) {
-                    this.trigger('select', { element: fli, item: this.toRawObject([item]) });
+                    let eventArgs: MenuEventArgs = { element: fli as HTMLElement, item: item };
+                    this.trigger('select', eventArgs);
                 }
                 (fli as HTMLElement).focus();
-                this.navIdx.push(fliIdx);
                 cul = wrapper.children[this.navIdx.length];
                 index = this.isValidLI(cul.children[0], 0, e.action);
                 cul.children[index].classList.add(FOCUSED);
@@ -403,7 +411,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private leftEscKeyHandler(e: KeyboardEventArgs): void {
         if (this.navIdx.length) {
             let wrapper: Element = this.getWrapper();
-            this.closeMenu(this.navIdx.length);
+            this.closeMenu(this.navIdx.length, e);
             let cul: Element = wrapper.children[this.navIdx.length];
             let sli: Element = this.getLIByClass(cul, SELECTED);
             sli.setAttribute('aria-expanded', 'false');
@@ -420,7 +428,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     }
 
     private scrollHandler(e: MouseEvent): void {
-        this.closeMenu();
+        this.closeMenu(null, e);
     }
 
     private touchHandler(e: TapEventArgs): void {
@@ -430,7 +438,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
 
     private cmenuHandler(e: MouseEvent & (TouchEventArgs | MouseEventArgs)): void {
         e.preventDefault();
-        this.closeMenu();
+        this.closeMenu(null, e);
         if (this.canOpen(e.target as Element)) {
             if (e.changedTouches) {
                 this.openMenu(null, null, e.changedTouches[0].clientY, e.changedTouches[0].clientX, e);
@@ -447,15 +455,26 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         this.closeMenu();
     }
 
-    private closeMenu(ulIndex: number = 0): void {
+    private closeMenu(ulIndex: number = 0, e: MouseEvent | KeyboardEvent = null): void {
         if (this.isMenuVisible()) {
-            let wrapper: Element = this.getWrapper();
+            let ul: HTMLElement;
+            let item: MenuItemModel;
             let items: MenuItemModel[];
+            let closeArgs: OpenCloseMenuEventArgs;
+            let beforeCloseArgs: BeforeOpenCloseMenuEventArgs;
+            let wrapper: Element = this.getWrapper();
             for (let cnt: number = wrapper.childElementCount; cnt > ulIndex; cnt--) {
-                this.toggleAnimation(wrapper.children[cnt - 1] as HTMLElement, false);
-                items = this.getItems(this.navIdx);
-                this.navIdx.length = ulIndex ? ulIndex - 1 : ulIndex;
-                this.trigger('onClose', { items: items });
+                item = this.navIdx.length ? this.getItem(this.navIdx) : null;
+                items = item ? item.items : this.items;
+                ul = wrapper.children[cnt - 1] as HTMLElement;
+                beforeCloseArgs = { element: ul, parentItem: item, items: items, event: e, cancel: false };
+                this.trigger('beforeClose', beforeCloseArgs);
+                if (!beforeCloseArgs.cancel) {
+                    this.toggleAnimation(ul, false);
+                    this.navIdx.length = ulIndex ? ulIndex - 1 : ulIndex;
+                    closeArgs = { element: ul, parentItem: item, items: items };
+                    this.trigger('onClose', closeArgs);
+                }
             }
         }
     }
@@ -492,8 +511,6 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private openMenu(li: Element, item: MenuItemModel, top: number = 0, left: number = 0, e: MouseEvent | KeyboardEvent = null): void {
         let ul: HTMLElement;
         let navIdx: number[];
-        let liItem: MenuItemModel;
-        let beforeOpenEventArgs: BeforeOpenEventArgs;
         let wrapper: Element = this.getWrapper();
         if (li) {
             ul = this.createItems(item.items);
@@ -510,10 +527,12 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             ul = this.element;
         }
         navIdx = this.getIndex(li ? li.textContent : null);
-        liItem = li ? this.getItem(navIdx) : null;
-        beforeOpenEventArgs = { element: ul, items: li ? item.items : this.getItems([]), parentItem: liItem, event: e, cancel: false };
-        this.trigger('beforeOpen', beforeOpenEventArgs);
-        if (!beforeOpenEventArgs.cancel) {
+        let items: MenuItemModel[] = li ? item.items : this.items;
+        let eventArgs: BeforeOpenCloseMenuEventArgs = { element: ul, items: items, parentItem: item, event: e, cancel: false };
+        this.trigger('beforeOpen', eventArgs);
+        if (eventArgs.cancel) {
+            this.navIdx.pop();
+        } else {
             this.setPosition(li, ul, top, left);
             this.toggleAnimation(ul);
         }
@@ -607,7 +626,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     args.item.removeAttribute('role');
                     (args.item as HTMLElement).classList.add('e-menu-caret-icon');
                 }
-                this.trigger('beforeItemRender', { data: args.curData, item: args.item });
+                let eventArgs: MenuEventArgs = { item: args.curData, element: args.item as HTMLElement };
+                this.trigger('beforeItemRender', eventArgs);
             }
         };
         let ul: HTMLElement = ListBase.createList(this.toRawObject(items.slice()), listBaseOptions, true);
@@ -666,14 +686,14 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 this.setLISelected(cli);
                 let navIdx: number[] = this.getIndex(cli.textContent);
                 let item: MenuItemModel = this.getItem(navIdx);
-                this.trigger('select', { element: cli, item: item });
+                let eventArgs: MenuEventArgs = { element: cli as HTMLElement, item: item };
+                this.trigger('select', eventArgs);
             }
             if (isInstLI && (e.type === 'mouseover' || Browser.isDevice || this.showItemOnClick)) {
                 let ul: HTMLElement;
                 if (cli.classList.contains(HEADER)) {
                     ul = wrapper.children[this.navIdx.length - 1] as HTMLElement;
                     this.toggleAnimation(ul);
-                    this.trigger('onOpen', { element: ul });
                     let sli: Element = this.getLIByClass(ul, SELECTED);
                     if (sli) {
                         sli.classList.remove(SELECTED);
@@ -695,7 +715,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                                 if (sli) {
                                     sli.classList.remove(SELECTED);
                                 }
-                                this.closeMenu(culIdx + 1);
+                                this.closeMenu(culIdx + 1, e);
                             }
                         }
                         if (showSubMenu) {
@@ -706,11 +726,11 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                                     this.setLISelected(cli);
                                 }
                                 cli.setAttribute('aria-expanded', 'true');
-                                this.openMenu(cli, item, null, null, e);
                                 this.navIdx.push(cliIdx);
+                                this.openMenu(cli, item, null, null, e);
                             } else {
                                 if (e.type !== 'mouseover') {
-                                    this.closeMenu();
+                                    this.closeMenu(null, e);
                                 }
                             }
                         }
@@ -719,7 +739,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             } else {
                 if (trgt.tagName !== 'UL' || trgt.parentElement !== wrapper) {
                     if (!cli || !cli.querySelector('.' + CARET)) {
-                        this.closeMenu();
+                        this.closeMenu(null, e);
                     }
                 }
             }
@@ -810,6 +830,9 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     this.target = newProp.target;
                     this.wireEvents();
                     break;
+                case 'items':
+                    this.refresh();
+                    break;
             }
         }
     }
@@ -861,7 +884,9 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         if (isMenuOpen) {
             ul.style.display = 'block';
             ul.style.maxHeight = '';
-            this.trigger('onOpen', { element: ul });
+            let item: MenuItemModel = this.navIdx.length ? this.getItem(this.navIdx) : null;
+            let eventArgs: OpenCloseMenuEventArgs = { element: ul as HTMLElement, parentItem: item, items: item ? item.items : this.items };
+            this.trigger('onOpen', eventArgs);
             if (ul.querySelector('.' + FOCUSED)) {
                 (ul.querySelector('.' + FOCUSED) as HTMLElement).focus();
             } else {
@@ -1110,27 +1135,20 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
 }
 
 /**
- * Interface for open event
+ * Interface for before item render / select event.
  * @private
  */
-export interface EventArgs extends BaseEventArgs {
+export interface MenuEventArgs extends BaseEventArgs {
     element: HTMLElement;
+    item: MenuItemModel;
 }
 
 /**
- * Interface for before item render event
+ * Interface for before open / close event.
  * @private
  */
-export interface BeforeItemRenderEventArgs extends EventArgs {
-    data: MenuItemModel;
-    item: Element;
-}
-
-/**
- * Interface for before open event
- * @private
- */
-export interface BeforeOpenEventArgs extends EventArgs {
+export interface BeforeOpenCloseMenuEventArgs extends BaseEventArgs {
+    element: HTMLElement;
     items: MenuItemModel[];
     parentItem: MenuItemModel;
     event: Event;
@@ -1138,19 +1156,12 @@ export interface BeforeOpenEventArgs extends EventArgs {
 }
 
 /**
- * Interface for close event
- * @private
+ * Interface for open / close event.
  */
-export interface CloseMenuEventArgs extends BaseEventArgs {
+export interface OpenCloseMenuEventArgs extends BaseEventArgs {
+    element: HTMLElement;
     items: MenuItemModel[];
-}
-
-/**
- * Interface for select event
- * @private
- */
-export interface SelectMenuEventArgs extends EventArgs {
-    item: MenuItemModel;
+    parentItem: MenuItemModel;
 }
 
 /**
