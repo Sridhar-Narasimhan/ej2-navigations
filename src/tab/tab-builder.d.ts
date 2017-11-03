@@ -47,7 +47,7 @@ export interface  BuilderProperties {
 	*/
 	animation(value: (val:TabAnimationSettingsModel) => void | Object): BuilderProperties;
 	/**
-	* Sets the CSS classes to root element of the Tab which helps to customize component styles.
+	* Sets the CSS classes to root element of the Tab that helps to customize component styles.
 	*/
 	cssClass(value:string): BuilderProperties;
 	/**
@@ -55,28 +55,28 @@ export interface  BuilderProperties {
 	*/
 	enablePersistence(value:boolean): BuilderProperties;
 	/**
-	* Specifies the direction of the Tab. For the cultures like Arabic, direction can be switched as right to left.
+	* Specifies the direction of the Tab. For the culture like Arabic, direction can be switched as right-to-left.
 	*/
 	enableRtl(value:boolean): BuilderProperties;
 	/**
 	* Specifies the orientation of Tab header.
-Possible values are:
-- Top - Places the Tab header on the top.
-- Bottom - Places the Tab header to the bottom.
+The possible values are:
+- Top: Places the Tab header on the top.
+- Bottom: Places the Tab header at the bottom.
 	*/
 	headerPlacement(value:headerPosition): BuilderProperties;
 	/**
-	* Specifies the height of the Tab component. Default, Tab height sets based on the height of its parent.
-To use height property, heightAdjustMode must set as 'None'.
+	* Specifies the height of the Tab component. By default, Tab height is set based on the height of its parent.
+To use height property, heightAdjustMode must be set to 'None'.
 	*/
 	height(value:string|number): BuilderProperties;
 	/**
 	* Specifies the height style for Tab content.
-Possible values are:
-- None - Based on height property given, content panel height is set.
-- Auto - Tallest panel height of given Tab contents is set to all other panels.
-- Content - Based on the corresponding content height, content panel height is set.
-- Fill - Based on the parent height, content panel height is set.
+The possible values are:
+- None: Based on the given height property, the content panel height is set.
+- Auto: Tallest panel height of a given Tab content is set to all the other panels.
+- Content: Based on the corresponding content height, the content panel height is set.
+- Fill: Based on the parent height, the content panel hight is set.
 	*/
 	heightAdjustMode(value:heightStyles): BuilderProperties;
 	isDestroyed(value:boolean): BuilderProperties;
@@ -86,10 +86,10 @@ Possible values are:
 	locale(value:string): BuilderProperties;
 	/**
 	* Specifies the Tab display mode when Tab content exceeds the viewing area.
-Possible modes are:
-- Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.
-- Popup - Tab container holds the items that can be placed within the available space and rest of the items are moved to the popup.
-If the popup content overflows the height of the page, then the rest of the elements are scrollable.
+The possible modes are:
+- Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
+- Popup: Tab container holds the items that can be placed within the available space and rest of the items are moved to the popup.
+If the popup content overflows the height of the page, the rest of the elements can be viewed by scrolling the popup.
 	*/
 	overflowMode(value:OverflowMode): BuilderProperties;
 	/**
@@ -107,7 +107,7 @@ If the popup content overflows the height of the page, then the rest of the elem
 	*/
 	selectedItem(value:number): BuilderProperties;
 	/**
-	* Specifies whether to show the close button for the header items in which it is used to remove the item from the Tab.
+	* Specifies whether to show the close button for header items to remove the item from the Tab.
 	*/
 	showCloseButton(value:boolean): BuilderProperties;
 	/**
@@ -131,11 +131,11 @@ export interface TabActionSettingsModel {
 }
 export interface TabAnimationSettingsModel {
 	/**
-	* Specifies the animation is to be showing while moving next Tab content.
+	* Specifies the animation to appear while moving to next Tab content.
 	*/
 	next(value: (val:TabActionSettingsModel) => void | Object): TabAnimationSettingsModel;
 	/**
-	* Specifies the animation is to be showing while moving previous Tab content.
+	* Specifies the animation to appear while moving to previous Tab content.
 	*/
 	previous(value: (val:TabActionSettingsModel) => void | Object): TabAnimationSettingsModel;
 }

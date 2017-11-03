@@ -95,42 +95,42 @@ export class TabActionSettings extends ChildProperty<TabActionSettings> {
 }
 export class TabAnimationSettings extends ChildProperty<TabAnimationSettings> {
     /**
-     * Specifies the animation is to be showing while moving previous Tab content.
-     * @default { effect: 'SlideLeftIn', duration: 600, easing: 'ease' }
+     * Specifies the animation to appear while moving to previous Tab content.
+     * @default { effect: 'SlideLeftIn', duration: 600, easing: 'ease' }.
      */
     @Complex<TabActionSettingsModel>({ effect: 'SlideLeftIn', duration: 600, easing: 'ease' }, TabActionSettings)
     public previous: TabActionSettingsModel;
     /**
-     * Specifies the animation is to be showing while moving next Tab content.
-     * @default { effect: 'SlideRightIn', duration: 600, easing: 'ease' }
+     * Specifies the animation to appear while moving to next Tab content.
+     * @default { effect: 'SlideRightIn', duration: 600, easing: 'ease' }.
      */
     @Complex<TabActionSettingsModel>({ effect: 'SlideRightIn', duration: 600, easing: 'ease' }, TabActionSettings)
     public next: TabActionSettingsModel;
   }
 /**
- * The object used for configuring the Tab item header properties.
+ * Objects used for configuring the Tab item header properties.
  */
 export class Header extends ChildProperty<Header> {
     /**
      * Specifies the display text of the Tab item header.
-     * @default ''
+     * @default ''.
      */
     @Property('')
     public text: string | HTMLElement;
     /**
-     * Specifies the icon class, which is used to render an icon in the Tab header.
-     * @default ''
+     * Specifies the icon class that is used to render an icon in the Tab header.
+     * @default ''.
      */
     @Property('')
     public iconCss: string;
     /**
      * Options for positioning the icon in the Tab item header. This property depends on `iconCss` property.
-     * Possible values are:
-     * - Left – Places the icon to the `left` of the item.
-     * - Top - Places the icon on the `top` of the item.
-     * - Right - Places the icon to the `right` end of the item.
-     * - Bottom - Places the icon on the `bottom` of the item.
-     * @default 'left'
+     * The possible values are:
+     * - Left: Places the icon to the `left` of the item.
+     * - Top: Places the icon on the `top` of the item.
+     * - Right: Places the icon to the `right` end of the item.
+     * - Bottom: Places the icon at the `bottom` of the item.
+     * @default 'left'.
      */
     @Property('left')
     public iconPosition: string;
@@ -146,26 +146,26 @@ export class TabItem extends ChildProperty<TabItem> {
     @Complex<HeaderModel>({}, Header)
     public header: HeaderModel;
     /**
-     * Specifies the content of Tab item, which can be displayed when the concern item header is selected.
+     * Specifies the content of Tab item, that is displayed when concern item header is selected.
      * @default ''
      */
     @Property('')
     public content: string | HTMLElement;
     /**
-     * Sets the CSS classes to the Tab item which helps to customize its styles.
+     * Sets the CSS classes to the Tab item to customize its styles.
      * @default ''
      */
     @Property('')
     public cssClass: string;
     /**
-     * Set as true to disable user interactions of the Tab item.
+     * Sets true to disable user interactions of the Tab item.
      * @default false
      */
     @Property(false)
     public disabled: boolean;
 }
 /**
- * Tab is a content panel which is displaying multiple contents in single space one at a time.
+ * Tab is a content panel to show multiple contents in a single space, one at a time.
  * Each Tab item has an associated content, that will be displayed based on the active Tab header item.
  * ```html
  * <div id="tab"></div>
@@ -239,19 +239,19 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     public items: TabItemModel[];
     /**
      * Specifies the width of the Tab component. Default, Tab width sets based on the width of its parent.
-     * @default '100%'
+     * @default '100%'.
      */
     @Property('100%')
     public width: string | number;
     /**
-     * Specifies the height of the Tab component. Default, Tab height sets based on the height of its parent.
-     * To use height property, heightAdjustMode must set as 'None'.
-     * @default 'auto'
+     * Specifies the height of the Tab component. By default, Tab height is set based on the height of its parent.
+     * To use height property, heightAdjustMode must be set to 'None'.
+     * @default 'auto'.
      */
     @Property('auto')
     public height: string | number;
     /**
-     * Sets the CSS classes to root element of the Tab which helps to customize component styles.
+     * Sets the CSS classes to root element of the Tab that helps to customize component styles.
      * @default ''
      */
     @Property('')
@@ -268,49 +268,49 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
      *   });
      *   tabObj.appendTo('#tab');
      * ```
-     * @default 0
+     * @default 0.
      */
     @Property(0)
     public selectedItem: number;
     /**
      * Specifies the orientation of Tab header.
-     * Possible values are:
-     * - Top - Places the Tab header on the top.
-     * - Bottom - Places the Tab header to the bottom.
-     * @default 'Top'
+     * The possible values are:
+     * - Top: Places the Tab header on the top.
+     * - Bottom: Places the Tab header at the bottom.
+     * @default 'Top'.
      */
     @Property('Top')
     public headerPlacement: headerPosition;
     /**
      * Specifies the height style for Tab content.
-     * Possible values are:
-     * - None - Based on height property given, content panel height is set.
-     * - Auto - Tallest panel height of given Tab contents is set to all other panels.
-     * - Content - Based on the corresponding content height, content panel height is set.
-     * - Fill - Based on the parent height, content panel height is set.
-     * @default 'Content'
+     * The possible values are:
+     * - None: Based on the given height property, the content panel height is set.
+     * - Auto: Tallest panel height of a given Tab content is set to all the other panels.
+     * - Content: Based on the corresponding content height, the content panel height is set.
+     * - Fill: Based on the parent height, the content panel hight is set.
+     * @default 'Content'.
      */
     @Property('Content')
     public heightAdjustMode: heightStyles;
     /**
      * Specifies the Tab display mode when Tab content exceeds the viewing area.
-     * Possible modes are:
-     * - Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.
-     * - Popup - Tab container holds the items that can be placed within the available space and rest of the items are moved to the popup.
-     * If the popup content overflows the height of the page, then the rest of the elements are scrollable.
-     * @default 'Scrollable'
+     * The possible modes are:
+     * - Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
+     * - Popup: Tab container holds the items that can be placed within the available space and rest of the items are moved to the popup.
+     * If the popup content overflows the height of the page, the rest of the elements can be viewed by scrolling the popup.
+     * @default 'Scrollable'.
      */
     @Property('Scrollable')
     public overflowMode: OverflowMode;
     /**
-     * Specifies the direction of the Tab. For the cultures like Arabic, direction can be switched as right to left.
-     * @default false
+     * Specifies the direction of the Tab. For the culture like Arabic, direction can be switched as right-to-left.
+     * @default false.
      */
     @Property(false)
     public enableRtl: boolean;
     /**
-     * Specifies whether to show the close button for the header items in which it is used to remove the item from the Tab.
-     * @default false
+     * Specifies whether to show the close button for header items to remove the item from the Tab.
+     * @default false.
      */
     @Property(false)
     public showCloseButton: boolean;
@@ -318,7 +318,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
      * Specifies the animation configuration settings while showing the content of the Tab.
      * @default 
      * { previous: { effect: 'SlideLeftIn', duration: 600, easing: 'ease' },
-     *   next: { effect: 'SlideRightIn', duration: 600, easing: 'ease' } }
+     *   next: { effect: 'SlideRightIn', duration: 600, easing: 'ease' } }.
      */
     @Complex<TabAnimationSettingsModel>({}, TabAnimationSettings)
     public animation: TabAnimationSettingsModel;
@@ -1002,7 +1002,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     }
     private hoverHandler(e: MouseEventArgs): void {
         let trg: HTEle = <HTEle> e.target;
-        if (trg.classList.contains(CLS_ICON_CLOSE)) {
+        if (!isNOU(trg.classList) &&  trg.classList.contains(CLS_ICON_CLOSE)) {
             trg.setAttribute('title', new L10n('tab', { title: this.title }, this.locale).getConstant('title'));
         }
     }
@@ -1010,8 +1010,8 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
      * Enables or disables the specified Tab item. On passing value as `false`, the item will be disabled.
      * @param  {number} index - Index value of target Tab item.
      * @param  {boolean} value - Boolean value that determines whether the command should be enabled or disabled.
-     * By default isEnable is true.
-     * @returns void
+     * By default, isEnable is true.
+     * @returns void.
      */
     public enableTab(index: number, value: boolean): void {
         let tbItems: HTEle = selectAll('.' + CLS_TB_ITEM, this.element)[index];
@@ -1025,10 +1025,10 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         tbItems.setAttribute('aria-disabled', (value === true) ? 'false' : 'true');
     }
     /**
-     * Adds new items to the Tab which accepts an array as Tab items.
-     * @param  {TabItemsModel[]} items - An array of item which to be added to the tab.
-     * @param  {number} index - Number value that determines where the items to be added. By default item is added in last index.
-     * @returns void
+     * Adds new items to the Tab that accepts an array as Tab items.
+     * @param  {TabItemsModel[]} items - An array of item that is added to the Tab.
+     * @param  {number} index - Number value that determines where the items to be added. By default, index is 0.
+     * @returns void.
      */
     public addTab(items: TabItemModel[], index?: number): void {
         this.trigger('adding', { addedItems: items });
@@ -1045,9 +1045,9 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (this.selectedItem === index) { this.select(index); } else { this.setActiveBorder(); }
     }
     /**
-     * Removes the items from the Tab from the specified index.
+     * Removes the items in the Tab from the specified index.
      * @param  {number} index - Index of target item that is going to be removed.
-     * @returns void
+     * @returns void.
      */
     public removeTab(index: number): void {
         let trg: HTEle = selectAll('.' + CLS_TB_ITEM, this.element)[index];
@@ -1072,10 +1072,10 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         this.enableAnimation = true;
     }
     /**
-     * Show or hide the Tab which is in the specified index.
+     * Shows or hides the Tab that is in the specified index.
      * @param  {number} index - Index value of target item.
-     * @param  {boolean} value - Based on this boolean value, item will be hide(true) or show(false). By default value is true.
-     * @returns void
+     * @param  {boolean} value - Based on this Boolean value, item will be hide (false) or show (true). By default, value is true.
+     * @returns void.
      */
     public hideTab(index: number, value?: boolean): void {
         let item: HTEle = selectAll('.' + CLS_TB_ITEM, this.element)[index];
@@ -1092,9 +1092,9 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         item.setAttribute('aria-hidden', '' + value);
     }
     /**
-     * Specify the index or HTMLElement to select an item from the Tab.
-     * @param  {number | HTMLElement} args - Index or DOM element is used for select an item from the Tab.
-     * @returns void
+     * Specifies the index or HTMLElement to select an item from the Tab.
+     * @param  {number | HTMLElement} args - Index or DOM element is used for selecting an item from the Tab.
+     * @returns void.
      */
     public select(args: number | HTMLElement): void {
         this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
@@ -1127,10 +1127,10 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         }
     }
     /**
-     * Specify the value to disable/enable the Tab component.
+     * Specifies the value to disable/enable the Tab component.
      * When set to `true`, the component will be disabled.
-     * @param  {boolean} value - Based on this boolean value Tab will be enabled(false) or disabled(true).
-     * @returns void
+     * @param  {boolean} value - Based on this Boolean value, Tab will be enabled (false) or disabled (true).
+     * @returns void.
      */
     public disable(value: boolean): void {
         this.setCssClass(this.element, CLS_DISABLE, value);

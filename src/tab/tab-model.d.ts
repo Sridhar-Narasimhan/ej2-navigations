@@ -33,14 +33,14 @@ export interface TabActionSettingsModel {
 export interface TabAnimationSettingsModel {
 
     /**
-     * Specifies the animation is to be showing while moving previous Tab content.
-     * @default { effect: 'SlideLeftIn', duration: 600, easing: 'ease' }
+     * Specifies the animation to appear while moving to previous Tab content.
+     * @default { effect: 'SlideLeftIn', duration: 600, easing: 'ease' }.
      */
     previous?: TabActionSettingsModel;
 
     /**
-     * Specifies the animation is to be showing while moving next Tab content.
-     * @default { effect: 'SlideRightIn', duration: 600, easing: 'ease' }
+     * Specifies the animation to appear while moving to next Tab content.
+     * @default { effect: 'SlideRightIn', duration: 600, easing: 'ease' }.
      */
     next?: TabActionSettingsModel;
 
@@ -53,24 +53,24 @@ export interface HeaderModel {
 
     /**
      * Specifies the display text of the Tab item header.
-     * @default ''
+     * @default ''.
      */
     text?: string | HTMLElement;
 
     /**
-     * Specifies the icon class, which is used to render an icon in the Tab header.
-     * @default ''
+     * Specifies the icon class that is used to render an icon in the Tab header.
+     * @default ''.
      */
     iconCss?: string;
 
     /**
      * Options for positioning the icon in the Tab item header. This property depends on `iconCss` property.
-     * Possible values are:
-     * - Left – Places the icon to the `left` of the item.
-     * - Top - Places the icon on the `top` of the item.
-     * - Right - Places the icon to the `right` end of the item.
-     * - Bottom - Places the icon on the `bottom` of the item.
-     * @default 'left'
+     * The possible values are:
+     * - Left: Places the icon to the `left` of the item.
+     * - Top: Places the icon on the `top` of the item.
+     * - Right: Places the icon to the `right` end of the item.
+     * - Bottom: Places the icon at the `bottom` of the item.
+     * @default 'left'.
      */
     iconPosition?: string;
 
@@ -88,19 +88,19 @@ export interface TabItemModel {
     header?: HeaderModel;
 
     /**
-     * Specifies the content of Tab item, which can be displayed when the concern item header is selected.
+     * Specifies the content of Tab item, that is displayed when concern item header is selected.
      * @default ''
      */
     content?: string | HTMLElement;
 
     /**
-     * Sets the CSS classes to the Tab item which helps to customize its styles.
+     * Sets the CSS classes to the Tab item to customize its styles.
      * @default ''
      */
     cssClass?: string;
 
     /**
-     * Set as true to disable user interactions of the Tab item.
+     * Sets true to disable user interactions of the Tab item.
      * @default false
      */
     disabled?: boolean;
@@ -129,19 +129,19 @@ export interface TabModel extends ComponentModel{
 
     /**
      * Specifies the width of the Tab component. Default, Tab width sets based on the width of its parent.
-     * @default '100%'
+     * @default '100%'.
      */
     width?: string | number;
 
     /**
-     * Specifies the height of the Tab component. Default, Tab height sets based on the height of its parent.
-     * To use height property, heightAdjustMode must set as 'None'.
-     * @default 'auto'
+     * Specifies the height of the Tab component. By default, Tab height is set based on the height of its parent.
+     * To use height property, heightAdjustMode must be set to 'None'.
+     * @default 'auto'.
      */
     height?: string | number;
 
     /**
-     * Sets the CSS classes to root element of the Tab which helps to customize component styles.
+     * Sets the CSS classes to root element of the Tab that helps to customize component styles.
      * @default ''
      */
     cssClass?: string;
@@ -158,49 +158,49 @@ export interface TabModel extends ComponentModel{
      *   });
      *   tabObj.appendTo('#tab');
      * ```
-     * @default 0
+     * @default 0.
      */
     selectedItem?: number;
 
     /**
      * Specifies the orientation of Tab header.
-     * Possible values are:
-     * - Top - Places the Tab header on the top.
-     * - Bottom - Places the Tab header to the bottom.
-     * @default 'Top'
+     * The possible values are:
+     * - Top: Places the Tab header on the top.
+     * - Bottom: Places the Tab header at the bottom.
+     * @default 'Top'.
      */
     headerPlacement?: headerPosition;
 
     /**
      * Specifies the height style for Tab content.
-     * Possible values are:
-     * - None - Based on height property given, content panel height is set.
-     * - Auto - Tallest panel height of given Tab contents is set to all other panels.
-     * - Content - Based on the corresponding content height, content panel height is set.
-     * - Fill - Based on the parent height, content panel height is set.
-     * @default 'Content'
+     * The possible values are:
+     * - None: Based on the given height property, the content panel height is set.
+     * - Auto: Tallest panel height of a given Tab content is set to all the other panels.
+     * - Content: Based on the corresponding content height, the content panel height is set.
+     * - Fill: Based on the parent height, the content panel hight is set.
+     * @default 'Content'.
      */
     heightAdjustMode?: heightStyles;
 
     /**
      * Specifies the Tab display mode when Tab content exceeds the viewing area.
-     * Possible modes are:
-     * - Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.
-     * - Popup - Tab container holds the items that can be placed within the available space and rest of the items are moved to the popup.
-     * If the popup content overflows the height of the page, then the rest of the elements are scrollable.
-     * @default 'Scrollable'
+     * The possible modes are:
+     * - Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
+     * - Popup: Tab container holds the items that can be placed within the available space and rest of the items are moved to the popup.
+     * If the popup content overflows the height of the page, the rest of the elements can be viewed by scrolling the popup.
+     * @default 'Scrollable'.
      */
     overflowMode?: OverflowMode;
 
     /**
-     * Specifies the direction of the Tab. For the cultures like Arabic, direction can be switched as right to left.
-     * @default false
+     * Specifies the direction of the Tab. For the culture like Arabic, direction can be switched as right-to-left.
+     * @default false.
      */
     enableRtl?: boolean;
 
     /**
-     * Specifies whether to show the close button for the header items in which it is used to remove the item from the Tab.
-     * @default false
+     * Specifies whether to show the close button for header items to remove the item from the Tab.
+     * @default false.
      */
     showCloseButton?: boolean;
 
@@ -208,7 +208,7 @@ export interface TabModel extends ComponentModel{
      * Specifies the animation configuration settings while showing the content of the Tab.
      * @default 
      * { previous: { effect: 'SlideLeftIn', duration: 600, easing: 'ease' },
-     *   next: { effect: 'SlideRightIn', duration: 600, easing: 'ease' } }
+     *   next: { effect: 'SlideRightIn', duration: 600, easing: 'ease' } }.
      */
     animation?: TabAnimationSettingsModel;
 
