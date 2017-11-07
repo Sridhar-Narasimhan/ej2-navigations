@@ -637,9 +637,12 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     }
     private triggerAnimation(id: Str, value: boolean): void {
         let prevIndex : number = this.prevIndex;
-        let oldCnt: HTEle = <HTEle> this.element.querySelector('.' + CLS_CONTENT).children[prevIndex];
-        if (isNOU(oldCnt)) {
-            oldCnt = <HTEle> select ('#' + this.prevActiveEle, this.element); }
+        let itemCollection: HTMLElement[] = [].slice.call(this.element.querySelector('.' + CLS_CONTENT).children);
+        let oldCnt: HTEle;
+        itemCollection.forEach((item: HTEle) => {
+            if (item.id === this.prevActiveEle) {
+              oldCnt = item; }
+        });
         let prevEle: HTEle = this.tbItem[prevIndex];
         let no: Str = this.extIndex(this.tbItem[this.selectedItem].id);
         let newCnt: HTEle;
@@ -679,7 +682,10 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
           this.triggerPrevAnimation(oldCnt, prevIndex); }
         this.prevActiveEle = newCnt.id;
         this.isPopup = false;
-        new Animation(animateObj).animate(newCnt);
+        if (animateObj.name === <Effect>'') {
+          newCnt.classList.add(CLS_ACTIVE);
+        } else {
+          new Animation(animateObj).animate(newCnt); }
     }
     private keyPressed(trg: HTEle): void {
         let trgParent: HTEle = <HTEle> closest(trg, '.' + CLS_TB_ITEM);

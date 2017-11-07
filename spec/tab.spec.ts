@@ -6703,5 +6703,53 @@ describe('Tab Control', () => {
             expect(element.children[1].childElementCount).toBe(1);
             expect(isNullOrUndefined(tab.tbObj)).toBe(false);
         });
+        it('items onpropertychange testing with selectedItem', () => {
+            tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                selectedItem: 1,
+            });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items.length).toBe(0);
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.childElementCount).toBe(0);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(true);
+            tab.items =  [
+                { header: { "text": "item1" } },
+                { header: { "text": "item2" } }
+            ];
+            tab.dataBind();
+            expect(tab.items.length).toBe(2);
+            expect(element.childElementCount).toBe(2);
+            expect(element.children[1].childElementCount).toBe(1);
+            expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(false);
+            (<HTMLElement>element.children[0].children[0].children[0]).click();
+            expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
+        });
+        it('items onpropertychange testing with selectedItem', () => {
+            tab = new Tab({
+                animation: { next: { effect : 'None'}, previous: { effect: 'None'}},
+                selectedItem: 1,
+            });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items.length).toBe(0);
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.childElementCount).toBe(0);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(true);
+            tab.items =  [
+                { header: { "text": "item1" }, content: "Content1" },
+                { header: { "text": "item2" }, content: "Content2" },
+                { header: { "text": "item3" }, content: "Content3" }
+            ];
+            tab.dataBind();
+            expect(element.childElementCount).toBe(2);
+            expect(element.children[1].childElementCount).toBe(1);
+            expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
+            expect(isNullOrUndefined(tab.tbObj)).toBe(false);
+            (<HTMLElement>element.children[0].children[0].children[0]).click();
+            expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
+            (<HTMLElement>element.children[0].children[0].children[1]).click();
+            expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
+        });
     });
 });
