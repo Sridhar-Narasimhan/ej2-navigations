@@ -803,7 +803,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (trg === null) { return; }
         let root: HTEle = <HTEle>closest(trg, '.' + CLS_TAB);
         if (this.element !== root) {return; }
-        let hsCnt: HTEle = <HTEle> select('.' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element);
+        let hsCnt: HTEle = <HTEle> select('.' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element.children[0]);
         this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
         let bar: HTEle = <HTEle> select('.' + CLS_INDICATOR, this.element);
         if (this.headerPlacement === 'Bottom') {

@@ -4996,6 +4996,15 @@ describe('Toolbar Control', () => {
             expect((<HTMLElement>tbarAlignEle[0]).children.length === 2).toEqual(true);
             expect((<HTMLElement>tbarAlignEle[1]).children.length === 2).toEqual(true);
             expect((<HTMLElement>tbarAlignEle[2]).children.length === 1).toEqual(true);
+            toolbar.refresh();
+            tbarAlignEle= toolbar.element.querySelector(".e-toolbar-items").children;
+            expect(tbarAlignEle.length === 3).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[0]).classList.contains("e-toolbar-left")).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[1]).classList.contains("e-toolbar-center")).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[2]).classList.contains("e-toolbar-right")).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[0]).children.length === 2).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[1]).children.length === 2).toEqual(true);
+            expect((<HTMLElement>tbarAlignEle[2]).children.length === 1).toEqual(true);
         });
     });
     describe("Alignment Based toolbar item Rendering eith RTL", () => {

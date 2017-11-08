@@ -645,6 +645,7 @@
         &.e-separator {
           margin: $tbar-separator-nrml-mrgn;
           min-height: $tbar-separator-nrml-minheight;
+          min-width: 1px;
         }
 
         input[type='checkbox'] {

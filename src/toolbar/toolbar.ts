@@ -10,19 +10,19 @@ import { HScroll } from '../common/h-scroll';
 import { ToolbarModel, ItemModel } from './toolbar-model';
 import { ToolbarHelper } from './toolbar-builder';
 /**
- * Specifies the options for supporting element types of toolbar command.
+ * Specifies the options for supporting element types of Toolbar command.
  */
 export type ItemType = 'Button' | 'Separator' | 'Input';
 /**
- * Specifies the options of where the text will be displayed in popup mode of the toolbar.
+ * Specifies the options of where the text will be displayed in popup mode of the Toolbar.
  */
 export type DisplayMode = 'Both' | 'Overflow' | 'Toolbar';
 /**
- * Specifies the options of the toolbar item display area when the toolbar content overflows to available space.Applicable to `popup` mode.
+ * Specifies the options of the Toolbar item display area when the Toolbar content overflows to available space.Applicable to `popup` mode.
  */
 export type OverflowOption = 'None' | 'Show' | 'Hide';
 /**
- * Specifies the options of toolbar display mode. Display option is considered when toolbar content exceeds the available space.
+ * Specifies the options of Toolbar display mode. Display option is considered when Toolbar content exceeds the available space.
  */
 export type OverflowMode = 'Scrollable' | 'Popup';
 
@@ -78,108 +78,107 @@ export interface ClickEventArgs extends BaseEventArgs {
   cancel?: boolean;
 }
 /**
- * An item object that is used to configure toolbar commands.
+ * An item object that is used to configure Toolbar commands.
  */
 export class Item extends ChildProperty<Item>  {
     /**
-     * Specifies the unique id to be used with button or input element of toolbar items.
-     * @default ""
+     * Specifies the unique ID to be used with button or input element of Toolbar items.
+     * @default "".
      */
     @Property('')
     public id: string;
     /**
-     * Specifies the text to be displayed on the toolbar button.
+     * Specifies the text to be displayed on the Toolbar button.
      * @default ""
      */
     @Property('')
     public text: string;
     /**
-     * Specifies the width of the toolbar button commands.
-     * @default 'auto'
+     * Specifies the width of the Toolbar button commands.
+     * @default 'auto'.
      */
     @Property('auto')
     public width: number | string;
     /**
-     * Defines single / multiple classes (separated by space ) are to be used for commands customization.
-     * @default ""
+     * Defines single/multiple classes (separated by space) to be used for customization of commands.
+     * @default "".
      */
     @Property('')
     public cssClass: string;
 
     /**
-     * Defines single / multiple classes separated by space which can be used to specify an icon for the button.
-     * The icon will be positioned before the text content if text available, else icon alone button will be rendered.
-     * @default ""
+     * Defines single/multiple classes separated by space used to specify an icon for the button.
+     * The icon will be positioned before the text content if text is available, otherwise the icon alone will be rendered.
+     * @default "".
      */
     @Property('')
     public prefixIcon: string;
     /**
-     * Defines single / multiple classes separated by space which can be used to specify an icon for the button.
-     * The icon will be positioned after the text content if text available.
-     * @default ""
+     * Defines single/multiple classes separated by space used to specify an icon for the button.
+     * The icon will be positioned after the text content if text is available.
+     * @default "".
      */
     @Property('')
     public suffixIcon: string;
     /**
-     * Specifies the toolbar command display area when an element's content is large to fit in an available space.
-     * Applicable to `popup` mode only. Possible values are:
-     * - show - Always shows item in *toolbar* with primary priority.
-     * - hide - Always shows item in *popup* with secondary priority.
-     * - none - No priority considers to display and as per the normal order control moves to popup when content exceeds.
-     * @default 'None'
+     * Specifies the Toolbar command display area when an element's content is too large to fit available space.
+     * This is applicable only to `popup` mode. Possible values are:
+     * - show:  Always shows the item as the primary priority on the *Toolbar*.
+     * - hide: Always shows the item as the secondary priority on the *popup*.
+     * - none: No priority for display, and as per normal order moves to popup when content exceeds.
+     * @default 'None'.
      */
     @Property('None')
     public overflow: OverflowOption;
     /**
-     * Specifies the HTML element / element id as a string which can be added as toolbar command.
+     * Specifies the HTML element/element ID as a string that can be added as a Toolbar command.
      * ```
      * E.g - items: [{ template: '<input placeholder="Search"/>' },{ template: '#checkbox1' }]
      * ```
-     * @default ""
+     * @default "".
      */
     @Property('')
     public template: string | Object;
     /**
-     * Specifies the types of command to be rendered in the toolbar.
+     * Specifies the types of command to be rendered in the Toolbar.
      * Supported types are:
-     * - Button - Creates the button control with its given properties like text, prefixIcon, etc.
-     * - Separator - Adds a horizontal line that separates the toolbar commands.
-     * - Input - Creates an input element and it's applicable to template rendering with Syncfusion controls like drop down list, 
-     * auto complete, etc.
-     * @default 'Button'
+     * - Button: Creates the Button control with its given properties like text, prefixIcon, etc.
+     * - Separator: Adds a horizontal line that separates the Toolbar commands.
+     * - Input: Creates an input element that is applicable to template rendering with Syncfusion controls like DropDownList,
+     * AutoComplete, etc.
+     * @default 'Button'.
      */
     @Property('Button')
     public type: ItemType;
     /**
-     * Specifies where the button text will be displayed in *popup mode* of the toolbar.
+     * Specifies where the button text will be displayed on *popup mode* of the Toolbar.
      * Possible values are:
-     * - Toolbar - Text will be displayed in *toolbar* only.
-     * - Overflow - Text will be displayed when content overflowed to *popup* only.
-     * - Both - Text will be displayed in *popup* and *toolbar*.
-     * @default 'Both'
+     * - Toolbar:  Text will be displayed on *Toolbar* only.
+     * - Overflow: Text will be displayed only when content overflows to *popup*.
+     * - Both: Text will be displayed on *popup* and *Toolbar*.
+     * @default 'Both'.
      */
     @Property('Both')
     public showTextOn: DisplayMode;
     /**
-     * Defines a htmlAttributes which can be used for adding custom attributes to toolbar command.
+     * Defines htmlAttributes used to add custom attributes to Toolbar command.
      * Supports HTML attributes such as style, class, etc.
-     * @default 'null'
+     * @default 'null'.
      */
     @Property(null)
     public htmlAttributes: { [key: string]: string; };
     /**
-     * Sets the text that appears as a html tooltip in the toolbar command.
-     * @default ""
+     * Specifies the text to be displayed on the Toolbar button.
+     * @default "".
      */
     @Property('')
     public tooltipText: string;
     /**
-     * Specifies the location for aligning toolbar items in the toolbar. Each command will be aligned according to the `align` property.
-     * 
+     * Specifies the location for aligning Toolbar items on the Toolbar. Each command will be aligned according to the `align` property.
      * Possible values are:
-     * - Left – To align commands to the left side of the Toolbar.
-     * - Center - To align commands to the center of the Toolbar.
-     * - Right - To align commands to the right side of the Toolbar.
+     * - Left: To align commands to the left side of the Toolbar.
+     * - Center: To align commands at the center of the Toolbar.
+     * - Right: To align commands to the right side of the Toolbar.
      * ```html
      * <div id="element"> </div>
      * ```
@@ -194,13 +193,13 @@ export class Item extends ChildProperty<Item>  {
      * });
      * toolbar.appendTo('#element');
      * ```
-     * @default "left"
+     * @default "left".
      */
     @Property('left')
     public align: ItemAlign;
 }
 /**
- * Toolbar control is a contains group of commands that are aligned horizontally.
+ * The Toolbar control contains a group of commands that are aligned horizontally.
  * ```html
  * <div id="toolbar"/>
  * <script>
@@ -232,7 +231,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     private activeEle: HTEle;
 
     /**
-     * Contains the keyboard configuration of the toolbar.
+     * Contains the keyboard configuration of the Toolbar.
      */
     private keyConfigs: { [key: string]: Str } = {
         moveLeft: 'leftarrow',
@@ -246,47 +245,47 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         end: 'end',
     };
     /**
-     * An array of item that is used to configure toolbar commands.
-     * @default []
+     * An array of items that is used to configure Toolbar commands.
+     * @default [].
      */
     @Collection<ItemModel>([], Item)
     public items: ItemModel[];
     /**
-     * Specifies the width of the toolbar in pixels/number/percentage. Number value is considered as pixels.
-     * @default 'auto'
+     * Specifies the width of the Toolbar in pixels/numbers/percentage. Number value is considered as pixels.
+     * @default 'auto'.
      */
     @Property('auto')
     public width: string | number;
     /**
-     * Specifies the height of the toolbar in pixels/number/percentage. Number value is considered as pixels.
+     * Specifies the height of the Toolbar in pixels/number/percentage. Number value is considered as pixels.
      * @default 'auto'
      */
     @Property('auto')
     public height: string | number;
     /**
-     * Specifies the toolbar display mode when toolbar content exceeds the viewing area.
+     * Specifies the Toolbar display mode when Toolbar content exceeds the viewing area.
      * Possible modes are:
-     * - Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.
-     * - Popup - Prioritized elements are displayed in toolbar and rest of elements are moved to *popup*.
+     * - Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
+     * - Popup: Prioritized elements are displayed on the Toolbar and the rest of elements are moved to the *popup*.
      * If the popup content overflows the height of the page, the rest of the elements will be hidden.
-     * @default 'Scrollable'
+     * @default 'Scrollable'.
      */
     @Property('Scrollable')
     public overflowMode: OverflowMode;
     /**
-     * Specifies the direction of the toolbar commands. For the cultures like Arabic, direction can be switched as right to left.
-     * @default 'false'
+     * Specifies the direction of the Toolbar commands. For cultures like Arabic, Hebrew, etc. direction can be switched to right to left.
+     * @default 'false'.
      */
     @Property(false)
     public enableRtl: boolean;
     /**
-     * The event will be fired while clicking on the toolbar elements.
+     * The event will be fired on clicking the Toolbar elements.
      * @event
      */
     @Event()
     public clicked: EmitType<ClickEventArgs>;
     /**
-     * The event will be fired once the control rendering is completed.
+     * The event will be fired when the control is rendered.
      * @event
      */
     @Event()
@@ -298,14 +297,14 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     @Event()
     public destroyed: EmitType<Event>;
     /**
-     * The event will be fired before the control rendered on a page.
+     * The event will be fired before the control is rendered on a page.
      * @event
      */
     @Event()
     public beforeCreate: EmitType<Event>;
     /**
      * Removes the control from the DOM and also removes all its related events.
-     * @returns void
+     * @returns void.
      */
     public destroy(): void {
         let ele: HTEle = this.element;
@@ -317,6 +316,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             ele.appendChild(this.ctrlTem); }
         this.clearProperty();
         this.popObj = null;
+        this.tbarAlign = null;
         this.remove(this.element, 'e-toolpop');
         ele.removeAttribute('style');
         ['aria-disabled', 'aria-orientation', 'aria-haspopup', 'role'].forEach((attrb: string): void => {
@@ -337,8 +337,8 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     /**
      * Initializes a new instance of the Toolbar class.
-     * @param options  - Specifies toolbar model properties as options.
-     * @param element  - Specifies the element that is rendered as a toolbar.
+     * @param options  - Specifies Toolbar model properties as options.
+     * @param element  - Specifies the element that is rendered as a Toolbar.
      */
     constructor(options?: ToolbarModel, element?: string | HTMLElement) {
         super(options, <HTEle | Str>element);
@@ -650,7 +650,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     }
     private itemWidthCal(items: HTEle): number {
       let width: number = 0;
-      [].slice.call( selectAll('.' + CLS_ITEM), items).forEach ((el: HTEle) => {
+      [].slice.call( selectAll('.' + CLS_ITEM, items)).forEach ((el: HTEle) => {
          width += (el.offsetWidth + parseFloat(window.getComputedStyle(el).marginRight));
       });
       return width;
@@ -1132,11 +1132,11 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
       }
     }
     /**
-     * Enables or disables the specified toolbar item.
-     * @param  {HTMLElement|NodeList} items - DOM element or an array of item which is to be enabled or disabled.
+     * Enables or disables the specified Toolbar item.
+     * @param  {HTMLElement|NodeList} items - DOM element or an array of items to be enabled or disabled.
      * @param  {boolean} isEnable  - Boolean value that determines whether the command should be enabled or disabled.
-     * By default `isEnable` is true.
-     * @returns void
+     * By default, `isEnable` is set to true.
+     * @returns void.
      */
     public enableItems(items: HTMLElement | NodeList, isEnable?: boolean): void {
         let elements: NodeList = <NodeList>items;
@@ -1165,10 +1165,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         }
     }
     /**
-     * Adds new items to the Toolbar which accepts an array as toolbar items.
-     * @param  {ItemsModel[]} items - DOM element or an Array of item which to be added to the toolbar.
-     * @param  {number} index - Number value that determines where the command to be added. By default index is 0.
-     * @returns void
+     * Adds new items to the Toolbar that accepts an array as Toolbar items.
+     * @param  {ItemsModel[]} items - DOM element or an array of items to be added to the Toolbar.
+     * @param  {number} index - Number value that determines where the command is to be added. By default, index is 0.
+     * @returns void.
      */
     public addItems(items: ItemModel[], index?: number): void {
         let innerItems: HTEle[];
@@ -1209,10 +1209,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         this.renderOverflowMode();
     }
     /**
-     * Removes the items from the toolbar. Acceptable arguments are index of item / HTMLElement / Node list.
+     * Removes the items from the Toolbar. Acceptable arguments are index of item/HTMLElement/node list.
      * @param  {number|HTMLElement|NodeList|HTMLElement[]} args
-     * Index or DOM element or an Array of item which is to be removed from the toolbar.
-     * @returns void
+     * Index or DOM element or an Array of item which is to be removed from the Toolbar.
+     * @returns void.
      */
     public removeItems(args: number | HTMLElement | NodeList | Element | HTMLElement[]): void {
         let elements: NodeList = <NodeList>args;
@@ -1457,6 +1457,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     if (this.enableRtl) {
                         this.add(tEle, CLS_RTL);
                     }
+                    this.refreshOverflow();
                     break;
                 case 'enableRtl':
                     newProp.enableRtl ? this.add(tEle, CLS_RTL) : this.remove(tEle, CLS_RTL);

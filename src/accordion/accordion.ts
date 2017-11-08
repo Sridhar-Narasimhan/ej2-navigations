@@ -60,19 +60,19 @@ export type AccordionEffect = 'None' |Effect;
 
 export class AccordionActionSettings extends ChildProperty<AccordionActionSettings> {
   /**
-   * Specify the type of animation.
+   * Specifies the type of animation.
    * @default : 'SlideDown';
    */
   @Property('SlideDown')
   public effect: AccordionEffect;
   /**
-   * Specify the duration to animate.
+   * Specifies the duration to animate.
    * @default : 400;
    */
   @Property(400)
   public duration: number;
   /**
-   * Specify the animation timing function.
+   * Specifies the animation timing function.
    * @default : 'linear';
    */
   @Property('linear')
@@ -81,14 +81,14 @@ export class AccordionActionSettings extends ChildProperty<AccordionActionSettin
 
 export class AccordionAnimationSettings extends ChildProperty<AccordionAnimationSettings> {
   /**
-   * Specifies the animation is to be shown while collapsing the Accordion item.
-   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
+   * Specifies the animation to appear while collapsing the Accordion item.
+   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }.
    */
   @Complex<AccordionActionSettingsModel>({ effect: 'SlideUp', duration: 400, easing: 'linear' }, AccordionActionSettings)
   public collapse: AccordionActionSettingsModel;
   /**
-   * Specifies the animation is to be shown while expanding the Accordion item.
-   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
+   * Specifies the animation to appear while expanding the Accordion item.
+   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }.
    */
   @Complex<AccordionActionSettingsModel>({ effect: 'SlideDown', duration: 400, easing: 'linear' }, AccordionActionSettings)
   public expand: AccordionActionSettingsModel;
@@ -98,9 +98,9 @@ export class AccordionAnimationSettings extends ChildProperty<AccordionAnimation
  */
 export class AccordionItem extends ChildProperty<AccordionItem>  {
     /**
-     * Sets the text content is to be displayed for the Accordion item.
+     * Sets the text content to be displayed for the Accordion item.
      * You can set the content of the Accordion item using `content` property.
-     * It also supports to include title as the `HTML element` , `string` or `query selector`.
+     * It also supports to include the title as `HTML element`, `string`, or `query selector`.
      * ```typescript
      *   let accordionObj: Accordion = new Accordion( { 
      *        items : [ 
@@ -110,14 +110,14 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
      *        });
      *   accordionObj.appendTo('#accordion');
      * ```
-     * @default undefined
+     * @default undefined.
      */
     @Property(undefined)
     public content : string;
     /**
-     * Sets the header text is to be displayed for the Accordion item.
+     * Sets the header text to be displayed for the Accordion item.
      * You can set the title of the Accordion item using `header` property.
-     * It also supports to include title as the `HTML element` , `string` or `query selector`.
+     * It also supports to include the title as `HTML element`, `string`, or `query selector`.
      * ```typescript
      *   let accordionObj: Accordion = new Accordion( { 
      *        items : [ 
@@ -127,20 +127,20 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
      *        });
      *   accordionObj.appendTo('#accordion');
      * ```
-     * @default undefined
+     * @default undefined.
      */
     @Property(undefined)
     public header : string;
     /**
-     * Defines single / multiple classes (separated by a space ) are to be used for Accordion item customization.
+     * Defines single/multiple classes (separated by a space) are to be used for Accordion item customization.
      * @default undefined
      */
     @Property(undefined)
     public cssClass: string;
     /**
-     * Defines an icon with the given custom CSS class which is to be rendered before the header text.
-     * You can add the css classes to the `iconCss` property and write the css styles to the defined class to set images/icons
-     * Adding icon is applied to header only.
+     * Defines an icon with the given custom CSS class that is to be rendered before the header text.
+     * Add the css classes to the `iconCss` property and write the css styles to the defined class to set images/icons.
+     * Adding icon is applicable only to the header.
      * ```typescript
      *   let accordionObj: Accordion = new Accordion( { 
      *        items : [ 
@@ -158,8 +158,8 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
     @Property(undefined)
     public iconCss : string;
     /**
-     * Sets the expand (true) or collapse (false) state of the Accordion item. Default all the items are in a collapsed state.
-     * @default 'false'
+     * Sets the expand (true) or collapse (false) state of the Accordion item. By default, all the items are in a collapsed state.
+     * @default 'false'.
      */
     @Property(false)
     public expanded  : Boolean;
@@ -167,7 +167,7 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
 
 
 /**
- * The Accordion is a vertically collapsible content panel which is displaying panels, one or multiple at a time within the available space.
+ * The Accordion is a vertically collapsible content panel that displays one or more panels at a time within the available space.
  * ```html
  * <div id='accordion'/>
  * <script>
@@ -219,23 +219,23 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     public width: string | number;
     /**
      * Specifies the height of the Accordion in pixels/number/percentage. Number value is considered as pixels.
-     * @default 'auto'
+     * @default 'auto'.
      */
     @Property('auto')
     public height: string | number;
     /**
      * Specifies the options to expand single or multiple panel at a time.
-     * Possible values are:
-     * - Single - Sets to expand only one Accordion item at a time.
-     * - Multiple - Sets to expand more than one Accordion item at a time.
-     * @default 'Multiple'
+     * The possible values are:
+     * - Single: Sets to expand only one Accordion item at a time.
+     * - Multiple: Sets to expand more than one Accordion item at a time.
+     * @default 'Multiple'.
      */
     @Property('Multiple')
     public expandMode : ExpandMode;
     /**
      * Specifies the animation configuration settings for expanding and collapsing the panel.
      * @default { expand: { effect: 'SlideDown', duration: 400, easing: 'linear' },
-     * collapse: { effect: 'SlideUp', duration: 400, easing: 'linear' }}
+     * collapse: { effect: 'SlideUp', duration: 400, easing: 'linear' }}.
      */
     @Complex<AccordionAnimationSettingsModel>({}, AccordionAnimationSettings)
     public animation: AccordionAnimationSettingsModel;
@@ -246,13 +246,13 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     @Event()
     public clicked: EmitType<AccordionClickArgs>;
     /**
-     * The event will be fired before item collapsing/expanding .
+     * The event will be fired before the item gets collapsed/expanded.
      * @event
      */
     @Event()
     public expanding: EmitType<ExpandEventArgs>;
     /**
-     * The event will be fired after item collapsed/expanded .
+     * The event will be fired after the item gets collapsed/expanded.
      * @event
      */
     @Event()
@@ -827,8 +827,8 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     /**
      * Adds new item to the Accordion with the specified index of the Accordion.
      * @param  {AccordionItemModel} item - Item array that is to be added to the Accordion.
-     * @param  {number} index - Number value that determines where the item to be added.
-     * By default item is added at last index if index not specified.
+     * @param  {number} index - Number value that determines where the item should be added.
+     * By default, item is added at the last index if the index is not specified.
      * @returns void
      */
     public addItem (item: AccordionItemModel, index?: number): void {
@@ -862,8 +862,8 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     }
     /**
      * Dynamically removes item from Accordion.
-     * @param  {number} index - Number value that determines which item is to be removed
-     * @returns void
+     * @param  {number} index - Number value that determines which item should be removed.
+     * @returns void.
      */
     public removeItem(index: number): void {
       let ele: HTEle = <HTEle>this.element.children[index];
@@ -877,8 +877,8 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     }
     /**
      * Sets focus to the specified index item header in Accordion.
-     * @param  {number} index - Number value that determines which item to be focused.
-     * @returns void
+     * @param  {number} index - Number value that determines which item should be focused.
+     * @returns void.
      */
     public select(index: number): void {
       let ele: HTEle = <HTEle>this.element.children[index];
@@ -887,11 +887,11 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       (<HTEle>ele.children[0]).focus();
     }
     /**
-     * Show or hide the specified item from Accordion.
-     * @param  {number} index - Number value that determines which item to be hide/show.
-     * @param  {Boolean} isHidden - Boolean value that determines the action either hide(true) or show(false). Default value is false.
-     *  `isHidden` value is false then the item is shown or else item is hidden.
-     * @returns void
+     * Shows or hides the specified item from Accordion.
+     * @param  {number} index - Number value that determines which item should be hidden/shown.
+     * @param  {Boolean} isHidden - Boolean value that determines the action either hide (true) or show (false). Default value is false.
+     *  If the `isHidden` value is false, the item is shown or else item it is hidden.
+     * @returns void.
      */
     public hideItem(index: number, isHidden?: Boolean): void {
       let ele: HTEle = <HTEle>this.element.children[index];
@@ -902,11 +902,11 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       isHidden ? this.add(ele, CLS_ITEMHIDE ) : this.remove(ele, CLS_ITEMHIDE );
     }
     /**
-     * Enable/Disable the specified Accordion item.
-     * @param  {number} index - Number value that determines which item to be enable/disable.
-     * @param  {boolean} isEnable - Boolean value that determines the action as enable(true) or disable(false).
-     * `isEnable` value is true item is enabled or else it is disabled.
-     * @returns void
+     * Enables/Disables the specified Accordion item.
+     * @param  {number} index - Number value that determines which item should be enabled/disabled.
+     * @param  {boolean} isEnable - Boolean value that determines the action as enable (true) or disable (false).
+     * If the `isEnable` value is true, the item is enabled or else it is disabled.
+     * @returns void.
      */
     public  enableItem(index: number,  isEnable: boolean): void {
       let ele: HTEle = <HTEle>this.element.children[index];
@@ -927,11 +927,11 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       }
     }
     /**
-     * Expand/Collapse the specified Accordion item.
+     * Expands/Collapses the specified Accordion item.
      * @param  {boolean} isExpand - Boolean value that determines the action as expand or collapse.
-     * @param  {number} index - Number value that determines which item to be expand/collapse.`index` is optional parameter.
-     *  Without Specifying index, based on `isExpand` value, all Accordion item to be expands or collapse.
-     * @returns void
+     * @param  {number} index - Number value that determines which item should be expanded/collapsed.`index` is optional parameter.
+     *  Without Specifying index, based on the `isExpand` value all Accordion item can be expanded or collapsed.
+     * @returns void.
      */
     public expandItem(isExpand: boolean, index?: number): void {
       let root: HTEle = this.element;

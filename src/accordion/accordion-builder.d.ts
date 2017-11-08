@@ -22,11 +22,11 @@ export interface  BuilderProperties {
 	*/
 	destroyed(value:Function): BuilderProperties;
 	/**
-	* The event will be fired after item collapsed/expanded .
+	* The event will be fired after the item gets collapsed/expanded.
 	*/
 	expanded(value:Function): BuilderProperties;
 	/**
-	* The event will be fired before item collapsing/expanding .
+	* The event will be fired before the item gets collapsed/expanded.
 	*/
 	expanding(value:Function): BuilderProperties;
 	/**
@@ -43,9 +43,9 @@ export interface  BuilderProperties {
 	enableRtl(value:boolean): BuilderProperties;
 	/**
 	* Specifies the options to expand single or multiple panel at a time.
-Possible values are:
-- Single - Sets to expand only one Accordion item at a time.
-- Multiple - Sets to expand more than one Accordion item at a time.
+The possible values are:
+- Single: Sets to expand only one Accordion item at a time.
+- Multiple: Sets to expand more than one Accordion item at a time.
 	*/
 	expandMode(value:ExpandMode): BuilderProperties;
 	/**
@@ -64,25 +64,25 @@ Possible values are:
 }
 export interface AccordionActionSettingsModel {
 	/**
-	* Specify the duration to animate.
+	* Specifies the duration to animate.
 	*/
 	duration(value:number): AccordionActionSettingsModel;
 	/**
-	* Specify the animation timing function.
+	* Specifies the animation timing function.
 	*/
 	easing(value:string): AccordionActionSettingsModel;
 	/**
-	* Specify the type of animation.
+	* Specifies the type of animation.
 	*/
 	effect(value:AccordionEffect): AccordionActionSettingsModel;
 }
 export interface AccordionAnimationSettingsModel {
 	/**
-	* Specifies the animation is to be shown while collapsing the Accordion item.
+	* Specifies the animation to appear while collapsing the Accordion item.
 	*/
 	collapse(value: (val:AccordionActionSettingsModel) => void | Object): AccordionAnimationSettingsModel;
 	/**
-	* Specifies the animation is to be shown while expanding the Accordion item.
+	* Specifies the animation to appear while expanding the Accordion item.
 	*/
 	expand(value: (val:AccordionActionSettingsModel) => void | Object): AccordionAnimationSettingsModel;
 }

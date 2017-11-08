@@ -10,15 +10,15 @@ export interface ToolbarHelper {
 export interface  BuilderProperties {
 	create(): Toolbar
 	/**
-	* The event will be fired before the control rendered on a page.
+	* The event will be fired before the control is rendered on a page.
 	*/
 	beforeCreate(value:Function): BuilderProperties;
 	/**
-	* The event will be fired while clicking on the toolbar elements.
+	* The event will be fired on clicking the Toolbar elements.
 	*/
 	clicked(value:Function): BuilderProperties;
 	/**
-	* The event will be fired once the control rendering is completed.
+	* The event will be fired when the control is rendered.
 	*/
 	created(value:Function): BuilderProperties;
 	/**
@@ -30,11 +30,11 @@ export interface  BuilderProperties {
 	*/
 	enablePersistence(value:boolean): BuilderProperties;
 	/**
-	* Specifies the direction of the toolbar commands. For the cultures like Arabic, direction can be switched as right to left.
+	* Specifies the direction of the Toolbar commands. For cultures like Arabic, Hebrew, etc. direction can be switched to right to left.
 	*/
 	enableRtl(value:boolean): BuilderProperties;
 	/**
-	* Specifies the height of the toolbar in pixels/number/percentage. Number value is considered as pixels.
+	* Specifies the height of the Toolbar in pixels/number/percentage. Number value is considered as pixels.
 	*/
 	height(value:string|number): BuilderProperties;
 	isDestroyed(value:boolean): BuilderProperties;
@@ -43,15 +43,15 @@ export interface  BuilderProperties {
 	*/
 	locale(value:string): BuilderProperties;
 	/**
-	* Specifies the toolbar display mode when toolbar content exceeds the viewing area.
+	* Specifies the Toolbar display mode when Toolbar content exceeds the viewing area.
 Possible modes are:
-- Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.
-- Popup - Prioritized elements are displayed in toolbar and rest of elements are moved to *popup*.
+- Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
+- Popup: Prioritized elements are displayed on the Toolbar and the rest of elements are moved to the *popup*.
 If the popup content overflows the height of the page, the rest of the elements will be hidden.
 	*/
 	overflowMode(value:OverflowMode): BuilderProperties;
 	/**
-	* Specifies the width of the toolbar in pixels/number/percentage. Number value is considered as pixels.
+	* Specifies the width of the Toolbar in pixels/numbers/percentage. Number value is considered as pixels.
 	*/
 	width(value:string|number): BuilderProperties;
 }

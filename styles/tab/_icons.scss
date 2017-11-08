@@ -2,28 +2,31 @@
   /*! tab icons */
   .e-tab {
 
-    .e-close-icon::before {
-      content: '\e7fc';
-      position: relative;
-    }
+    .e-header {
 
-    .e-popup-up-icon::before {
-      content: $tab-pop-up-icon;
+      .e-close-icon::before {
+        content: '\e7fc';
+        position: relative;
+      }
 
-      @media screen and (max-width: 480px) {
-        content: $tab-mob-pop-up-icon;
+      .e-popup-up-icon::before {
+        content: $tab-pop-up-icon;
+
+        @media screen and (max-width: 480px) {
+          content: $tab-mob-pop-up-icon;
+        }
+      }
+
+      .e-popup-down-icon::before {
+        content: $tab-pop-down-icon;
+
+        @media screen and (max-width: 480px) {
+          content: $tab-mob-pop-down-icon;
+        }
       }
     }
 
-    .e-popup-down-icon::before {
-      content: $tab-pop-down-icon;
-
-      @media screen and (max-width: 480px) {
-        content: $tab-mob-pop-down-icon;
-      }
-    }
-
-    &.e-vertical-icon {
+    &.e-vertical-icon .e-header {
 
       @media screen and (max-width: 480px) {
 

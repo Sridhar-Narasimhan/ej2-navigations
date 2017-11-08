@@ -8,103 +8,102 @@ import {ComponentModel} from '@syncfusion/ej2-base';
 export interface ItemModel {
 
     /**
-     * Specifies the unique id to be used with button or input element of toolbar items.
-     * @default ""
+     * Specifies the unique ID to be used with button or input element of Toolbar items.
+     * @default "".
      */
     id?: string;
 
     /**
-     * Specifies the text to be displayed on the toolbar button.
+     * Specifies the text to be displayed on the Toolbar button.
      * @default ""
      */
     text?: string;
 
     /**
-     * Specifies the width of the toolbar button commands.
-     * @default 'auto'
+     * Specifies the width of the Toolbar button commands.
+     * @default 'auto'.
      */
     width?: number | string;
 
     /**
-     * Defines single / multiple classes (separated by space ) are to be used for commands customization.
-     * @default ""
+     * Defines single/multiple classes (separated by space) to be used for customization of commands.
+     * @default "".
      */
     cssClass?: string;
 
     /**
-     * Defines single / multiple classes separated by space which can be used to specify an icon for the button.
-     * The icon will be positioned before the text content if text available, else icon alone button will be rendered.
-     * @default ""
+     * Defines single/multiple classes separated by space used to specify an icon for the button.
+     * The icon will be positioned before the text content if text is available, otherwise the icon alone will be rendered.
+     * @default "".
      */
     prefixIcon?: string;
 
     /**
-     * Defines single / multiple classes separated by space which can be used to specify an icon for the button.
-     * The icon will be positioned after the text content if text available.
-     * @default ""
+     * Defines single/multiple classes separated by space used to specify an icon for the button.
+     * The icon will be positioned after the text content if text is available.
+     * @default "".
      */
     suffixIcon?: string;
 
     /**
-     * Specifies the toolbar command display area when an element's content is large to fit in an available space.
-     * Applicable to `popup` mode only. Possible values are:
-     * - show - Always shows item in *toolbar* with primary priority.
-     * - hide - Always shows item in *popup* with secondary priority.
-     * - none - No priority considers to display and as per the normal order control moves to popup when content exceeds.
-     * @default 'None'
+     * Specifies the Toolbar command display area when an element's content is too large to fit available space.
+     * This is applicable only to `popup` mode. Possible values are:
+     * - show:  Always shows the item as the primary priority on the *Toolbar*.
+     * - hide: Always shows the item as the secondary priority on the *popup*.
+     * - none: No priority for display, and as per normal order moves to popup when content exceeds.
+     * @default 'None'.
      */
     overflow?: OverflowOption;
 
     /**
-     * Specifies the HTML element / element id as a string which can be added as toolbar command.
+     * Specifies the HTML element/element ID as a string that can be added as a Toolbar command.
      * ```
      * E.g - items: [{ template: '<input placeholder="Search"/>' },{ template: '#checkbox1' }]
      * ```
-     * @default ""
+     * @default "".
      */
     template?: string | Object;
 
     /**
-     * Specifies the types of command to be rendered in the toolbar.
+     * Specifies the types of command to be rendered in the Toolbar.
      * Supported types are:
-     * - Button - Creates the button control with its given properties like text, prefixIcon, etc.
-     * - Separator - Adds a horizontal line that separates the toolbar commands.
-     * - Input - Creates an input element and it's applicable to template rendering with Syncfusion controls like drop down list, 
-     * auto complete, etc.
-     * @default 'Button'
+     * - Button: Creates the Button control with its given properties like text, prefixIcon, etc.
+     * - Separator: Adds a horizontal line that separates the Toolbar commands.
+     * - Input: Creates an input element that is applicable to template rendering with Syncfusion controls like DropDownList,
+     * AutoComplete, etc.
+     * @default 'Button'.
      */
     type?: ItemType;
 
     /**
-     * Specifies where the button text will be displayed in *popup mode* of the toolbar.
+     * Specifies where the button text will be displayed on *popup mode* of the Toolbar.
      * Possible values are:
-     * - Toolbar - Text will be displayed in *toolbar* only.
-     * - Overflow - Text will be displayed when content overflowed to *popup* only.
-     * - Both - Text will be displayed in *popup* and *toolbar*.
-     * @default 'Both'
+     * - Toolbar:  Text will be displayed on *Toolbar* only.
+     * - Overflow: Text will be displayed only when content overflows to *popup*.
+     * - Both: Text will be displayed on *popup* and *Toolbar*.
+     * @default 'Both'.
      */
     showTextOn?: DisplayMode;
 
     /**
-     * Defines a htmlAttributes which can be used for adding custom attributes to toolbar command.
+     * Defines htmlAttributes used to add custom attributes to Toolbar command.
      * Supports HTML attributes such as style, class, etc.
-     * @default 'null'
+     * @default 'null'.
      */
     htmlAttributes?: { [key: string]: string; };
 
     /**
-     * Sets the text that appears as a html tooltip in the toolbar command.
-     * @default ""
+     * Specifies the text to be displayed on the Toolbar button.
+     * @default "".
      */
     tooltipText?: string;
 
     /**
-     * Specifies the location for aligning toolbar items in the toolbar. Each command will be aligned according to the `align` property.
-     * 
+     * Specifies the location for aligning Toolbar items on the Toolbar. Each command will be aligned according to the `align` property.
      * Possible values are:
-     * - Left – To align commands to the left side of the Toolbar.
-     * - Center - To align commands to the center of the Toolbar.
-     * - Right - To align commands to the right side of the Toolbar.
+     * - Left: To align commands to the left side of the Toolbar.
+     * - Center: To align commands at the center of the Toolbar.
+     * - Right: To align commands to the right side of the Toolbar.
      * ```html
      * <div id="element"> </div>
      * ```
@@ -119,7 +118,7 @@ export interface ItemModel {
      * });
      * toolbar.appendTo('#element');
      * ```
-     * @default "left"
+     * @default "left".
      */
     align?: ItemAlign;
 
@@ -131,47 +130,47 @@ export interface ItemModel {
 export interface ToolbarModel extends ComponentModel{
 
     /**
-     * An array of item that is used to configure toolbar commands.
-     * @default []
+     * An array of items that is used to configure Toolbar commands.
+     * @default [].
      */
     items?: ItemModel[];
 
     /**
-     * Specifies the width of the toolbar in pixels/number/percentage. Number value is considered as pixels.
-     * @default 'auto'
+     * Specifies the width of the Toolbar in pixels/numbers/percentage. Number value is considered as pixels.
+     * @default 'auto'.
      */
     width?: string | number;
 
     /**
-     * Specifies the height of the toolbar in pixels/number/percentage. Number value is considered as pixels.
+     * Specifies the height of the Toolbar in pixels/number/percentage. Number value is considered as pixels.
      * @default 'auto'
      */
     height?: string | number;
 
     /**
-     * Specifies the toolbar display mode when toolbar content exceeds the viewing area.
+     * Specifies the Toolbar display mode when Toolbar content exceeds the viewing area.
      * Possible modes are:
-     * - Scrollable - All the elements are displayed in a single line with horizontal scrolling enabled.
-     * - Popup - Prioritized elements are displayed in toolbar and rest of elements are moved to *popup*.
+     * - Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
+     * - Popup: Prioritized elements are displayed on the Toolbar and the rest of elements are moved to the *popup*.
      * If the popup content overflows the height of the page, the rest of the elements will be hidden.
-     * @default 'Scrollable'
+     * @default 'Scrollable'.
      */
     overflowMode?: OverflowMode;
 
     /**
-     * Specifies the direction of the toolbar commands. For the cultures like Arabic, direction can be switched as right to left.
-     * @default 'false'
+     * Specifies the direction of the Toolbar commands. For cultures like Arabic, Hebrew, etc. direction can be switched to right to left.
+     * @default 'false'.
      */
     enableRtl?: boolean;
 
     /**
-     * The event will be fired while clicking on the toolbar elements.
+     * The event will be fired on clicking the Toolbar elements.
      * @event
      */
     clicked?: EmitType<ClickEventArgs>;
 
     /**
-     * The event will be fired once the control rendering is completed.
+     * The event will be fired when the control is rendered.
      * @event
      */
     created?: EmitType<Event>;
@@ -183,7 +182,7 @@ export interface ToolbarModel extends ComponentModel{
     destroyed?: EmitType<Event>;
 
     /**
-     * The event will be fired before the control rendered on a page.
+     * The event will be fired before the control is rendered on a page.
      * @event
      */
     beforeCreate?: EmitType<Event>;

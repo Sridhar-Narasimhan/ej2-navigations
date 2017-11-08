@@ -8,19 +8,19 @@ import {ComponentModel} from '@syncfusion/ej2-base';
 export interface AccordionActionSettingsModel {
 
     /**
-   * Specify the type of animation.
+   * Specifies the type of animation.
    * @default : 'SlideDown';
    */
     effect?: AccordionEffect;
 
     /**
-   * Specify the duration to animate.
+   * Specifies the duration to animate.
    * @default : 400;
    */
     duration?: number;
 
     /**
-   * Specify the animation timing function.
+   * Specifies the animation timing function.
    * @default : 'linear';
    */
     easing?: string;
@@ -33,14 +33,14 @@ export interface AccordionActionSettingsModel {
 export interface AccordionAnimationSettingsModel {
 
     /**
-   * Specifies the animation is to be shown while collapsing the Accordion item.
-   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
+   * Specifies the animation to appear while collapsing the Accordion item.
+   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }.
    */
     collapse?: AccordionActionSettingsModel;
 
     /**
-   * Specifies the animation is to be shown while expanding the Accordion item.
-   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
+   * Specifies the animation to appear while expanding the Accordion item.
+   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }.
    */
     expand?: AccordionActionSettingsModel;
 
@@ -52,9 +52,9 @@ export interface AccordionAnimationSettingsModel {
 export interface AccordionItemModel {
 
     /**
-     * Sets the text content is to be displayed for the Accordion item.
+     * Sets the text content to be displayed for the Accordion item.
      * You can set the content of the Accordion item using `content` property.
-     * It also supports to include title as the `HTML element` , `string` or `query selector`.
+     * It also supports to include the title as `HTML element`, `string`, or `query selector`.
      * ```typescript
      *   let accordionObj: Accordion = new Accordion( { 
      *        items : [ 
@@ -64,14 +64,14 @@ export interface AccordionItemModel {
      *        });
      *   accordionObj.appendTo('#accordion');
      * ```
-     * @default undefined
+     * @default undefined.
      */
     content?: string;
 
     /**
-     * Sets the header text is to be displayed for the Accordion item.
+     * Sets the header text to be displayed for the Accordion item.
      * You can set the title of the Accordion item using `header` property.
-     * It also supports to include title as the `HTML element` , `string` or `query selector`.
+     * It also supports to include the title as `HTML element`, `string`, or `query selector`.
      * ```typescript
      *   let accordionObj: Accordion = new Accordion( { 
      *        items : [ 
@@ -81,20 +81,20 @@ export interface AccordionItemModel {
      *        });
      *   accordionObj.appendTo('#accordion');
      * ```
-     * @default undefined
+     * @default undefined.
      */
     header?: string;
 
     /**
-     * Defines single / multiple classes (separated by a space ) are to be used for Accordion item customization.
+     * Defines single/multiple classes (separated by a space) are to be used for Accordion item customization.
      * @default undefined
      */
     cssClass?: string;
 
     /**
-     * Defines an icon with the given custom CSS class which is to be rendered before the header text.
-     * You can add the css classes to the `iconCss` property and write the css styles to the defined class to set images/icons
-     * Adding icon is applied to header only.
+     * Defines an icon with the given custom CSS class that is to be rendered before the header text.
+     * Add the css classes to the `iconCss` property and write the css styles to the defined class to set images/icons.
+     * Adding icon is applicable only to the header.
      * ```typescript
      *   let accordionObj: Accordion = new Accordion( { 
      *        items : [ 
@@ -112,8 +112,8 @@ export interface AccordionItemModel {
     iconCss?: string;
 
     /**
-     * Sets the expand (true) or collapse (false) state of the Accordion item. Default all the items are in a collapsed state.
-     * @default 'false'
+     * Sets the expand (true) or collapse (false) state of the Accordion item. By default, all the items are in a collapsed state.
+     * @default 'false'.
      */
     expanded?: Boolean;
 
@@ -145,23 +145,23 @@ export interface AccordionModel extends ComponentModel{
 
     /**
      * Specifies the height of the Accordion in pixels/number/percentage. Number value is considered as pixels.
-     * @default 'auto'
+     * @default 'auto'.
      */
     height?: string | number;
 
     /**
      * Specifies the options to expand single or multiple panel at a time.
-     * Possible values are:
-     * - Single - Sets to expand only one Accordion item at a time.
-     * - Multiple - Sets to expand more than one Accordion item at a time.
-     * @default 'Multiple'
+     * The possible values are:
+     * - Single: Sets to expand only one Accordion item at a time.
+     * - Multiple: Sets to expand more than one Accordion item at a time.
+     * @default 'Multiple'.
      */
     expandMode?: ExpandMode;
 
     /**
      * Specifies the animation configuration settings for expanding and collapsing the panel.
      * @default { expand: { effect: 'SlideDown', duration: 400, easing: 'linear' },
-     * collapse: { effect: 'SlideUp', duration: 400, easing: 'linear' }}
+     * collapse: { effect: 'SlideUp', duration: 400, easing: 'linear' }}.
      */
     animation?: AccordionAnimationSettingsModel;
 
@@ -172,13 +172,13 @@ export interface AccordionModel extends ComponentModel{
     clicked?: EmitType<AccordionClickArgs>;
 
     /**
-     * The event will be fired before item collapsing/expanding .
+     * The event will be fired before the item gets collapsed/expanded.
      * @event
      */
     expanding?: EmitType<ExpandEventArgs>;
 
     /**
-     * The event will be fired after item collapsed/expanded .
+     * The event will be fired after the item gets collapsed/expanded.
      * @event
      */
     expanded?: EmitType<ExpandEventArgs>;

@@ -6,8 +6,6 @@
 
 The Accordion is a vertically collapsible content panel which is displaying panels, one or multiple at a time within the available space.
 
-#### Key features
-
 - Supports to render based on the items collection and HTML elements.
 
 - Supports to define single or multiple expand mode for Accordion panels.
@@ -32,8 +30,6 @@ ContextMenu is a graphical user interface that appears on the user right click/t
 
 The Tab is a content panel to show multiple contents in specific space one at a time.
 
-#### Key features
-
 - Supports to render based on the items collection and HTML elements.
 
 - Supports responsive rendering with scrollable Tabs and popup menu.
@@ -47,8 +43,6 @@ The Tab is a content panel to show multiple contents in specific space one at a 
 ### Toolbar
 
 Displays a group of command buttons arranged horizontally.
-
-#### Key features
 
 - Supports to render based on the items collection and HTML elements.
 
