@@ -1,8 +1,8 @@
 import { Component, CreateBuilder, Property, ChildProperty, NotifyPropertyChanges, INotifyPropertyChanged } from '@syncfusion/ej2-base';
 import { Event, EventHandler, EmitType, BaseEventArgs, KeyboardEvents, KeyboardEventArgs, Touch, TapEventArgs } from '@syncfusion/ej2-base';
-import { attributes, Animation, AnimationOptions, TouchEventArgs, MouseEventArgs, isNullOrUndefined } from '@syncfusion/ej2-base';
-import { Browser, Collection, setValue, getValue, getUniqueID } from '@syncfusion/ej2-base';
-import { select, closest, createElement, detach, append, rippleEffect, isVisible } from '@syncfusion/ej2-base';
+import { attributes, Animation, AnimationOptions, TouchEventArgs, MouseEventArgs } from '@syncfusion/ej2-base';
+import { Browser, Collection, setValue, getValue, getUniqueID, getInstance } from '@syncfusion/ej2-base';
+import { select, selectAll, closest, createElement, detach, append, rippleEffect, isVisible } from '@syncfusion/ej2-base';
 import { ListBase, ListBaseOptions } from '@syncfusion/ej2-lists';
 import { calculatePosition, OffsetPosition, isCollide, fit } from '@syncfusion/ej2-popups';
 import { ContextMenuModel, MenuItemModel } from './context-menu-model';
@@ -110,10 +110,7 @@ export class MenuItem extends ChildProperty<MenuItem> {
 @NotifyPropertyChanges
 export class ContextMenu extends Component<HTMLUListElement> implements INotifyPropertyChanged {
     private animation: Animation = new Animation({});
-    private keyboardModule: KeyboardEvents;
     private navIdx: number[] = [];
-    private touchModule: Touch;
-    private targetElem: HTMLElement;
     private isTapHold: boolean = false;
     /**
      * Defines class/multiple classes separated by a space in the ContextMenu wrapper.
@@ -242,8 +239,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     }
 
     private initWrapper(): void {
-        let wrapper: HTMLElement = this.getWrapper() as HTMLElement;
-        if (!wrapper.classList.contains(WRAPPER)) {
+        let wrapper: Element = this.getWrapper();
+        if (!wrapper) {
             wrapper = createElement('div', { className: WRAPPER });
             document.body.appendChild(wrapper);
         }
@@ -270,13 +267,17 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private wireEvents(): void {
         let wrapper: HTMLElement = this.getWrapper() as HTMLElement;
         if (this.target) {
-            this.targetElem = select(this.target) as HTMLElement;
-            if (Browser.isIos) {
-                this.touchModule = new Touch(this.targetElem, { tapHold: this.touchHandler.bind(this) });
-            } else {
-                EventHandler.add(this.targetElem, 'contextmenu', this.cmenuHandler, this);
+            let target: HTMLElement;
+            let targetElems: HTMLElement[] = selectAll(this.target);
+            for (let i: number = 0, len: number = targetElems.length; i < len; i++) {
+                target = targetElems[i];
+                if (Browser.isIos) {
+                    new Touch(target, { tapHold: this.touchHandler.bind(this) });
+                } else {
+                    EventHandler.add(target, 'contextmenu', this.cmenuHandler, this);
+                }
             }
-            for (let parent of this.getScrollableParents(this.targetElem)) {
+            for (let parent of this.getScrollableParents(target)) {
                 EventHandler.add(parent, 'scroll', this.scrollHandler, this);
             }
         }
@@ -285,7 +286,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             EventHandler.add(document, 'mousedown', this.mouseDownHandler, this);
         }
         EventHandler.add(document, 'click', this.clickHandler, this);
-        this.keyboardModule = new KeyboardEvents(wrapper, {
+        new KeyboardEvents(wrapper, {
             keyAction: this.keyBoardHandler.bind(this),
             keyConfigs: {
                 downarrow: DOWNARROW,
@@ -671,7 +672,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     }
 
     private getWrapper(): Element {
-        return this.element.parentElement;
+        return closest(this.element, '.' + WRAPPER);
     }
 
     private clickHandler(e: MouseEvent): void {
@@ -681,7 +682,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             let wrapper: Element = this.getWrapper();
             let trgt: Element = e.target as Element;
             let cli: Element = this.getLI(trgt);
-            let isInstLI: boolean = cli && !isNullOrUndefined(closest(cli, '.' + WRAPPER));
+            let cliWrapper: Element = cli ? closest(cli, '.' + WRAPPER) : null;
+            let isInstLI: boolean = cli && cliWrapper && wrapper.firstElementChild.id === cliWrapper.firstElementChild.id;
             if (isInstLI && e.type === 'click' && !cli.classList.contains(HEADER)) {
                 this.setLISelected(cli);
                 let navIdx: number[] = this.getIndex(cli.textContent);
@@ -842,14 +844,23 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
      * @private
      */
     protected unWireEvents(): void {
-        let wrapper: Element = this.getWrapper();
-        if (this.targetElem) {
-            if (Browser.isIos) {
-                this.touchModule.destroy();
-            } else {
-                EventHandler.remove(this.targetElem, 'contextmenu', this.cmenuHandler);
+        let wrapper: HTMLElement = this.getWrapper() as HTMLElement;
+        if (this.target) {
+            let target: HTMLElement;
+            let touchModule: Touch;
+            let targetElems: HTMLElement[] = selectAll(this.target);
+            for (let i: number = 0, len: number = targetElems.length; i < len; i++) {
+                target = targetElems[i];
+                if (Browser.isIos) {
+                    touchModule = getInstance(target, Touch) as Touch;
+                    if (touchModule) {
+                        touchModule.destroy();
+                    }
+                } else {
+                    EventHandler.remove(target, 'contextmenu', this.cmenuHandler);
+                }
             }
-            for (let parent of this.getScrollableParents(this.targetElem)) {
+            for (let parent of this.getScrollableParents(target)) {
                 EventHandler.remove(parent, 'scroll', this.scrollHandler);
             }
         }
@@ -858,7 +869,10 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             EventHandler.remove(document, 'mousedown', this.mouseDownHandler);
         }
         EventHandler.remove(document, 'click', this.clickHandler);
-        this.keyboardModule.destroy();
+        let keyboardModule: KeyboardEvents = getInstance(wrapper, KeyboardEvents) as KeyboardEvents;
+        if (keyboardModule) {
+            keyboardModule.destroy();
+        }
     }
 
     private toggleAnimation(ul: HTMLElement, isMenuOpen: boolean = true): void {
@@ -1122,15 +1136,22 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
 
     public destroy(): void {
         let wrapper: Element = this.getWrapper();
-        super.destroy();
-        this.unWireEvents();
-        this.closeMenu();
-        this.element.innerHTML = '';
-        ['top', 'left', 'display', 'role', 'tabindex'].forEach((key: string) => {
-            this.element.style.removeProperty(key);
-        });
-        wrapper.parentNode.insertBefore(this.element, wrapper);
-        detach(wrapper);
+        if (wrapper) {
+            super.destroy();
+            this.unWireEvents();
+            this.closeMenu();
+            this.element.innerHTML = '';
+            ['top', 'left', 'display', 'z-index'].forEach((key: string) => {
+                this.element.style.removeProperty(key);
+            });
+            ['role', 'tabindex', 'class', 'style'].forEach((key: string) => {
+                if (['class', 'style'].indexOf(key) === -1 || !this.element.getAttribute(key)) {
+                    this.element.removeAttribute(key);
+                }
+            });
+            wrapper.parentNode.insertBefore(this.element, wrapper);
+            detach(wrapper);
+        }
     }
 }
 
