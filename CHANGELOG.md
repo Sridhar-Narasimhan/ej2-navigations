@@ -20,8 +20,6 @@ The Accordion is a vertically collapsible content panel which is displaying pane
 
 ContextMenu is a graphical user interface that appears on the user right click/touch hold action.
 
-#### Key Features
-
 - Supports menu items grouping by using the Separator.
 
 - Supports items to have Icons and Navigation URL's.
