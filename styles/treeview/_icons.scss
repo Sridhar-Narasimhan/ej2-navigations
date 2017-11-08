@@ -7,11 +7,6 @@
       div.e-icons::before {
         content: $treeview-expand-icon-content;
       }
-
-      .e-icon-expandable.e-load::before,
-      .e-icon-collapsible.e-load::before {
-        content: '\e898';
-      }
     }
 
     .e-sibling::before {

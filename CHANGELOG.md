@@ -62,9 +62,7 @@ Displays a group of command buttons arranged horizontally.
 
 ### TreeView
 
-The TreeView component is used to represent hierarchical data in a tree like structure with advanced functions to edit, drag and drop, select with CheckBox and more. TreeView can be populated from a data source such as an array of JavaScript objects or from DataManager.
-
-#### Key Features
+The TreeView component is used to represent hierarchical data in a tree like structure with advanced functions to edit, drag and drop, select with CheckBox and more. TreeView can be populated from a data source such as an array of JavaScript objects or from DataManager. The following key features are available in TreeView component.
 
 - Data Binding - Binds the TreeView component with an array of JavaScript objects or DataManager.
 

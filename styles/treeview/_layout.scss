@@ -98,9 +98,11 @@
 
       & .e-ripple-container {
         bottom: $ripple-bigger-small-size;
+        height: $ripple-bigger-small-height;
         left: $ripple-bigger-small-size;
         right: $ripple-bigger-small-size;
         top: $ripple-bigger-small-size;
+        width: $ripple-bigger-small-width;
       }
 
       & + .e-list-icon,
@@ -188,6 +190,14 @@
       }
     }
 
+    .e-list-item .e-icons.e-icons-spinner::before {
+      content: none;
+    }
+
+    .e-icons .e-spinner-pane {
+      position: relative;
+    }
+
     .e-text-content {
       @include user-select;
       border: 1px solid;
@@ -211,6 +221,7 @@
     .e-checkbox-wrapper {
       margin: $treeview-check-margin;
       pointer-events: all;
+      position: relative;
 
       & + .e-list-icon,
       & + .e-list-img {
@@ -223,9 +234,11 @@
 
       .e-ripple-container {
         bottom: $ripple-size;
+        height: $ripple-height;
         left:  $ripple-size;
         right:  $ripple-size;
         top:  $ripple-size;
+        width: $ripple-width;
       }
     }
 

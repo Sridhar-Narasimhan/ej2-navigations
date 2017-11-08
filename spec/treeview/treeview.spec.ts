@@ -303,6 +303,13 @@ describe('TreeView control', () => {
                 setTimeout(function() {
                     let checkEle: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-checkbox-wrapper');
                     expect(checkEle.length).toBeGreaterThan(0);
+                    var e = new MouseEvent("mousedown", { view: window, bubbles: true, cancelable: true });
+                    checkEle[0].querySelector('.e-frame').dispatchEvent(e);
+                    var e = new MouseEvent("mouseup", { view: window, bubbles: true, cancelable: true });
+                    checkEle[0].querySelector('.e-frame').dispatchEvent(e);
+                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true });
+                    checkEle[0].querySelector('.e-frame').dispatchEvent(e);
+                    expect(checkEle[0].getAttribute('aria-checked')).toBe('true');
                     done();
                 }, 100);
             });
@@ -2153,22 +2160,19 @@ describe('TreeView control', () => {
                 expect(li[3].classList.contains('e-disable')).toBe(false);
                 expect(li[3].getAttribute('aria-disabled')).toBe(null);
             });
-            it('enableAll', () => {
+            it('enableNodes', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 treeObj.disableNodes(['01', li[2], '03', '099', '07']);
                 expect(li[0].classList.contains('e-disable')).toBe(true);
                 expect(li[2].classList.contains('e-disable')).toBe(true);
                 expect(li[8].classList.contains('e-disable')).toBe(true);
-                treeObj.enableAll(['01', li[2], '099']);
+                treeObj.enableNodes(['01', li[2], '099']);
                 expect(li[0].classList.contains('e-disable')).toBe(false);
                 expect(li[0].getAttribute('aria-disabled')).toBe(null);
                 expect(li[2].classList.contains('e-disable')).toBe(false);
                 expect(li[2].getAttribute('aria-disabled')).toBe(null);
                 expect(li[8].classList.contains('e-disable')).toBe(true);
                 expect(li[8].getAttribute('aria-disabled')).toBe('true');
-                treeObj.enableAll();
-                expect(li[8].classList.contains('e-disable')).toBe(false);
-                expect(li[8].getAttribute('aria-disabled')).toBe(null);
             });
             it('getNode', () => {
                 expect(treeObj.getNode(null)).toBe(null);
@@ -2450,6 +2454,27 @@ describe('TreeView control', () => {
                 expect(li[1].childElementCount).toBe(2);
                 expect(li[1].children[1].childElementCount).toBe(1);
                 expect(li[1].getAttribute('aria-expanded')).toBe('true');
+                expect(li[2].getAttribute('aria-level')).toBe('3');
+            });
+            it('testing with drag element as parent', () => {
+                let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                expect(li[0].getAttribute('aria-level')).toBe('1');
+                expect(li[1].getAttribute('aria-level')).toBe('2');
+                let mousedown: any = getEventObject('MouseEvents', 'mousedown', treeObj.element, li[0].querySelector('.e-list-text'), 15, 10);
+                EventHandler.trigger(treeObj.element, 'mousedown', mousedown);
+                let mousemove: any = getEventObject('MouseEvents', 'mousemove', treeObj.element, li[0].querySelector('.e-list-text'), 15, 70);
+                EventHandler.trigger(<any>(document), 'mousemove', mousemove);
+                mousemove.srcElement = mousemove.target = mousemove.toElement = li[9].querySelector('.e-list-text');
+                mousemove = setMouseCordinates(mousemove, 15, 75);
+                EventHandler.trigger(<any>(document), 'mousemove', mousemove);
+                let mouseup: any = getEventObject('MouseEvents', 'mouseup', treeObj.element, li[9].querySelector('.e-list-text'));
+                mouseup.type = 'mouseup';
+                EventHandler.trigger(<any>(document), 'mouseup', mouseup);
+                expect(li[9].childElementCount).toBe(2);
+                expect(li[9].children[1].childElementCount).toBe(1);
+                expect(li[9].getAttribute('aria-expanded')).toBe('true');
+                expect(li[0].getAttribute('aria-level')).toBe('3');
+                expect(li[1].getAttribute('aria-level')).toBe('4');
             });
             it('testing with target as expand icon', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -4863,22 +4888,19 @@ describe('TreeView control', () => {
                 expect(li[3].classList.contains('e-disable')).toBe(false);
                 expect(li[3].getAttribute('aria-disabled')).toBe(null);
             });
-            it('enableAll', () => {
+            it('enableNodes', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 treeObj.disableNodes(['01', li[2], '03', '099', '07']);
                 expect(li[0].classList.contains('e-disable')).toBe(true);
                 expect(li[2].classList.contains('e-disable')).toBe(true);
                 expect(li[8].classList.contains('e-disable')).toBe(true);
-                treeObj.enableAll(['01', li[2], '099']);
+                treeObj.enableNodes(['01', li[2], '099']);
                 expect(li[0].classList.contains('e-disable')).toBe(false);
                 expect(li[0].getAttribute('aria-disabled')).toBe(null);
                 expect(li[2].classList.contains('e-disable')).toBe(false);
                 expect(li[2].getAttribute('aria-disabled')).toBe(null);
                 expect(li[8].classList.contains('e-disable')).toBe(true);
                 expect(li[8].getAttribute('aria-disabled')).toBe('true');
-                treeObj.enableAll();
-                expect(li[8].classList.contains('e-disable')).toBe(false);
-                expect(li[8].getAttribute('aria-disabled')).toBe(null);
             });
             it('getNode', () => {
                 expect(treeObj.getNode(null)).toBe(null);
@@ -5160,6 +5182,27 @@ describe('TreeView control', () => {
                 expect(li[1].childElementCount).toBe(2);
                 expect(li[1].children[1].childElementCount).toBe(1);
                 expect(li[1].getAttribute('aria-expanded')).toBe('true');
+                expect(li[2].getAttribute('aria-level')).toBe('3');
+            });
+            it('testing with drag element as parent', () => {
+                let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                expect(li[0].getAttribute('aria-level')).toBe('1');
+                expect(li[1].getAttribute('aria-level')).toBe('2');
+                let mousedown: any = getEventObject('MouseEvents', 'mousedown', treeObj.element, li[0].querySelector('.e-list-text'), 15, 10);
+                EventHandler.trigger(treeObj.element, 'mousedown', mousedown);
+                let mousemove: any = getEventObject('MouseEvents', 'mousemove', treeObj.element, li[0].querySelector('.e-list-text'), 15, 70);
+                EventHandler.trigger(<any>(document), 'mousemove', mousemove);
+                mousemove.srcElement = mousemove.target = mousemove.toElement = li[9].querySelector('.e-list-text');
+                mousemove = setMouseCordinates(mousemove, 15, 75);
+                EventHandler.trigger(<any>(document), 'mousemove', mousemove);
+                let mouseup: any = getEventObject('MouseEvents', 'mouseup', treeObj.element, li[9].querySelector('.e-list-text'));
+                mouseup.type = 'mouseup';
+                EventHandler.trigger(<any>(document), 'mouseup', mouseup);
+                expect(li[9].childElementCount).toBe(2);
+                expect(li[9].children[1].childElementCount).toBe(1);
+                expect(li[9].getAttribute('aria-expanded')).toBe('true');
+                expect(li[0].getAttribute('aria-level')).toBe('3');
+                expect(li[1].getAttribute('aria-level')).toBe('4');
             });
             it('testing with target as expand icon', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -5547,7 +5590,7 @@ describe('TreeView control', () => {
                         mouseEventArgs.target = newli[0].querySelector('.e-icons');
                         expect(newli[0].childElementCount).toBe(1);
                         treeObj.clickHandler(mouseEventArgs);
-                        expect(newli[0].querySelector('.e-icons').classList.contains('e-load')).toBe(true);
+                        expect(newli[0].querySelector('.e-icons').classList.contains('e-icons-spinner')).toBe(true);
                         this.request = jasmine.Ajax.requests.mostRecent();
                         this.request.respondWith({
                             status: 200,
@@ -5557,7 +5600,7 @@ describe('TreeView control', () => {
                         setTimeout(function() {
                             expect(newli[0].childElementCount).toBe(2);
                             expect(newli[0].querySelector('.e-icons')).not.toBe(null);
-                            expect(newli[0].querySelector('.e-icons').classList.contains('e-load')).toBe(false);
+                            expect(newli[0].querySelector('.e-icons').classList.contains('e-icons-spinner')).toBe(false);
                             expect((newli[0].querySelector('.e-list-url') as any).href.indexOf('http://npmci.syncfusion.com/')).not.toBe(-1);
                             done();
                         }, 100);
@@ -6880,19 +6923,16 @@ describe('TreeView control', () => {
                 expect(li[0].classList.contains('e-disable')).toBe(true);
                 expect(li[0].getAttribute('aria-disabled')).toBe('true');
             });
-            it('enableAll', () => {
+            it('enableNodes', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 treeObj.disableNodes(['01', li[1]]);
                 expect(li[0].classList.contains('e-disable')).toBe(true);
                 expect(li[1].classList.contains('e-disable')).toBe(true);
-                treeObj.enableAll(['01']);
+                treeObj.enableNodes(['01']);
                 expect(li[0].classList.contains('e-disable')).toBe(false);
                 expect(li[0].getAttribute('aria-disabled')).toBe(null);
                 expect(li[1].classList.contains('e-disable')).toBe(true);
                 expect(li[1].getAttribute('aria-disabled')).toBe('true');
-                treeObj.enableAll();
-                expect(li[1].classList.contains('e-disable')).toBe(false);
-                expect(li[1].getAttribute('aria-disabled')).toBe(null);
             });
             it('addNodes', (done: Function) => {
                 treeObj.addNodes(null);
