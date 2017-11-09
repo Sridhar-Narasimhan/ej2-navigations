@@ -1830,7 +1830,6 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             case 'ctrlDown':
             case 'csDown':
                 this.navigateNode(true);
-                this.navigateToFocus(true);
                 break;
             case 'shiftUp':
                 this.shiftKeySelect(false, e);
@@ -1839,21 +1838,18 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             case 'ctrlUp':
             case 'csUp':
                 this.navigateNode(false);
-                this.navigateToFocus(false);
                 break;
             case 'home':
             case 'shiftHome':
             case 'ctrlHome':
             case 'csHome':
                 this.navigateRootNode(true);
-                this.navigateToFocus(true);
                 break;
             case 'end':
             case 'shiftEnd':
             case 'ctrlEnd':
             case 'csEnd':
                 this.navigateRootNode(false);
-                this.navigateToFocus(false);
                 break;
             case 'enter':
             case 'ctrlEnter':
@@ -1877,7 +1873,33 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
 
     private navigateToFocus(isUp: boolean): void {
         let focusNode: Element = this.getFocusedNode().querySelector('.' + TEXTWRAP);
-        focusNode.scrollIntoView(isUp);
+        let pos: ClientRect = focusNode.getBoundingClientRect();
+        let parent: Element = this.getScrollParent(this.element);
+        if (!isNOU(parent)) {
+            let parentPos: ClientRect = parent.getBoundingClientRect();
+            if (pos.bottom > parentPos.bottom) {
+                parent.scrollTop += pos.bottom - parentPos.bottom;
+            } else if (pos.top < parentPos.top) {
+                parent.scrollTop -= parentPos.top - pos.top;
+            }
+        }
+        let isVisible: boolean = this.isVisibleInViewport(focusNode);
+        if (!isVisible) {
+            focusNode.scrollIntoView(isUp);
+        }
+    }
+
+    private isVisibleInViewport(txtWrap: Element): boolean {
+        let pos: ClientRect = txtWrap.getBoundingClientRect();
+        return (pos.top >= 0 && pos.left >= 0 && pos.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        pos.right <= (window.innerWidth || document.documentElement.clientWidth));
+    }
+
+    private getScrollParent(node: Element): Element {
+        if (isNOU(node)) {
+            return null;
+        }
+        return (node.scrollHeight > node.clientHeight) ? node : this.getScrollParent(node.parentElement);
     }
 
     private shiftKeySelect(isTowards: boolean, e: KeyboardEventArgs): void {
@@ -1887,6 +1909,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             this.removeHover();
             this.setFocusElement(nextNode);
             this.toggleSelect(nextNode, e, false);
+            this.navigateToFocus(!isTowards);
         } else {
             this.navigateNode(isTowards);
         }
@@ -1931,6 +1954,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                     return;
                 } else {
                     this.setFocus(focusedNode, parentLi);
+                    this.navigateToFocus(true);
                 }
             }
         }
@@ -1945,6 +1969,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         let focusedNode: Element = this.getFocusedNode();
         let rootNode: Element = isBackwards ? this.getRootNode() : this.getEndNode();
         this.setFocus(focusedNode, rootNode);
+        this.navigateToFocus(isBackwards);
     }
 
     private getFocusedNode(): Element {
@@ -1955,6 +1980,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     private focusNextNode(li: Element, isTowards: boolean): void {
         let nextNode: Element = isTowards ? this.getNextNode(li) : this.getPrevNode(li);
         this.setFocus(li, nextNode);
+        this.navigateToFocus(!isTowards);
     }
 
     private getNextNode(li: Element): Element {

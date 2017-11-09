@@ -1327,9 +1327,11 @@ describe('TreeView control', () => {
                 stopImmediatePropagation: (): void => {},
             };
             let treeObj: any;
+            let eleParent: HTMLElement = createElement('div', { id: 'treeParent', styles: 'height:150px;overflow:auto;' });
             let ele: HTMLElement = createElement('div', { id: 'tree1' });
             beforeAll(() => {
-                document.body.appendChild(ele);
+                document.body.appendChild(eleParent);
+                eleParent.appendChild(ele);
                 treeObj = new TreeView({ 
                     fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child:"nodeChild" },
                     fullRowSelect: false,
@@ -1510,6 +1512,35 @@ describe('TreeView control', () => {
                             done();
                         }, 450);
                     }, 450);
+                }, 450);
+            });
+            it('key action performed when scrollbar enabled', (done: Function) => {
+                let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                (li[0].parentElement as HTMLElement).style.margin = '0';
+                keyboardEventArgs.action = 'end';
+                treeObj.keyActionHandler(keyboardEventArgs);
+                expect(li[5].classList.contains('e-hover')).toBe(true);
+                expect(li[0].classList.contains('e-hover')).toBe(false);
+                expect(li[5].classList.contains('e-node-focus')).toBe(true);
+                expect(li[0].classList.contains('e-node-focus')).toBe(false);
+                keyboardEventArgs.action = 'moveRight';
+                treeObj.keyActionHandler(keyboardEventArgs);
+                jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                setTimeout(function() {
+                    keyboardEventArgs.action = 'moveDown';
+                    treeObj.keyActionHandler(keyboardEventArgs);
+                    let nli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                    expect(nli[5].classList.contains('e-node-focus')).toBe(false);
+                    expect(nli[6].classList.contains('e-node-focus')).toBe(true);
+                    keyboardEventArgs.action = 'end';
+                    treeObj.keyActionHandler(keyboardEventArgs);
+                    expect(nli[6].classList.contains('e-node-focus')).toBe(false);
+                    expect(nli[9].classList.contains('e-node-focus')).toBe(true);
+                    keyboardEventArgs.action = 'home';
+                    treeObj.keyActionHandler(keyboardEventArgs);
+                    expect(nli[9].classList.contains('e-node-focus')).toBe(false);
+                    expect(nli[0].classList.contains('e-node-focus')).toBe(true);
+                    done();
                 }, 450);
             });
             it('f2 key pressed', () => {
