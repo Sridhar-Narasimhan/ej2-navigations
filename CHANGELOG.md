@@ -18,13 +18,13 @@ Accordion is a vertically collapsible content panel which is displaying panels, 
 
 ContextMenu is a graphical user interface that appears on the user right click/touch hold action.
 
-- Supports menu items grouping by using the Separator.
+- **Separator** - Supports menu items grouping by using the Separator.
 
-- Supports items to have Icons and Navigation URL's.
+- **Icons and Navigations** - Supports items to have Icons and Navigation URL's.
 
-- Supports template and multilevel nesting in ContextMenu.
+- **Template and Multilevel Nesting** - Supports template and multilevel nesting in ContextMenu.
 
-- Provided with built-in accessibility support that helps to access all the ContextMenu component features through the keyboard, screen readers, or other assistive technology devices.
+- **Accessibility** - Provided with built-in accessibility support that helps to access all the ContextMenu component features through the keyboard, screen readers, or other assistive technology devices.
 
 ### Tab
 
