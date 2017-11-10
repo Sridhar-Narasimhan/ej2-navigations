@@ -31,7 +31,7 @@ describe('Tab Control', () => {
             expect(element.classList.contains('e-control')).toEqual(true);
         });
         it('Template - Control and template class testing', () => {
-            ele.innerHTML = '<div class="e-header"> </div> <div class="e-content"></div>';
+            ele.innerHTML = '<div class="e-tab-header"> </div> <div class="e-content"></div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -46,28 +46,28 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-toolbar')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-toolbar')).toEqual(true);
             expect(element.querySelectorAll('.e-toolbar-item').length).toEqual(1);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(1);
         });
         it('Template - Toolbar child element testing', () => {
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> </div> <div class="e-content"> <div> Content1 </div> </div>';
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> </div> <div class="e-content"> <div> Content1 </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-toolbar')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-toolbar')).toEqual(true);
             expect(element.querySelectorAll('.e-toolbar-item').length).toEqual(1);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(1);
         });
         it('Template - Without content element', () => {
-            ele.innerHTML = '<div class="e-header"> </div>';
+            ele.innerHTML = '<div class="e-tab-header"> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelector('.e-header').classList.contains('e-control')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-toolbar')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-control')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-toolbar')).toEqual(false);
         });
         it('Template - Without header element', () => {
             ele.innerHTML = '<div class="e-content"> <div> </div> </div>';
@@ -850,7 +850,7 @@ describe('Tab Control', () => {
         });
         it('Template - Initial rendering value set as Auto', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -861,7 +861,7 @@ describe('Tab Control', () => {
         });
         it('Template - Initial rendering value set as Content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -872,7 +872,7 @@ describe('Tab Control', () => {
         });
         it('Template - Initial rendering value set as Fill', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -883,7 +883,7 @@ describe('Tab Control', () => {
         });
         it('Template - Initial rendering value set as None', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -894,7 +894,7 @@ describe('Tab Control', () => {
         });
         it('Template - Initial rendering value set as None with height value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -908,7 +908,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged value set as Auto', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -919,7 +919,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged value set as Content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -930,7 +930,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged value set as Fill', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -941,7 +941,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged value set as None', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -952,7 +952,7 @@ describe('Tab Control', () => {
         });
         it('Template - Initial rendering value set as None with height value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -988,7 +988,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(1);
         });
         it('Items - Three header and two content', () => {
@@ -1001,7 +1001,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(1);
         });
         it('Items - Three header and no content', () => {
@@ -1014,7 +1014,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(1);
         });
         it('Items - Two header and three content', () => {
@@ -1027,7 +1027,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(2);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(2);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(1);
         });
         it('Items - No header and three content', () => {
@@ -1040,7 +1040,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(0);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(0);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(0);
         });
         it('Items - Empty objects', () => {
@@ -1049,7 +1049,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(0);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(0);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(0);
         });
         it('Items - Empty array', () => {
@@ -1058,7 +1058,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(0);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(0);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(0);
         });
         it('Items - Text With HTMLElement', () => {
@@ -1071,80 +1071,80 @@ describe('Tab Control', () => {
                 ]   
             });
             tab.appendTo('#ej2Tab');
-            expect(element.querySelector('.e-header .e-toolbar-item.e-active .e-tab-text > div').id).toEqual('testEle');
+            expect(element.querySelector('.e-tab-header .e-toolbar-item.e-active .e-tab-text > div').id).toEqual('testEle');
         });
         it('Template - Equal header and content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div> <h1>Content3</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(3);
         });
         it('Template - Three header and two content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(2);
         });
         it('Template - Three header and no content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
                 + '<div class="e-content"> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(0);
         });
         it('Template - Two header and three content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div> <h1>Content3</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(2);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(2);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(2);
         });
         it('Template - No header and three content', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div> <h1>Content3</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(0);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(0);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(0);
         });
         it('Template - Empty value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div>  </div> <div>  </div> <div>  </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div>  </div> <div>  </div> <div>  </div> </div>'
                 + '<div class="e-content"> <div></div> <div> </div> <div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(3);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(3);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(3);
         });
         it('Template - Empty child', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header">  </div>'
+            ele.innerHTML = '<div class="e-tab-header">  </div>'
                 + '<div class="e-content"> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-toolbar-item').length).toEqual(0);
+            expect(element.querySelectorAll('.e-tab-header .e-toolbar-item').length).toEqual(0);
             expect(element.querySelectorAll('.e-content .e-item').length).toEqual(0);
         });
     });
@@ -1219,7 +1219,7 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
         });
         it('Items - headerPlacement property as bottom', () => {
@@ -1232,7 +1232,7 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Bottom');
         });
         it('Items - headerPlacement property with onPropertyChanged testing', () => {
@@ -1245,18 +1245,18 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
             tab.headerPlacement = 'Bottom';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Bottom');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             tab.headerPlacement = 'Top';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Top');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
         });
         it('Items - headerPlacement onPropertyChanged with model value testing', () => {
             tab = new Tab({
@@ -1269,15 +1269,15 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
             expect(tab.selectedItem).toEqual(1);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-active')).toEqual(true);
             tab.headerPlacement = 'Bottom';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Bottom');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.selectedItem).toEqual(1);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-active')).toEqual(true);
         });
@@ -1291,62 +1291,62 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(0).classList.contains('e-toolbar')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
             tab.headerPlacement = 'Bottom';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Bottom');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-toolbar')).toEqual(true);
         });
         it('Template - headerPlacement property with default value', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
         });
         it('Template - headerPlacement property as bottom', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
             ele.innerHTML = '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
-                + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div> <div class="e-header"> <div> item1 </div>'
+                + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div> <div class="e-tab-header"> <div> item1 </div>'
                 '<div> item2 </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Bottom');
         });
         it('Template - headerPlacement property with onPropertyChanged', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
             tab.headerPlacement = 'Bottom';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Bottom');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
         });
         it('Template - onPropertyChanged with headerPlacement model value testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
             tab.select(1);
             expect(tab.selectedItem).toEqual(1);
@@ -1354,27 +1354,27 @@ describe('Tab Control', () => {
             tab.headerPlacement = 'Bottom';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Bottom');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             expect(tab.selectedItem).toEqual(1);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-active')).toEqual(true);
         });
         it('Template - headerPlacement with toolbar render testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(0).classList.contains('e-toolbar')).toEqual(true);
             expect(tab.headerPlacement).toEqual('Top');
             tab.headerPlacement = 'Bottom';
             tab.dataBind();
             expect(tab.headerPlacement).toEqual('Bottom');
-            expect(element.querySelectorAll('.e-header').length).toEqual(1);
-            expect(element.children.item(1).classList.contains('e-header')).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header').length).toEqual(1);
+            expect(element.children.item(1).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-toolbar')).toEqual(true);
         });
     });
@@ -1402,7 +1402,7 @@ describe('Tab Control', () => {
             expect(tab.enableRtl).toEqual(false);
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.classList.contains('e-rtl')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(false);
         });
         it('Items - enableRTL at initial rendering', () => {
             tab = new Tab({
@@ -1416,7 +1416,7 @@ describe('Tab Control', () => {
             expect(tab.enableRtl).toEqual(true);
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.classList.contains('e-rtl')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(true);
         });
         it('Items - onPropertyChanged with enableRTL', () => {
             tab = new Tab({
@@ -1429,32 +1429,32 @@ describe('Tab Control', () => {
             expect(tab.enableRtl).toEqual(false);
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.classList.contains('e-rtl')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(false);
             tab.enableRtl = true;
             tab.dataBind();
             expect(tab.enableRtl).toEqual(true);
             expect(element.classList.contains('e-rtl')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(true);
             tab.enableRtl = false;
             tab.dataBind();
             expect(tab.enableRtl).toEqual(false);
             expect(element.classList.contains('e-rtl')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(false);
         });
         it('Template - Default model value', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             expect(tab.enableRtl).toEqual(false);
             expect(element.classList.contains('e-rtl')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(false);
         });
         it('Template - EnableRTL at initial rendering', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1463,29 +1463,29 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             expect(tab.enableRtl).toEqual(true);
             expect(element.classList.contains('e-rtl')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(true);
         });
 
         it('Template - onPropertyChanged with enableRTL', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             expect(tab.enableRtl).toEqual(false);
             expect(element.classList.contains('e-rtl')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(false);
             tab.enableRtl = true;
             tab.dataBind();
             expect(tab.enableRtl).toEqual(true);
             expect(element.classList.contains('e-rtl')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(true);
             tab.enableRtl = false;
             tab.dataBind();
             expect(tab.enableRtl).toEqual(false);
             expect(element.classList.contains('e-rtl')).toEqual(false);
-            expect(element.querySelector('.e-header').classList.contains('e-rtl')).toEqual(false);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-rtl')).toEqual(false);
         });
     });
     describe('showCloseButton property testing', () => {
@@ -1511,7 +1511,7 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             expect(tab.showCloseButton).toEqual(false);
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-icons.e-close-icon').length == 2).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-icons.e-close-icon').length == 2).toEqual(true);
         });
         it('Items - Default model value', () => {
             tab = new Tab({
@@ -1571,17 +1571,17 @@ describe('Tab Control', () => {
         });
         it('Template - Close button availability checking', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             expect(tab.showCloseButton).toEqual(false);
-            expect(element.querySelectorAll('.e-header .e-icons.e-close-icon').length == 2).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-icons.e-close-icon').length == 2).toEqual(true);
         });
         it('Template - Default model value', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1590,7 +1590,7 @@ describe('Tab Control', () => {
         });
         it('Template - enable a showCloseButton at initial rendering', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1601,7 +1601,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged with showCloseButton property testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1616,7 +1616,7 @@ describe('Tab Control', () => {
         });
         it('Template - Click event testing with close button', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            element.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            element.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1843,7 +1843,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem with default value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1855,7 +1855,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem as 1', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1869,7 +1869,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem with existed value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1886,7 +1886,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem as negative value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1899,7 +1899,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem as NaN value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1912,7 +1912,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged as 1', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1927,7 +1927,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged with selectedItem as same value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -1944,7 +1944,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged with selectedItem as existed value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1959,7 +1959,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged with selectedItem as negative value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1973,7 +1973,7 @@ describe('Tab Control', () => {
         });
         it('Template - onPropertyChanged with selectedItem as NaN value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -1987,7 +1987,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem value check using select method with HTMLElement', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2002,7 +2002,7 @@ describe('Tab Control', () => {
         });
         it('Template - selectedItem value check using select method with invalid HTMLElement', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2179,7 +2179,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as false', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2193,7 +2193,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as true', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2210,7 +2210,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as false to active item', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2225,7 +2225,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as false with unknown index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2239,7 +2239,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as true with unknown index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2256,7 +2256,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as false with negative index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2270,7 +2270,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as true with negative index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2287,7 +2287,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as false with NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2301,7 +2301,7 @@ describe('Tab Control', () => {
         });
         it('Template - enableTab as true with NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2437,7 +2437,7 @@ describe('Tab Control', () => {
         });
         it('Template - New index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2449,7 +2449,7 @@ describe('Tab Control', () => {
         });
         it('Template - Unknown index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2461,7 +2461,7 @@ describe('Tab Control', () => {
         });
         it('Template - Negative index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2473,7 +2473,7 @@ describe('Tab Control', () => {
         });
         it('Template - NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2485,7 +2485,7 @@ describe('Tab Control', () => {
         });
         it('Template - Empty array', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2497,7 +2497,7 @@ describe('Tab Control', () => {
         });
         it('Template - Active Index testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2682,7 +2682,7 @@ describe('Tab Control', () => {
         });
         it('Template - Specified value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2694,7 +2694,7 @@ describe('Tab Control', () => {
         });
         it('Template - Unknown value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2706,7 +2706,7 @@ describe('Tab Control', () => {
         });
         it('Template - Negative value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2718,7 +2718,7 @@ describe('Tab Control', () => {
         });
         it('Template - NaN value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -2730,7 +2730,7 @@ describe('Tab Control', () => {
         });
         it('Template - Active class state ensuring', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div>'
             + '<div> item4 </div> <div> item5 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
             + '<h1>Content3</h1> <p> text</p> </div> </div> <div> <div> <h1>Content4</h1> <p> text</p> </div> </div>'
@@ -2998,7 +2998,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as true', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3012,7 +3012,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as false', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3029,7 +3029,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as true with unknown index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3043,7 +3043,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as false with unknown index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3057,7 +3057,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as true with negative index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3071,7 +3071,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as false with NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3085,7 +3085,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as true with NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3099,7 +3099,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as true with active class', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <h1>Content3</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -3128,7 +3128,7 @@ describe('Tab Control', () => {
         });
         it('Template - hideTab as false with active class', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <h1>Content3</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -3323,7 +3323,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with empty item', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> </div> <div class="e-content"> </div>';
+            ele.innerHTML = '<div class="e-tab-header"> </div> <div class="e-content"> </div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -3335,7 +3335,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with new value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3349,7 +3349,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with same value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3363,7 +3363,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with existed value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3377,7 +3377,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with negative value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3391,7 +3391,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with NaN value', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3405,7 +3405,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with HTMLElement', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3420,7 +3420,7 @@ describe('Tab Control', () => {
         });
         it('Template - Select method with invalid HTMLElement', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3512,7 +3512,7 @@ describe('Tab Control', () => {
         });
         it('Template - Disable as true', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3524,7 +3524,7 @@ describe('Tab Control', () => {
         });
         it('Template - Disable as false', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -3610,7 +3610,7 @@ describe('Tab Control', () => {
         });
         it('Template - created event', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -3621,7 +3621,7 @@ describe('Tab Control', () => {
         });
         it('Template - selecting and selected events', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -3636,7 +3636,7 @@ describe('Tab Control', () => {
         });
         it('Template - removing and removed events', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -3650,7 +3650,7 @@ describe('Tab Control', () => {
         });
         it('Template - adding and added events', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -3686,20 +3686,20 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.children.length).toEqual(2);
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-content')).toEqual(true);
         });
         it('Template based rendering - Child element checking', () => {
-            ele.innerHTML = '<div class="e-header"> </div> <div class="e-content"></div>';
+            ele.innerHTML = '<div class="e-tab-header"> </div> <div class="e-content"></div>';
             tab = new Tab();
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.children.length).toEqual(2);
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-content')).toEqual(true);
         });
         it('Items and Template combined input based control rendering test', () => {
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> </div> <div class="e-content">  <div> content1 </div> </div>';
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> </div> <div class="e-content">  <div> content1 </div> </div>';
             tab = new Tab({
                 items: [
                     { header: { "text": "item1" }, content: "Content1" }
@@ -3709,7 +3709,7 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.children.length).toEqual(2);
             expect(element.classList.contains('e-template')).toEqual(true);
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-content')).toEqual(true);
         });
     });
@@ -3822,7 +3822,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -3853,7 +3853,7 @@ describe('Tab Control', () => {
         });
         it('Template - Required scrollable class testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> header-item1 </div> <div> header-item2 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item1 </div> <div> header-item2 </div>'
             +' <div> header-item3 </div> <div> header-item4 </div> <div> header-item5 </div>'
             + '<div> header-item6 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -3876,7 +3876,7 @@ describe('Tab Control', () => {
         });
         it('Template - Switching to popup mode with no toolbar items testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> header-item1 </div> <div> header-item2 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item1 </div> <div> header-item2 </div>'
             +' <div> header-item3 </div> <div> header-item4 </div> <div> header-item5 </div>'
             + '<div> header-item6 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -3894,7 +3894,7 @@ describe('Tab Control', () => {
         });
         it('Template - Perform scroll by click event', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> header-item1 </div> <div> header-item2 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item1 </div> <div> header-item2 </div>'
             +' <div> header-item3 </div> <div> header-item4 </div> <div> header-item5 </div>'
             + '<div> header-item6 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -3955,7 +3955,7 @@ describe('Tab Control', () => {
         });
         it('Header element popup class testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelector('.e-header').classList.contains('e-toolpop')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-toolpop')).toEqual(true);
         });
         it('Popup container element availability checking', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -3977,9 +3977,9 @@ describe('Tab Control', () => {
         });
         it('Popup button availability checking', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-_nav').length > 0).toEqual(true);
-            expect(element.querySelectorAll('.e-header .e-hor-nav').length > 0).toEqual(true);
-            expect(element.querySelectorAll('.e-header .e-hor-nav .e-icons').length > 0).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-_nav').length > 0).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-hor-nav').length > 0).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-hor-nav .e-icons').length > 0).toEqual(true);
         });
         it('Popup default icon class testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -3999,7 +3999,7 @@ describe('Tab Control', () => {
         beforeEach((): void => {
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
-            ele.innerHTML = '<div class="e-header"> <div> header-item0 </div> <div> header-item1 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item0 </div> <div> header-item1 </div>'
             +' <div> header-item2 </div> <div> header-item3 </div> <div> header-item4 </div>'
             + '<div> header-item5 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -4024,7 +4024,7 @@ describe('Tab Control', () => {
         });
         it('Header element popup class testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelector('.e-header').classList.contains('e-toolpop')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-toolpop')).toEqual(true);
         });
         it('Popup container element availability checking', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -4046,9 +4046,9 @@ describe('Tab Control', () => {
         });
         it('Popup button availability checking', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            expect(element.querySelectorAll('.e-header .e-_nav').length > 0).toEqual(true);
-            expect(element.querySelectorAll('.e-header .e-hor-nav').length > 0).toEqual(true);
-            expect(element.querySelectorAll('.e-header .e-hor-nav .e-icons').length > 0).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-_nav').length > 0).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-hor-nav').length > 0).toEqual(true);
+            expect(element.querySelectorAll('.e-tab-header .e-hor-nav .e-icons').length > 0).toEqual(true);
         });
         it('Popup default icon class testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -4080,7 +4080,7 @@ describe('Tab Control', () => {
                 ]
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             setTimeout(() => { done(); }, 450);
         });
@@ -4153,7 +4153,7 @@ describe('Tab Control', () => {
             document.getElementsByTagName('head')[0].appendChild(style);
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
-            ele.innerHTML = '<div class="e-header"> <div> header-item0 </div> <div> header-item1 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item0 </div> <div> header-item1 </div>'
             +' <div> header-item2 </div> <div> header-item3 </div> <div> header-item4 </div>'
             + '<div> header-item5 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -4166,7 +4166,7 @@ describe('Tab Control', () => {
                 overflowMode: 'Popup'
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             setTimeout(() => { done(); }, 450);
         });
@@ -4223,7 +4223,7 @@ describe('Tab Control', () => {
                 ]
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             setTimeout(() => { done(); }, 450);
         });
@@ -4299,7 +4299,7 @@ describe('Tab Control', () => {
                 ]
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             setTimeout(() => { done(); }, 450);
         });
@@ -4414,7 +4414,7 @@ describe('Tab Control', () => {
             document.getElementsByTagName('head')[0].appendChild(style);
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
-            ele.innerHTML = '<div class="e-header"> <div> header-item0 </div> <div> header-item1 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item0 </div> <div> header-item1 </div>'
             +' <div> header-item2 </div> <div> header-item3 </div> <div> header-item4 </div>'
             + '<div> header-item5 </div> </div> <div class="e-content"> <div>Content0</div> <div>Content1</div> <div>Content2</div>'
             + '<div>Content3</div> <div>Content4</div> <div>Content5</div>';
@@ -4424,7 +4424,7 @@ describe('Tab Control', () => {
                 overflowMode: 'Popup'
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             setTimeout(() => { done(); }, 450);
         });
@@ -4557,7 +4557,7 @@ describe('Tab Control', () => {
             });
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
-            toolbar = <DomElements> element.querySelector('.e-header');
+            toolbar = <DomElements> element.querySelector('.e-tab-header');
             toolbarObj = <Toolbar> toolbar.ej2_instances[0];
         });
         afterEach((): void => {
@@ -4634,10 +4634,10 @@ describe('Tab Control', () => {
                 ]
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             let element: HTMLElement = document.getElementById('ej2Tab');
-            toolbar = <DomElements> element.querySelector('.e-header');
+            toolbar = <DomElements> element.querySelector('.e-tab-header');
             toolbarObj = <Toolbar> toolbar.ej2_instances[0];
             setTimeout(() => { done(); }, 450);
         });
@@ -4705,10 +4705,10 @@ describe('Tab Control', () => {
                 ]
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             let element: HTMLElement = document.getElementById('ej2Tab');
-            toolbar = <DomElements> element.querySelector('.e-header');
+            toolbar = <DomElements> element.querySelector('.e-tab-header');
             toolbarObj = <Toolbar> toolbar.ej2_instances[0];
             setTimeout(() => { done(); }, 450);
         });
@@ -4721,7 +4721,7 @@ describe('Tab Control', () => {
         it('keyboard class testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.classList.contains('e-keyboard')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-keyboard')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-keyboard')).toEqual(true);
         });
         it('Tab key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -4772,7 +4772,7 @@ describe('Tab Control', () => {
         
         it('Home and End key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -4801,7 +4801,7 @@ describe('Tab Control', () => {
         });
         it('Space key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -4879,7 +4879,7 @@ describe('Tab Control', () => {
         });
         it('Enter key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -4911,7 +4911,7 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             tab.showCloseButton = true;
             tab.dataBind();
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -4943,7 +4943,7 @@ describe('Tab Control', () => {
         });
         it('Delete key with showCloseButton as false', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -4977,7 +4977,7 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             tab.showCloseButton = true;
             tab.dataBind();
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5011,7 +5011,7 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             tab.showCloseButton = true;
             tab.dataBind();
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5054,7 +5054,7 @@ describe('Tab Control', () => {
             document.getElementsByTagName('head')[0].appendChild(style);
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
-            ele.innerHTML = '<div class="e-header"> <div> header-item0 </div> <div> header-item1 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item0 </div> <div> header-item1 </div>'
             +' <div> header-item2 </div> <div> header-item3 </div> <div> header-item4 </div>'
             + '<div> header-item5 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -5067,10 +5067,10 @@ describe('Tab Control', () => {
                 overflowMode: 'Popup',
             });
             tab.appendTo('#ej2Tab');
-            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-header .e-hor-nav');
+            let popup: HTMLElement = <HTMLElement> document.querySelector('.e-tab-header .e-hor-nav');
             popup.click();
             let element: HTMLElement = document.getElementById('ej2Tab');
-            toolbar = <DomElements> element.querySelector('.e-header');
+            toolbar = <DomElements> element.querySelector('.e-tab-header');
             toolbarObj = <Toolbar> toolbar.ej2_instances[0];
             setTimeout(() => { done(); }, 450);
         });
@@ -5083,7 +5083,7 @@ describe('Tab Control', () => {
         it('keyboard class testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.classList.contains('e-keyboard')).toEqual(true);
-            expect(element.querySelector('.e-header').classList.contains('e-keyboard')).toEqual(true);
+            expect(element.querySelector('.e-tab-header').classList.contains('e-keyboard')).toEqual(true);
         });
         it('Tab key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
@@ -5098,7 +5098,7 @@ describe('Tab Control', () => {
         });
         it('moveRight and moveLeft key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5127,7 +5127,7 @@ describe('Tab Control', () => {
         });
         it('Home and End key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5156,7 +5156,7 @@ describe('Tab Control', () => {
         });
         it('Space key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5202,7 +5202,7 @@ describe('Tab Control', () => {
         });
         it('Enter key testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5234,7 +5234,7 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             tab.showCloseButton = true;
             tab.dataBind();
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5268,7 +5268,7 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             tab.showCloseButton = true;
             tab.dataBind();
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             keyEventArgs = {
                 preventDefault: function () { },
@@ -5388,7 +5388,7 @@ describe('Tab Control', () => {
         });
         it('Active element visibility testing when resize', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             tab.select(2);
             expect(tab.selectedItem).toEqual(2);
@@ -5417,7 +5417,7 @@ describe('Tab Control', () => {
             document.getElementsByTagName('head')[0].appendChild(style);
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
-            ele.innerHTML = '<div class="e-header"> <div> header-item0 </div> <div> header-item1 </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> header-item0 </div> <div> header-item1 </div>'
             +' <div> header-item2 </div> <div> header-item3 </div> <div> header-item4 </div>'
             + '<div> header-item5 </div> </div> <div class="e-content"> <div> <div> <h1>Content1</h1>'
             + '<p> text</p> </div> </div> <div> <div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div>'
@@ -5439,7 +5439,7 @@ describe('Tab Control', () => {
         });
         it('Active element visibility testing when resize', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
-            let toolbar: DomElements = <DomElements> element.querySelector('.e-header');
+            let toolbar: DomElements = <DomElements> element.querySelector('.e-tab-header');
             let toolbarObj: any = <Toolbar> toolbar.ej2_instances[0];
             tab.select(3);
             expect(tab.selectedItem).toEqual(3);
@@ -5584,7 +5584,7 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.children.length).toEqual(2);
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-content')).toEqual(true);
         });
         it('Items collection availability checking', () => {
@@ -5738,7 +5738,7 @@ describe('Tab Control', () => {
         beforeEach((): void => {
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> <div> item3 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>' 
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> <div> <div> <h1>Content3</h1> <p> text</p> </div>'
                 + '</div> </div>';
@@ -5765,7 +5765,7 @@ describe('Tab Control', () => {
         it('Template rendering with required child testing', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.children.length).toEqual(2);
-            expect(element.children.item(0).classList.contains('e-header')).toEqual(true);
+            expect(element.children.item(0).classList.contains('e-tab-header')).toEqual(true);
             expect(element.children.item(1).classList.contains('e-content')).toEqual(true);
         });
         it('Select method with template', () => {
@@ -5909,7 +5909,7 @@ describe('Tab Control', () => {
         });
         it('Template - Default title text testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -5925,7 +5925,7 @@ describe('Tab Control', () => {
         });
         it('Template - New localization mapping with title text testing', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -5942,7 +5942,7 @@ describe('Tab Control', () => {
         });
         it('Template - Mapping invalid element', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -6009,7 +6009,7 @@ describe('Tab Control', () => {
         });
         it('Template - Border element class list and availability checking', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab();
@@ -6020,7 +6020,7 @@ describe('Tab Control', () => {
         });
         it('Template - Scrollable mode Border element appended place checking', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
-            ele.innerHTML = '<div class="e-header"> <div> item1 </div> <div> item2 </div> </div>'
+            ele.innerHTML = '<div class="e-tab-header"> <div> item1 </div> <div> item2 </div> </div>'
                 + '<div class="e-content"> <div> <div> <h1>Content1</h1> <p> text</p> </div> </div> <div>'
                 + '<div> <h1>Content2</h1> <p> text</p> </div> </div> </div>';
             tab = new Tab({
@@ -6222,7 +6222,7 @@ describe('Tab Control', () => {
         });
         beforeEach((): void => {
             let rootDiv: HTMLElement = createElement('div', {id:'temTab'});
-            let header: HTMLElement = createElement('div', {className: 'e-header'});
+            let header: HTMLElement = createElement('div', {className: 'e-tab-header'});
             let itemHead1: HTMLElement = createElement ('div', {innerHTML: 'India'});
             let itemHead2: HTMLElement = createElement ('div', {innerHTML: 'Canada'});
             let itemHead3: HTMLElement = createElement ('div', {innerHTML: 'Australia'});
@@ -6391,7 +6391,7 @@ describe('Tab Control', () => {
         });
         beforeEach((): void => {
             let rootDiv: HTMLElement = createElement('div', {id:'temTab'});
-            let header: HTMLElement = createElement('div', {className: 'e-header'});
+            let header: HTMLElement = createElement('div', {className: 'e-tab-header'});
             let itemHead1: HTMLElement = createElement ('div', {innerHTML: 'India'});
             let itemHead2: HTMLElement = createElement ('div', {innerHTML: 'Canada'});
             let itemHead3: HTMLElement = createElement ('div', {innerHTML: 'Australia'});

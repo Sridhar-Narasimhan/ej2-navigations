@@ -2,7 +2,7 @@
   /*! tab theme */
   .e-tab {
 
-    .e-header {
+    .e-tab-header {
       background: inherit;
       border: 0;
       border-bottom: $tab-hdr-border;
@@ -306,7 +306,7 @@
       }
     }
 
-    &.e-focused {
+    &.e-focused .e-tab-header {
 
       .e-toolbar-item {
 
@@ -325,7 +325,7 @@
     &.e-disable {
       pointer-events: none;
 
-      .e-header {
+      .e-tab-header {
 
         .e-toolbar-item {
 
@@ -366,7 +366,7 @@
 
     &.e-fill {
 
-      .e-header {
+      .e-tab-header {
         border-bottom: $tab-fill-hdr-border;
 
         @if $skin-name == 'bootstrap' {
@@ -446,7 +446,7 @@
 
       &.e-corner {
 
-        .e-toolbar-item {
+        .e-tab-header .e-toolbar-item {
 
           &.e-active {
 
@@ -456,7 +456,7 @@
           }
         }
 
-        .e-header:nth-child(even) {
+        .e-tab-header:nth-child(even) {
 
           .e-toolbar-item {
 
@@ -469,7 +469,7 @@
 
       &.e-disable {
 
-        .e-header {
+        .e-tab-header {
           border-bottom: $tab-fill-disable-hdr-border;
 
           &:nth-child(even) {
@@ -478,7 +478,7 @@
           }
         }
 
-        .e-toolbar-item {
+        .e-tab-header .e-toolbar-item {
 
           .e-tab-wrap {
             color: $tab-disable-text-color;
@@ -500,7 +500,7 @@
         }
       }
 
-      &.e-focused {
+      &.e-focused .e-tab-header {
 
         .e-toolbar-item {
 
@@ -534,7 +534,7 @@
 
     &.e-background {
 
-      .e-header {
+      .e-tab-header {
         background: $tab-alt-hdr-bg-color;
         border: 0;
 
@@ -730,7 +730,7 @@
         }
       }
 
-      &.e-disable {
+      &.e-disable .e-tab-header {
 
         .e-toolbar-item {
 
@@ -769,7 +769,7 @@
         }
       }
 
-      &.e-accent {
+      &.e-accent .e-tab-header {
 
         .e-indicator {
           background: $tab-border-color;
@@ -783,7 +783,7 @@
         }
       }
 
-      &.e-focused {
+      &.e-focused .e-tab-header {
 
         .e-toolbar-item {
 
@@ -855,7 +855,7 @@
       }
     }
 
-    &.e-rtl {
+    &.e-rtl .e-tab-header {
 
       .e-hscroll.e-rtl {
 

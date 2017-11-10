@@ -927,8 +927,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let width: number = ele.offsetWidth - (popNav.offsetWidth + innerEle.offsetWidth);
         this.popupEleRefresh(width, popupEle, destroy);
         popupEle.style.display = '';
-        if (popupEle.children.length === 0) {
+        if (popupEle.children.length === 0 && popNav && this.popObj) {
             detach(popNav);
+            popNav = null;
             this.popObj.destroy();
             detach(this.popObj.element);
             this.popObj = null;
@@ -955,6 +956,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let eleSplice: HTEle[] = this.tbarEle;
         let priEleCnt: number;
         let index: number;
+        let checkOverflow: boolean;
         let innerEle: HTEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS);
         let ignoreCount: number = 0;
         for (let el of [].slice.call(popupEle.children)) {
@@ -1016,6 +1018,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 break;
             }
         }
+        checkOverflow = this.checkOverflow(this.element, this.element.getElementsByClassName(CLS_ITEMS)[0] as HTEle);
+        if (checkOverflow && !destroy) {
+          this.renderOverflowMode(); }
     }
     private removePositioning(): void {
       let item: HTEle = this.element.querySelector('.' + CLS_ITEMS) as HTEle;

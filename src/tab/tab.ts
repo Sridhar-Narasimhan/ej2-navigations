@@ -25,7 +25,7 @@ export type heightStyles = 'None' | 'Auto' | 'Content' | 'Fill';
 export type TabEffect = 'None' | Effect;
 
 const CLS_TAB: string = 'e-tab';
-const CLS_HEADER: string = 'e-header';
+const CLS_HEADER: string = 'e-tab-header';
 const CLS_CONTENT: string = 'e-content';
 const CLS_ITEMS: string = 'e-items';
 const CLS_ITEM: string = 'e-item';
@@ -439,11 +439,11 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         }
         if (!isNOU(select('.' + CLS_HEADER, this.element)) && !isNOU(select('.' + CLS_CONTENT, this.element))) {
             this.renderHeader();
-            this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
+            this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' +  CLS_TB_ITEMS, this.element);
             if (!isNOU(this.tbItems)) { rippleEffect(this.tbItems, { selector: '.e-tab-wrap' }); }
             this.renderContent();
             if (selectAll('.' + CLS_TB_ITEM, this.element).length > 0) {
-                this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
+                this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' +  CLS_TB_ITEMS, this.element);
                 this.bdrLine = buildTag('div', { className: CLS_INDICATOR + ' ' + CLS_HIDDEN + ' ' + CLS_IGNORE });
                 let scrCnt: HTEle = <HTEle> select('.e-hscroll-content', this.tbItems);
                 if (!isNOU(scrCnt)) {
@@ -622,11 +622,13 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (!isNOU(animateObj)) {
         animateObj.begin = () => {
             setStyle(oldCnt , { 'position': 'absolute' });
+            oldCnt.classList.add(CLS_PROGRESS);
             oldCnt.classList.add('e-view');
         };
         animateObj.end = () => {
             oldCnt.style.display = 'none';
             oldCnt.classList.remove(CLS_ACTIVE);
+            oldCnt.classList.remove(CLS_PROGRESS);
             oldCnt.classList.remove('e-view');
             setStyle(oldCnt , { 'display': '' , 'position': '' });
         };
@@ -688,7 +690,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
           new Animation(animateObj).animate(newCnt); }
     }
     private keyPressed(trg: HTEle): void {
-        let trgParent: HTEle = <HTEle> closest(trg, '.' + CLS_TB_ITEM);
+        let trgParent: HTEle = <HTEle> closest(trg, '.' + CLS_HEADER + ' .' + CLS_TB_ITEM);
         let trgIndex: number = this.getEleIndex(trgParent);
         if (!isNOU(this.popEle) && trg.classList.contains('e-hor-nav')) {
             (this.popEle.classList.contains(CLS_POPUP_OPEN)) ? this.popObj.hide(this.hide) : this.popObj.show(this.show);
@@ -704,7 +706,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         }
     }
     private getEleIndex(item: HTEle): number {
-        return Array.prototype.indexOf.call(selectAll('.' + CLS_TB_ITEM, this.element), item);
+        return Array.prototype.indexOf.call(selectAll('.' + CLS_HEADER + ' .' + CLS_TB_ITEM, this.element), item);
     }
     private extIndex(id: string): string {
         return id.replace(CLS_ITEM + '_', '');
@@ -803,13 +805,9 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (trg === null) { return; }
         let root: HTEle = <HTEle>closest(trg, '.' + CLS_TAB);
         if (this.element !== root) {return; }
-        let hsCnt: HTEle = <HTEle> select('.' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element.children[0]);
-        this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
-        let bar: HTEle = <HTEle> select('.' + CLS_INDICATOR, this.element);
-        if (this.headerPlacement === 'Bottom') {
-            hsCnt = <HTEle> select('.' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element.children[1]);
-            this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element.children[1]);
-            bar = <HTEle> select('.' + CLS_INDICATOR, this.element.children[1]); }
+        let hsCnt: HTEle = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element);
+        this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_TB_ITEMS, this.element);
+        let bar: HTEle = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_INDICATOR, this.element);
         let tbWidth: number = (isNOU(hsCnt)) ? this.tbItems.offsetWidth : hsCnt.offsetWidth;
         if (tbWidth !== 0) {
           setStyle(bar, {'left': trg.offsetLeft + 'px', 'right': tbWidth - (trg.offsetLeft + trg.offsetWidth) + 'px'});
@@ -820,7 +818,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
           this.bdrLine.classList.remove(CLS_HIDDEN); }
     }
     private setActive(value: number): void {
-        this.tbItem = selectAll('.' + CLS_TB_ITEM, this.element);
+        this.tbItem = selectAll('.' + CLS_HEADER + ' .' + CLS_TB_ITEM, this.element);
         let trg: HTEle = this.tbItem[value];
         if (value >= 0) { this.setProperties({ selectedItem: value }, true); }
         if (value < 0 || isNaN(value) || this.tbItem.length === 0 ) { return; }
@@ -872,7 +870,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
     }
     private setItems(items: object[]): void {
         this.isReplace = true;
-        this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
+        this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' +  CLS_TB_ITEMS, this.element);
         this.tbObj.items = this.parseObject(items);
         this.tbObj.dataBind();
         this.isReplace = false;
@@ -1041,7 +1039,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (isNOU(index)) { index = selectAll('.' + CLS_TB_ITEM).length - 1; }
         if (this.isTemplate === true || selectAll('.' + CLS_TB_ITEM).length - 1 < index || index < 0 || isNaN(index)) { return; }
         this.bdrLine.classList.add(CLS_HIDDEN);
-        this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
+        this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' +  CLS_TB_ITEMS, this.element);
         let tabItems: object[] = this.parseObject(items);
         items.forEach((item: { [key: string]: Header }) => {
             this.items.push(<TabItemModel> item);
@@ -1103,8 +1101,8 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
      * @returns void.
      */
     public select(args: number | HTMLElement): void {
-        this.tbItems = <HTEle> select('.' + CLS_TB_ITEMS, this.element);
-        this.tbItem = selectAll('.' + CLS_TB_ITEM, this.element);
+        this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' +  CLS_TB_ITEMS, this.element);
+        this.tbItem = selectAll('.' + CLS_HEADER + ' .' +  CLS_TB_ITEM, this.element);
         this.prevItem = this.tbItem[this.prevIndex];
         if (!isNOU(this.prevItem)) { this.prevItem.children.item(0).setAttribute('tabindex', '-1'); }
         let eventArg: SelectEventArgs = {
