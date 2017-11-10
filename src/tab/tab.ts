@@ -805,9 +805,11 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
         if (trg === null) { return; }
         let root: HTEle = <HTEle>closest(trg, '.' + CLS_TAB);
         if (this.element !== root) {return; }
-        let hsCnt: HTEle = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element);
+        let hsCnt: HTEle = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element.children[0]);
         this.tbItems = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_TB_ITEMS, this.element);
         let bar: HTEle = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_INDICATOR, this.element);
+        if (this.headerPlacement === 'Bottom') {
+            hsCnt = <HTEle> select('.' + CLS_HEADER + ' .' + CLS_TB_ITEMS + ' .e-hscroll-content', this.element.children[1]); }
         let tbWidth: number = (isNOU(hsCnt)) ? this.tbItems.offsetWidth : hsCnt.offsetWidth;
         if (tbWidth !== 0) {
           setStyle(bar, {'left': trg.offsetLeft + 'px', 'right': tbWidth - (trg.offsetLeft + trg.offsetWidth) + 'px'});
