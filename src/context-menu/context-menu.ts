@@ -481,7 +481,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     }
 
     private isMenuVisible(): boolean {
-        return (this.navIdx.length > 0 || isVisible(this.element).valueOf());
+        return (this.navIdx.length > 0 || (this.element.classList.contains('e-contextmenu') && isVisible(this.element).valueOf()));
     }
 
     private canOpen(target: Element): boolean {
@@ -860,8 +860,10 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     EventHandler.remove(target, 'contextmenu', this.cmenuHandler);
                 }
             }
-            for (let parent of this.getScrollableParents(target)) {
-                EventHandler.remove(parent, 'scroll', this.scrollHandler);
+            if (target) {
+                for (let parent of this.getScrollableParents(target)) {
+                    EventHandler.remove(parent, 'scroll', this.scrollHandler);
+                }
             }
         }
         if (!Browser.isDevice) {
