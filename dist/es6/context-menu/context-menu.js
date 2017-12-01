@@ -1,0 +1,1084 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+import { Component, CreateBuilder, Property, ChildProperty, NotifyPropertyChanges } from '@syncfusion/ej2-base';
+import { Event, EventHandler, KeyboardEvents, Touch } from '@syncfusion/ej2-base';
+import { attributes, Animation } from '@syncfusion/ej2-base';
+import { Browser, Collection, setValue, getValue, getUniqueID, getInstance } from '@syncfusion/ej2-base';
+import { select, selectAll, closest, createElement, detach, append, rippleEffect, isVisible } from '@syncfusion/ej2-base';
+import { ListBase } from '@syncfusion/ej2-lists';
+import { calculatePosition, isCollide, fit } from '@syncfusion/ej2-popups';
+var DOWNARROW = 'downarrow';
+var ENTER = 'enter';
+var ESCAPE = 'escape';
+var FOCUSED = 'e-focused';
+var HEADER = 'e-menuheader';
+var LEFTARROW = 'leftarrow';
+var RIGHTARROW = 'rightarrow';
+var RTL = 'e-rtl';
+var SELECTED = 'e-selected';
+var SEPARATOR = 'e-separator';
+var UPARROW = 'uparrow';
+var WRAPPER = 'e-contextmenu-wrapper';
+var CARET = 'e-caret';
+var ITEM = 'e-menu-item';
+var DISABLED = 'e-disabled';
+var HIDE = 'e-menu-hide';
+var ICONS = 'e-icons';
+/**
+ * Specifies context menu items.
+ */
+var MenuItem = /** @class */ (function (_super) {
+    __extends(MenuItem, _super);
+    function MenuItem() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    __decorate([
+        Property('')
+    ], MenuItem.prototype, "iconCss", void 0);
+    __decorate([
+        Property('')
+    ], MenuItem.prototype, "id", void 0);
+    __decorate([
+        Property(false)
+    ], MenuItem.prototype, "separator", void 0);
+    __decorate([
+        Collection([], MenuItem)
+    ], MenuItem.prototype, "items", void 0);
+    __decorate([
+        Property('')
+    ], MenuItem.prototype, "text", void 0);
+    __decorate([
+        Property('')
+    ], MenuItem.prototype, "url", void 0);
+    return MenuItem;
+}(ChildProperty));
+export { MenuItem };
+/**
+ * ContextMenu is a graphical user interface that appears on user right click / touch hold operation.
+ * ```html
+ * <div id = 'target'></div>
+ * <ul id = 'contextmenu'></ul>
+ * ```
+ * ```typescript
+ * <script>
+ * var contextMenuObj = new ContextMenu({items: [{ text: 'Cut' }, { text: 'Copy' },{ text: 'Paste' }], target: '#target'});
+ * </script>
+ * ```
+ */
+var ContextMenu = /** @class */ (function (_super) {
+    __extends(ContextMenu, _super);
+    /**
+     * Constructor for creating the widget.
+     * @private
+     */
+    function ContextMenu(options, element) {
+        var _this = _super.call(this, options, element) || this;
+        _this.animation = new Animation({});
+        _this.navIdx = [];
+        _this.isTapHold = false;
+        return _this;
+    }
+    /**
+     * Initialized animation with parent menu animation settings.
+     * @private
+     */
+    ContextMenu.prototype.preRender = function () {
+        if (this.element.tagName === 'EJ-CONTEXTMENU') {
+            var ejInst = getValue('ej2_instances', this.element);
+            var ul = createElement('ul');
+            var wrapper = createElement('EJ-CONTEXTMENU', { className: WRAPPER });
+            this.element.parentNode.insertBefore(ul, this.element);
+            detach(this.element);
+            this.element = ul;
+            this.element.classList.add('e-' + this.getModuleName());
+            document.body.appendChild(wrapper);
+            wrapper.appendChild(this.element);
+            setValue('ej2_instances', ejInst, this.element);
+            if (!this.element.id) {
+                this.element.id = getUniqueID(this.getModuleName());
+            }
+        }
+    };
+    /**
+     * Initialize the control rendering
+     * @private
+     */
+    ContextMenu.prototype.render = function () {
+        this.initWrapper();
+        this.renderItems();
+        this.wireEvents();
+    };
+    ContextMenu.prototype.initWrapper = function () {
+        var wrapper = this.getWrapper();
+        if (!wrapper) {
+            wrapper = createElement('div', { className: WRAPPER });
+            document.body.appendChild(wrapper);
+        }
+        if (this.cssClass) {
+            wrapper.classList.add(this.cssClass);
+        }
+        if (this.enableRtl) {
+            wrapper.classList.add(RTL);
+        }
+        attributes(this.element, { 'role': 'menu', 'tabindex': '0' });
+        wrapper.appendChild(this.element);
+        this.element.style.zIndex = this.getZIndex();
+    };
+    ContextMenu.prototype.renderItems = function () {
+        if (!this.items.length) {
+            this.items = ListBase.createJsonFromElement(this.element);
+            this.element.innerHTML = '';
+        }
+        var ul = this.createItems(this.items);
+        append(Array.prototype.slice.call(ul.children), this.element);
+    };
+    ContextMenu.prototype.wireEvents = function () {
+        var wrapper = this.getWrapper();
+        if (this.target) {
+            var target = void 0;
+            var targetElems = selectAll(this.target);
+            for (var i = 0, len = targetElems.length; i < len; i++) {
+                target = targetElems[i];
+                if (Browser.isIos) {
+                    new Touch(target, { tapHold: this.touchHandler.bind(this) });
+                }
+                else {
+                    EventHandler.add(target, 'contextmenu', this.cmenuHandler, this);
+                }
+            }
+            for (var _i = 0, _a = this.getScrollableParents(target); _i < _a.length; _i++) {
+                var parent_1 = _a[_i];
+                EventHandler.add(parent_1, 'scroll', this.scrollHandler, this);
+            }
+        }
+        if (!Browser.isDevice) {
+            EventHandler.add(wrapper, 'mouseover', this.moverHandler, this);
+            EventHandler.add(document, 'mousedown', this.mouseDownHandler, this);
+        }
+        EventHandler.add(document, 'click', this.clickHandler, this);
+        new KeyboardEvents(wrapper, {
+            keyAction: this.keyBoardHandler.bind(this),
+            keyConfigs: {
+                downarrow: DOWNARROW,
+                uparrow: UPARROW,
+                enter: ENTER,
+                leftarrow: LEFTARROW,
+                rightarrow: RIGHTARROW,
+                escape: ESCAPE
+            }
+        });
+        rippleEffect(wrapper, { selector: '.' + ITEM });
+    };
+    ContextMenu.prototype.mouseDownHandler = function (e) {
+        if (closest(e.target, '.' + WRAPPER) !== this.getWrapper()) {
+            this.closeMenu(this.navIdx.length, e);
+        }
+    };
+    ContextMenu.prototype.getScrollableParents = function (target) {
+        var elemStyle = getComputedStyle(target);
+        var parentCollection = [];
+        var regex = /(auto|scroll)/;
+        var parentEle = target.parentElement;
+        while (parentEle && parentEle.tagName !== 'HTML') {
+            var parentStyle = getComputedStyle(parentEle);
+            if (!(elemStyle.position === 'absolute' && parentStyle.position === 'static')
+                && regex.test(parentStyle.overflow + parentStyle.overflowY + parentStyle.overflowX)) {
+                parentCollection.push(parentEle);
+            }
+            parentEle = parentEle.parentElement;
+        }
+        parentCollection.push(document);
+        return parentCollection;
+    };
+    ContextMenu.prototype.keyBoardHandler = function (e) {
+        e.preventDefault();
+        switch (e.action) {
+            case DOWNARROW:
+            case UPARROW:
+                this.upDownKeyHandler(e);
+                break;
+            case RIGHTARROW:
+                this.rightEnterKeyHandler({ action: RIGHTARROW });
+                break;
+            case LEFTARROW:
+                this.leftEscKeyHandler({ action: LEFTARROW });
+                break;
+            case ENTER:
+                this.rightEnterKeyHandler({ action: ENTER });
+                break;
+            case ESCAPE:
+                this.leftEscKeyHandler({ action: ESCAPE });
+                break;
+        }
+    };
+    ContextMenu.prototype.upDownKeyHandler = function (e) {
+        var wrapper = this.getWrapper();
+        var cul = wrapper.children[this.navIdx.length];
+        var defaultIdx = e.action === DOWNARROW ? 0 : cul.childElementCount - 1;
+        var fliIdx = defaultIdx;
+        var fli = this.getLIByClass(cul, FOCUSED);
+        if (fli) {
+            fliIdx = this.getIdx(cul, fli);
+            fli.classList.remove(FOCUSED);
+            e.action === DOWNARROW ? fliIdx++ : fliIdx--;
+            if (fliIdx === (e.action === DOWNARROW ? cul.childElementCount : -1)) {
+                fliIdx = defaultIdx;
+            }
+        }
+        var cli = cul.children[fliIdx];
+        fliIdx = this.isValidLI(cli, fliIdx, e.action);
+        cul.children[fliIdx].classList.add(FOCUSED);
+        cul.children[fliIdx].focus();
+    };
+    ContextMenu.prototype.isValidLI = function (cli, index, action) {
+        var wrapper = this.getWrapper();
+        var cul = wrapper.children[this.navIdx.length];
+        if (cli.classList.contains(SEPARATOR) || cli.classList.contains(DISABLED)) {
+            action === (DOWNARROW || RIGHTARROW) ? index++ : index--;
+        }
+        cli = cul.children[index];
+        if (cli.classList.contains(SEPARATOR) || cli.classList.contains(DISABLED)) {
+            index = this.isValidLI(cli, index, action);
+        }
+        return index;
+    };
+    ContextMenu.prototype.rightEnterKeyHandler = function (e) {
+        var wrapper = this.getWrapper();
+        var cul = wrapper.children[this.navIdx.length];
+        var fli = this.getLIByClass(cul, FOCUSED);
+        if (fli) {
+            var fliIdx = this.getIdx(cul, fli);
+            var navIdx = this.navIdx.concat(fliIdx);
+            var index = void 0;
+            var item = this.getItem(navIdx);
+            if (item.items.length) {
+                this.navIdx.push(fliIdx);
+                this.openMenu(fli, item, null, null, e);
+                fli.classList.remove(FOCUSED);
+                fli.classList.add(SELECTED);
+                if (e.action === ENTER) {
+                    var eventArgs = { element: fli, item: item };
+                    this.trigger('select', eventArgs);
+                }
+                fli.focus();
+                cul = wrapper.children[this.navIdx.length];
+                index = this.isValidLI(cul.children[0], 0, e.action);
+                cul.children[index].classList.add(FOCUSED);
+                cul.children[index].focus();
+            }
+            else {
+                if (e.action === ENTER) {
+                    this.close();
+                }
+            }
+        }
+    };
+    ContextMenu.prototype.leftEscKeyHandler = function (e) {
+        if (this.navIdx.length) {
+            var wrapper = this.getWrapper();
+            this.closeMenu(this.navIdx.length, e);
+            var cul = wrapper.children[this.navIdx.length];
+            var sli = this.getLIByClass(cul, SELECTED);
+            sli.setAttribute('aria-expanded', 'false');
+            if (sli) {
+                sli.classList.remove(SELECTED);
+                sli.classList.add(FOCUSED);
+                sli.focus();
+            }
+        }
+        else {
+            if (e.action === ESCAPE) {
+                this.close();
+            }
+        }
+    };
+    ContextMenu.prototype.scrollHandler = function (e) {
+        this.closeMenu(null, e);
+    };
+    ContextMenu.prototype.touchHandler = function (e) {
+        this.isTapHold = true;
+        this.cmenuHandler(e.originalEvent);
+    };
+    ContextMenu.prototype.cmenuHandler = function (e) {
+        e.preventDefault();
+        this.closeMenu(null, e);
+        if (this.canOpen(e.target)) {
+            if (e.changedTouches) {
+                this.openMenu(null, null, e.changedTouches[0].clientY, e.changedTouches[0].clientX, e);
+            }
+            else {
+                this.openMenu(null, null, e.clientY, e.clientX, e);
+            }
+        }
+    };
+    /**
+     * Closes the ContextMenu if it is opened.
+     */
+    ContextMenu.prototype.close = function () {
+        this.closeMenu();
+    };
+    ContextMenu.prototype.closeMenu = function (ulIndex, e) {
+        if (ulIndex === void 0) { ulIndex = 0; }
+        if (e === void 0) { e = null; }
+        if (this.isMenuVisible()) {
+            var ul = void 0;
+            var item = void 0;
+            var items = void 0;
+            var closeArgs = void 0;
+            var beforeCloseArgs = void 0;
+            var wrapper = this.getWrapper();
+            for (var cnt = wrapper.childElementCount; cnt > ulIndex; cnt--) {
+                item = this.navIdx.length ? this.getItem(this.navIdx) : null;
+                items = item ? item.items : this.items;
+                ul = wrapper.children[cnt - 1];
+                beforeCloseArgs = { element: ul, parentItem: item, items: items, event: e, cancel: false };
+                this.trigger('beforeClose', beforeCloseArgs);
+                if (!beforeCloseArgs.cancel) {
+                    this.toggleAnimation(ul, false);
+                    this.navIdx.length = ulIndex ? ulIndex - 1 : ulIndex;
+                    closeArgs = { element: ul, parentItem: item, items: items };
+                    this.trigger('onClose', closeArgs);
+                }
+            }
+        }
+    };
+    ContextMenu.prototype.isMenuVisible = function () {
+        return (this.navIdx.length > 0 || (this.element.classList.contains('e-contextmenu') && isVisible(this.element).valueOf()));
+    };
+    ContextMenu.prototype.canOpen = function (target) {
+        var canOpen = true;
+        if (this.filter) {
+            canOpen = false;
+            var filter = this.filter.split(' ');
+            for (var i = 0, len = target.classList.length; i < len; i++) {
+                if (filter.indexOf(target.classList[i]) > -1) {
+                    canOpen = true;
+                    break;
+                }
+            }
+        }
+        return canOpen;
+    };
+    /**
+     * This method is used to open the ContextMenu in specified position.
+     * @param top To specify ContextMenu vertical positioning.
+     * @param left To specify ContextMenu horizontal positioning.
+     * @returns void
+     */
+    ContextMenu.prototype.open = function (top, left) {
+        this.openMenu(null, null, top, left);
+    };
+    ContextMenu.prototype.openMenu = function (li, item, top, left, e) {
+        if (top === void 0) { top = 0; }
+        if (left === void 0) { left = 0; }
+        if (e === void 0) { e = null; }
+        var ul;
+        var navIdx;
+        var wrapper = this.getWrapper();
+        if (li) {
+            ul = this.createItems(item.items);
+            if (Browser.isDevice) {
+                wrapper.lastChild.style.display = 'none';
+                var data = { text: item.text, iconCss: ICONS + ' e-previous' };
+                var hdata = new MenuItem(this.items[0], null, data, true);
+                var hli = this.createItem([hdata], true, 'menu', true);
+                ul.insertBefore(hli, ul.children[0]);
+            }
+            ul.style.zIndex = this.element.style.zIndex;
+            wrapper.appendChild(ul);
+        }
+        else {
+            ul = this.element;
+        }
+        navIdx = this.getIndex(li ? li.textContent : null);
+        var items = li ? item.items : this.items;
+        var eventArgs = { element: ul, items: items, parentItem: item, event: e, cancel: false };
+        this.trigger('beforeOpen', eventArgs);
+        if (eventArgs.cancel) {
+            this.navIdx.pop();
+        }
+        else {
+            this.setPosition(li, ul, top, left);
+            this.toggleAnimation(ul);
+        }
+    };
+    ContextMenu.prototype.createItem = function (item, showIcon, moduleName, isHeader) {
+        if (isHeader === void 0) { isHeader = true; }
+        var listOpt = { showIcon: showIcon, moduleName: moduleName };
+        if (isHeader) {
+            listOpt.itemClass = HEADER;
+        }
+        var li = ListBase.createListItemFromJson(this.toRawObject(item), listOpt, 0, true);
+        return li[0];
+    };
+    ContextMenu.prototype.setPosition = function (li, ul, top, left) {
+        var px = 'px';
+        this.toggleVisiblity(ul);
+        if (ul === this.element) {
+            var collide = isCollide(ul, null, left, top);
+            if (collide.indexOf('right') > -1) {
+                left = left - ul.offsetWidth;
+            }
+            if (collide.indexOf('bottom') > -1) {
+                var offset = fit(ul, null, { X: false, Y: true }, { top: top, left: left });
+                top = offset.top;
+            }
+            collide = isCollide(ul, null, left, top);
+            if (collide.indexOf('left') > -1) {
+                var offset = fit(ul, null, { X: true, Y: false }, { top: top, left: left });
+                left = offset.left;
+            }
+        }
+        else {
+            if (Browser.isDevice) {
+                top = Number(this.element.style.top.replace(px, ''));
+                left = Number(this.element.style.left.replace(px, ''));
+            }
+            else {
+                var x = this.enableRtl ? 'left' : 'right';
+                var offset = calculatePosition(li, x, 'top');
+                top = offset.top;
+                left = offset.left;
+                var collide = isCollide(ul, null, this.enableRtl ? left - ul.offsetWidth : left, top);
+                var xCollision = collide.indexOf('left') > -1 || collide.indexOf('right') > -1;
+                if (xCollision) {
+                    offset = calculatePosition(li, this.enableRtl ? 'right' : 'left', 'top');
+                    left = offset.left;
+                }
+                if (this.enableRtl || xCollision) {
+                    left = (this.enableRtl && xCollision) ? left : left - ul.offsetWidth;
+                }
+                if (collide.indexOf('bottom') > -1) {
+                    offset = fit(ul, null, { X: false, Y: true }, { top: top, left: left });
+                    top = offset.top;
+                }
+            }
+        }
+        this.toggleVisiblity(ul, false);
+        ul.style.top = top + px;
+        ul.style.left = left + px;
+    };
+    ContextMenu.prototype.toggleVisiblity = function (ul, isVisible) {
+        if (isVisible === void 0) { isVisible = true; }
+        ul.style.visibility = isVisible ? 'hidden' : '';
+        ul.style.display = isVisible ? 'block' : 'none';
+    };
+    ContextMenu.prototype.createItems = function (items) {
+        var _this = this;
+        var showIcon = this.hasField(items, 'iconCss');
+        var listBaseOptions = {
+            showIcon: showIcon,
+            moduleName: 'menu',
+            itemCreating: function (args) {
+                args.curData.htmlAttributes = {
+                    role: 'menuitem',
+                    tabindex: '-1'
+                };
+                if (showIcon && !args.curData.iconCss) {
+                    args.curData.iconCss = ICONS + ' e-blankicon';
+                }
+            },
+            itemCreated: function (args) {
+                if (args.curData.separator) {
+                    args.item.classList.remove(ITEM);
+                    args.item.classList.add(SEPARATOR);
+                    args.item.removeAttribute('role');
+                }
+                if (args.curData.items && args.curData.items.length) {
+                    var span = createElement('span', { className: ICONS + ' ' + CARET });
+                    args.item.appendChild(span);
+                    args.item.setAttribute('aria-haspopup', 'true');
+                    args.item.setAttribute('aria-expanded', 'false');
+                    args.item.removeAttribute('role');
+                    args.item.classList.add('e-menu-caret-icon');
+                }
+                var eventArgs = { item: args.curData, element: args.item };
+                _this.trigger('beforeItemRender', eventArgs);
+            }
+        };
+        var ul = ListBase.createList(this.toRawObject(items.slice()), listBaseOptions, true);
+        ul.setAttribute('tabindex', '0');
+        return ul;
+    };
+    ContextMenu.prototype.toRawObject = function (items) {
+        var item;
+        var menuItems = [];
+        for (var i = 0, len = items.length; i < len; i++) {
+            item = items[i].properties;
+            menuItems.push(item);
+        }
+        return menuItems;
+    };
+    ContextMenu.prototype.moverHandler = function (e) {
+        var wrapper = this.getWrapper();
+        var trgt = e.target;
+        var cli = this.getLI(trgt);
+        if (cli && closest(cli, '.' + WRAPPER)) {
+            var fli = select('.' + FOCUSED, wrapper);
+            if (fli) {
+                fli.classList.remove(FOCUSED);
+            }
+            cli.classList.add(FOCUSED);
+            if (!this.showItemOnClick) {
+                this.clickHandler(e);
+            }
+        }
+    };
+    ContextMenu.prototype.hasField = function (items, field) {
+        for (var i = 0, len = items.length; i < len; i++) {
+            if (items[i][field]) {
+                return true;
+            }
+        }
+        return false;
+    };
+    ContextMenu.prototype.getWrapper = function () {
+        return closest(this.element, '.' + WRAPPER);
+    };
+    ContextMenu.prototype.clickHandler = function (e) {
+        if (this.isTapHold) {
+            this.isTapHold = false;
+        }
+        else {
+            var wrapper = this.getWrapper();
+            var trgt = e.target;
+            var cli = this.getLI(trgt);
+            var cliWrapper = cli ? closest(cli, '.' + WRAPPER) : null;
+            var isInstLI = cli && cliWrapper && wrapper.firstElementChild.id === cliWrapper.firstElementChild.id;
+            if (isInstLI && e.type === 'click' && !cli.classList.contains(HEADER)) {
+                this.setLISelected(cli);
+                var navIdx = this.getIndex(cli.textContent);
+                var item = this.getItem(navIdx);
+                var eventArgs = { element: cli, item: item };
+                this.trigger('select', eventArgs);
+            }
+            if (isInstLI && (e.type === 'mouseover' || Browser.isDevice || this.showItemOnClick)) {
+                var ul = void 0;
+                if (cli.classList.contains(HEADER)) {
+                    ul = wrapper.children[this.navIdx.length - 1];
+                    this.toggleAnimation(ul);
+                    var sli = this.getLIByClass(ul, SELECTED);
+                    if (sli) {
+                        sli.classList.remove(SELECTED);
+                    }
+                    detach(cli.parentNode);
+                    this.navIdx.pop();
+                }
+                else {
+                    if (!cli.classList.contains(SEPARATOR)) {
+                        var showSubMenu = true;
+                        var cul = cli.parentNode;
+                        var cliIdx = this.getIdx(cul, cli);
+                        if (!Browser.isDevice) {
+                            var culIdx = this.getIdx(wrapper, cul);
+                            if (this.navIdx[culIdx] === cliIdx) {
+                                showSubMenu = false;
+                            }
+                            if (culIdx !== this.navIdx.length && (e.type !== 'mouseover' || showSubMenu)) {
+                                var sli = this.getLIByClass(cul, SELECTED);
+                                if (sli) {
+                                    sli.classList.remove(SELECTED);
+                                }
+                                this.closeMenu(culIdx + 1, e);
+                            }
+                        }
+                        if (showSubMenu) {
+                            var idx = this.navIdx.concat(cliIdx);
+                            var item = this.getItem(idx);
+                            if (item.items.length) {
+                                if (e.type === 'mouseover') {
+                                    this.setLISelected(cli);
+                                }
+                                cli.setAttribute('aria-expanded', 'true');
+                                this.navIdx.push(cliIdx);
+                                this.openMenu(cli, item, null, null, e);
+                            }
+                            else {
+                                if (e.type !== 'mouseover') {
+                                    this.closeMenu(null, e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                if (trgt.tagName !== 'UL' || trgt.parentElement !== wrapper) {
+                    if (!cli || !cli.querySelector('.' + CARET)) {
+                        this.closeMenu(null, e);
+                    }
+                }
+            }
+        }
+    };
+    ContextMenu.prototype.setLISelected = function (li) {
+        var sli = this.getLIByClass(li.parentElement, SELECTED);
+        if (sli) {
+            sli.classList.remove(SELECTED);
+        }
+        li.classList.remove(FOCUSED);
+        li.classList.add(SELECTED);
+    };
+    ContextMenu.prototype.getLIByClass = function (ul, classname) {
+        for (var i = 0, len = ul.children.length; i < len; i++) {
+            if (ul.children[i].classList.contains(classname)) {
+                return ul.children[i];
+            }
+        }
+        return null;
+    };
+    ContextMenu.prototype.getItem = function (navIdx) {
+        navIdx = navIdx.slice();
+        var idx = navIdx.pop();
+        var items = this.getItems(navIdx);
+        return items[idx];
+    };
+    ContextMenu.prototype.getItems = function (navIdx) {
+        var items = this.items;
+        for (var i = 0; i < navIdx.length; i++) {
+            items = items[navIdx[i]].items;
+        }
+        return items;
+    };
+    ContextMenu.prototype.getIdx = function (ul, li, skipHdr) {
+        if (skipHdr === void 0) { skipHdr = true; }
+        var idx = Array.prototype.indexOf.call(ul.children, li);
+        if (skipHdr && ul.children[0].classList.contains(HEADER)) {
+            idx--;
+        }
+        return idx;
+    };
+    ContextMenu.prototype.getLI = function (elem) {
+        if (elem.tagName === 'LI') {
+            return elem;
+        }
+        return closest(elem, 'li');
+    };
+    /**
+     * Called internally if any of the property value changed
+     * @private
+     * @param {ContextMenuModel} newProp
+     * @param {ContextMenuModel} oldProp
+     * @returns void
+     */
+    ContextMenu.prototype.onPropertyChanged = function (newProp, oldProp) {
+        var wrapper = this.getWrapper();
+        for (var _i = 0, _a = Object.keys(newProp); _i < _a.length; _i++) {
+            var prop = _a[_i];
+            switch (prop) {
+                case 'cssClass':
+                    if (oldProp.cssClass) {
+                        wrapper.classList.remove(oldProp.cssClass);
+                    }
+                    if (newProp.cssClass) {
+                        wrapper.classList.add(newProp.cssClass);
+                    }
+                    break;
+                case 'enableRtl':
+                    wrapper.classList.toggle(RTL);
+                    break;
+                case 'filter':
+                    this.closeMenu();
+                    this.filter = newProp.filter;
+                    break;
+                case 'showItemOnClick':
+                    this.unWireEvents();
+                    this.showItemOnClick = newProp.showItemOnClick;
+                    this.wireEvents();
+                    break;
+                case 'target':
+                    this.unWireEvents();
+                    this.target = newProp.target;
+                    this.wireEvents();
+                    break;
+                case 'items':
+                    this.refresh();
+                    break;
+            }
+        }
+    };
+    /**
+     * Used to unwire the bind events.
+     * @private
+     */
+    ContextMenu.prototype.unWireEvents = function () {
+        var wrapper = this.getWrapper();
+        if (this.target) {
+            var target = void 0;
+            var touchModule = void 0;
+            var targetElems = selectAll(this.target);
+            for (var i = 0, len = targetElems.length; i < len; i++) {
+                target = targetElems[i];
+                if (Browser.isIos) {
+                    touchModule = getInstance(target, Touch);
+                    if (touchModule) {
+                        touchModule.destroy();
+                    }
+                }
+                else {
+                    EventHandler.remove(target, 'contextmenu', this.cmenuHandler);
+                }
+            }
+            if (target) {
+                for (var _i = 0, _a = this.getScrollableParents(target); _i < _a.length; _i++) {
+                    var parent_2 = _a[_i];
+                    EventHandler.remove(parent_2, 'scroll', this.scrollHandler);
+                }
+            }
+        }
+        if (!Browser.isDevice) {
+            EventHandler.remove(wrapper, 'mouseover', this.moverHandler);
+            EventHandler.remove(document, 'mousedown', this.mouseDownHandler);
+        }
+        EventHandler.remove(document, 'click', this.clickHandler);
+        var keyboardModule = getInstance(wrapper, KeyboardEvents);
+        if (keyboardModule) {
+            keyboardModule.destroy();
+        }
+    };
+    ContextMenu.prototype.toggleAnimation = function (ul, isMenuOpen) {
+        var _this = this;
+        if (isMenuOpen === void 0) { isMenuOpen = true; }
+        if (this.animationSettings.effect === 'None' || !isMenuOpen) {
+            this.end(ul, isMenuOpen);
+        }
+        else {
+            this.animation.animate(ul, {
+                name: this.animationSettings.effect,
+                duration: this.animationSettings.duration,
+                timingFunction: this.animationSettings.easing,
+                begin: function (options) {
+                    options.element.style.display = 'block';
+                    options.element.style.maxHeight = options.element.getBoundingClientRect().height + 'px';
+                },
+                end: function (options) {
+                    _this.end(options.element, isMenuOpen);
+                }
+            });
+        }
+    };
+    ContextMenu.prototype.end = function (ul, isMenuOpen) {
+        if (isMenuOpen) {
+            ul.style.display = 'block';
+            ul.style.maxHeight = '';
+            var item = this.navIdx.length ? this.getItem(this.navIdx) : null;
+            var eventArgs = { element: ul, parentItem: item, items: item ? item.items : this.items };
+            this.trigger('onOpen', eventArgs);
+            if (ul.querySelector('.' + FOCUSED)) {
+                ul.querySelector('.' + FOCUSED).focus();
+            }
+            else {
+                var ele = void 0;
+                ele = this.getWrapper().children[this.getIdx(this.getWrapper(), ul) - 1];
+                if (ele) {
+                    ele.querySelector('.' + SELECTED).focus();
+                }
+                else {
+                    this.element.focus();
+                }
+            }
+        }
+        else {
+            if (ul === this.element) {
+                var fli = this.getLIByClass(this.element, FOCUSED);
+                if (fli) {
+                    fli.classList.remove(FOCUSED);
+                }
+                var sli = this.getLIByClass(this.element, SELECTED);
+                if (sli) {
+                    sli.classList.remove(SELECTED);
+                }
+                ul.style.display = 'none';
+            }
+            else {
+                detach(ul);
+            }
+        }
+    };
+    /**
+     * Get the properties to be maintained in the persisted state.
+     * @returns string
+     */
+    ContextMenu.prototype.getPersistData = function () {
+        return '';
+    };
+    /**
+     * Get component name.
+     * @returns string
+     * @private
+     */
+    ContextMenu.prototype.getModuleName = function () {
+        return 'contextmenu';
+    };
+    ContextMenu.prototype.getIndex = function (data, items, navIdx, isCallBack) {
+        if (items === void 0) { items = this.items; }
+        if (navIdx === void 0) { navIdx = []; }
+        if (isCallBack === void 0) { isCallBack = false; }
+        var item;
+        for (var i = 0, len = items.length; i < len; i++) {
+            item = items[i];
+            if (item.text === data) {
+                navIdx.push(i);
+                break;
+            }
+            else if (item.items.length) {
+                navIdx = this.getIndex(data, item.items, navIdx, true);
+                if (navIdx[navIdx.length - 1] === -1) {
+                    if (i !== len - 1) {
+                        navIdx.pop();
+                    }
+                }
+                else {
+                    navIdx.unshift(i);
+                    break;
+                }
+            }
+            else {
+                if (i === len - 1) {
+                    navIdx.push(-1);
+                }
+            }
+        }
+        return (!isCallBack && navIdx[0] === -1) ? [] : navIdx;
+    };
+    /**
+     * This method is used to enable or disable the menu items in the ContextMenu based on the items and enable argument.
+     * @param items Text items that needs to be enabled/disabled.
+     * @param enable Set `true`/`false` to enable/disable list items.
+     * @returns void
+     */
+    ContextMenu.prototype.enableItems = function (items, enable) {
+        if (enable === void 0) { enable = true; }
+        var ul;
+        var idx;
+        var navIdx;
+        var disabled = DISABLED;
+        var wrapper = this.getWrapper();
+        for (var i = 0; i < items.length; i++) {
+            navIdx = this.getIndex(items[i]);
+            idx = navIdx.pop();
+            ul = wrapper.children[navIdx.length];
+            if (ul) {
+                if (enable) {
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.remove(disabled);
+                    }
+                    else {
+                        ul.children[idx].classList.remove(disabled);
+                    }
+                }
+                else {
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.add(disabled);
+                    }
+                    else {
+                        ul.children[idx].classList.add(disabled);
+                    }
+                }
+            }
+        }
+    };
+    /**
+     * This method is used to show the menu items in the ContextMenu based on the items text.
+     * @param items Text items that needs to be shown.
+     * @returns void
+     */
+    ContextMenu.prototype.showItems = function (items) {
+        this.showHideItems(items, false);
+    };
+    /**
+     * This method is used to hide the menu items in the ContextMenu based on the items text.
+     * @param items Text items that needs to be hidden.
+     * @returns void
+     */
+    ContextMenu.prototype.hideItems = function (items) {
+        this.showHideItems(items, true);
+    };
+    ContextMenu.prototype.showHideItems = function (items, ishide) {
+        var ul;
+        var idx;
+        var navIdx;
+        var wrapper = this.getWrapper();
+        for (var i = 0; i < items.length; i++) {
+            navIdx = this.getIndex(items[i]);
+            idx = navIdx.pop();
+            ul = wrapper.children[navIdx.length];
+            if (ul) {
+                if (ishide) {
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.add(HIDE);
+                    }
+                    else {
+                        ul.children[idx].classList.add(HIDE);
+                    }
+                }
+                else {
+                    if (Browser.isDevice && !ul.classList.contains('e-contextmenu')) {
+                        ul.children[idx + 1].classList.remove(HIDE);
+                    }
+                    else {
+                        ul.children[idx].classList.remove(HIDE);
+                    }
+                }
+            }
+        }
+    };
+    /**
+     * It is used to remove the menu items from the ContextMenu based on the items text.
+     * @param items Text items that needs to be removed.
+     * @returns void
+     */
+    ContextMenu.prototype.removeItems = function (items) {
+        var idx;
+        var navIdx;
+        var iitems;
+        for (var i = 0; i < items.length; i++) {
+            navIdx = this.getIndex(items[i]);
+            idx = navIdx.pop();
+            iitems = this.getItems(navIdx);
+            iitems.splice(idx, 1);
+            if (!navIdx.length) {
+                detach(this.element.children[idx]);
+            }
+        }
+    };
+    /**
+     * It is used to insert the menu items after the specified menu item text.
+     * @param items Items that needs to be inserted.
+     * @param text Text item after which the element to be inserted.
+     * @returns void
+     */
+    ContextMenu.prototype.insertAfter = function (items, text) {
+        this.insertItems(items, text);
+    };
+    /**
+     * It is used to insert the menu items before the specified menu item text.
+     * @param items Items that needs to be inserted.
+     * @param text Text item before which the element to be inserted.
+     * @returns void
+     */
+    ContextMenu.prototype.insertBefore = function (items, text) {
+        this.insertItems(items, text, false);
+    };
+    ContextMenu.prototype.insertItems = function (items, text, isAfter) {
+        if (isAfter === void 0) { isAfter = true; }
+        var li;
+        var idx;
+        var navIdx;
+        var iitems;
+        var menuitem;
+        var showIcon;
+        for (var i = 0; i < items.length; i++) {
+            navIdx = this.getIndex(text);
+            idx = navIdx.pop();
+            iitems = this.getItems(navIdx);
+            menuitem = new MenuItem(iitems[0], null, items[i], true);
+            iitems.splice(isAfter ? idx + 1 : idx, 0, menuitem);
+            if (!navIdx.length) {
+                idx = isAfter ? idx + 1 : idx;
+                showIcon = this.hasField(iitems, 'iconCss');
+                li = this.createItem([menuitem], showIcon, 'menu', false);
+                this.element.insertBefore(li, this.element.children[idx]);
+            }
+        }
+    };
+    ContextMenu.prototype.getZIndex = function () {
+        var index;
+        var position;
+        var props;
+        var zIndex = ['999'];
+        for (var i = 0, len = document.body.children.length; i < len; i++) {
+            props = document.defaultView.getComputedStyle(document.body.children[i]);
+            index = props.getPropertyValue('z-index');
+            position = props.getPropertyValue('position');
+            if (index !== 'auto' && position !== 'static') {
+                zIndex.push(index);
+            }
+        }
+        return (Math.max.apply(Math, zIndex) + 1).toString();
+    };
+    /**
+     * To destroy the widget.
+     * @returns void
+     */
+    ContextMenu.prototype.destroy = function () {
+        var _this = this;
+        var wrapper = this.getWrapper();
+        if (wrapper) {
+            _super.prototype.destroy.call(this);
+            this.unWireEvents();
+            this.closeMenu();
+            this.element.innerHTML = '';
+            ['top', 'left', 'display', 'z-index'].forEach(function (key) {
+                _this.element.style.removeProperty(key);
+            });
+            ['role', 'tabindex', 'class', 'style'].forEach(function (key) {
+                if (['class', 'style'].indexOf(key) === -1 || !_this.element.getAttribute(key)) {
+                    _this.element.removeAttribute(key);
+                }
+            });
+            wrapper.parentNode.insertBefore(this.element, wrapper);
+            detach(wrapper);
+        }
+    };
+    __decorate([
+        Property('')
+    ], ContextMenu.prototype, "cssClass", void 0);
+    __decorate([
+        Property('')
+    ], ContextMenu.prototype, "filter", void 0);
+    __decorate([
+        Property(false)
+    ], ContextMenu.prototype, "showItemOnClick", void 0);
+    __decorate([
+        Collection([], MenuItem)
+    ], ContextMenu.prototype, "items", void 0);
+    __decorate([
+        Property('')
+    ], ContextMenu.prototype, "target", void 0);
+    __decorate([
+        Property({ duration: 400, easing: 'ease', effect: 'SlideDown' })
+    ], ContextMenu.prototype, "animationSettings", void 0);
+    __decorate([
+        Event()
+    ], ContextMenu.prototype, "beforeItemRender", void 0);
+    __decorate([
+        Event()
+    ], ContextMenu.prototype, "beforeOpen", void 0);
+    __decorate([
+        Event()
+    ], ContextMenu.prototype, "onOpen", void 0);
+    __decorate([
+        Event()
+    ], ContextMenu.prototype, "beforeClose", void 0);
+    __decorate([
+        Event()
+    ], ContextMenu.prototype, "onClose", void 0);
+    __decorate([
+        Event()
+    ], ContextMenu.prototype, "select", void 0);
+    ContextMenu = __decorate([
+        NotifyPropertyChanges
+    ], ContextMenu);
+    return ContextMenu;
+}(Component));
+export { ContextMenu };
+/**
+ * Builder for ContextMenu.
+ * @private
+ */
+export var contextMenuBuilder = CreateBuilder(ContextMenu);
