@@ -1,7 +1,7 @@
 
 @include export-module('toolbar-icons') {
   /*! toolbar icons */
-  .e-toolbar {
+  #{&}.e-toolbar {
 
     .e-popup-down-icon::before {
       content: $tbar-popup-down-icon;

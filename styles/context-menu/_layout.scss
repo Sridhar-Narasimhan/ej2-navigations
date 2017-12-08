@@ -1,6 +1,6 @@
 @include export-module('contextmenu-layout') {
   /*! contextmenu layout */
-  .e-contextmenu-wrapper {
+  #{&}.e-contextmenu-wrapper {
     @at-root {
       & ul {
         border: $ul-border;
@@ -101,61 +101,58 @@
     }
   }
 
-  &.e-rtl {
-    &.e-contextmenu-wrapper {
-      & .e-menu-item {
-        & .e-menu-icon {
-          float: right;
-          margin-left: $icon-margin-right;
-          margin-right: 0;
-        }
+  &.e-rtl #{&}.e-contextmenu-wrapper,
+  &.e-rtl#{&}.e-contextmenu-wrapper {
+    & .e-menu-item {
+      & .e-menu-icon {
+        float: right;
+        margin-left: $icon-margin-right;
+        margin-right: 0;
+      }
 
-        & .e-caret {
-          float: left;
-          margin-left: 0;
+      & .e-caret {
+        float: left;
+        margin-left: 0;
 
-          &::before {
-            content: $caret-icon-rtl;
-         }
+        &::before {
+          content: $caret-icon-rtl;
         }
+      }
 
-        &.e-menu-caret-icon {
-          padding-left: $caret-li-padding;
-          padding-right: $li-right-padding;
-        }
+      &.e-menu-caret-icon {
+        padding-left: $caret-li-padding;
+        padding-right: $li-right-padding;
       }
     }
   }
 
-  .e-bigger {
-    & .e-contextmenu-wrapper,
-    &.e-contextmenu-wrapper {
-      & ul {
-        box-shadow: $parent-ul-box-shadow;
-        font-size: $bigger-font-size;
-        max-width: $bigger-max-width;
-        min-width: $bigger-min-width;
-        padding: $ul-bigger-padding;
+  .e-bigger #{&}.e-contextmenu-wrapper,
+  .e-bigger#{&}.e-contextmenu-wrapper {
+    & ul {
+      box-shadow: $parent-ul-box-shadow;
+      font-size: $bigger-font-size;
+      max-width: $bigger-max-width;
+      min-width: $bigger-min-width;
+      padding: $ul-bigger-padding;
 
-        & .e-menu-item  {
-          height: $bigger-li-height;
-          line-height: $bigger-li-height;
-        }
+      & .e-menu-item  {
+        height: $bigger-li-height;
+        line-height: $bigger-li-height;
+      }
 
-        & .e-menu-icon {
-          font-size: $menu-icon-bigger-font-size;
-          line-height: $bigger-li-height;
-        }
+      & .e-menu-icon {
+        font-size: $menu-icon-bigger-font-size;
+        line-height: $bigger-li-height;
+      }
 
-        & .e-caret {
-          font-size: $bigger-caret-font-size;
-          line-height: $bigger-li-height;
-        }
+      & .e-caret {
+        font-size: $bigger-caret-font-size;
+        line-height: $bigger-li-height;
+      }
 
-        & .e-blankicon {
-          height: $bigger-li-height;
-          width: $menu-icon-bigger-font-size;
-        }
+      & .e-blankicon {
+        height: $bigger-li-height;
+        width: $menu-icon-bigger-font-size;
       }
     }
   }

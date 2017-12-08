@@ -1,5 +1,3 @@
-[![coverage](http://ej2.syncfusion.com/coverage/ej2-navigations/coverage.svg)](http://ej2.syncfusion.com/coverage/ej2-navigations)
-
 # Overview
 
 A package of Essential JS 2 navigation components. It comes with full support and is available under commercial and community licenses – please visit www.syncfusion.com to get started.
@@ -11,6 +9,10 @@ A package of Essential JS 2 navigation components. It comes with full support an
 * [Tab Demos](http://ej2.syncfusion.com/demos/#/material/tab/default.html)
 * [ContextMenu Demos](http://ej2.syncfusion.com/demos/#/material/context-menu/context-menu.html)
 * [TreeView](http://ej2.syncfusion.com/demos/#/material/treeview/default.html)
+
+## Changelog
+
+Check the changelog [here](https://github.com/syncfusion/ej2-navigations/blob/master/CHANGELOG.md)
 
 ## Installing
 
@@ -35,6 +37,3 @@ To test the source files, use the below command
 ```
 npm run test
 ```
-## Changelog
-
-Check the changelog [here](https://github.com/syncfusion/ej2-navigations/blob/master/CHANGELOG.md)

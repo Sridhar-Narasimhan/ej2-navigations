@@ -1,8 +1,8 @@
 @include export-module('tab-layout') {
   /*! tab layout */
 
-  .e-bigger .e-tab,
-  .e-tab.e-bigger {
+  .e-bigger #{&}.e-tab,
+  #{&}.e-tab.e-bigger {
 
     .e-tab-header {
       height: $tab-big-height;
@@ -1292,13 +1292,12 @@
     }
   }
 
-  .e-tab {
+  #{&}.e-tab {
 
     .e-tab-header {
       height: $tab-nrml-height;
       min-height: $tab-nrml-height;
       user-select: text;
-      z-index: 100;
 
       @media screen and (max-width: 480px) {
         height: $tab-big-height;

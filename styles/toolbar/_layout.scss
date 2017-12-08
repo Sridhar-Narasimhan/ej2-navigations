@@ -1,7 +1,7 @@
 @include export-module('toolbar-layout') {
   /*! toolbar layout */
-  .e-bigger .e-toolbar,
-  .e-toolbar.e-bigger {
+  .e-bigger #{&}.e-toolbar,
+  #{&}.e-toolbar.e-bigger {
     height: $tbar-bgr-size;
     min-height: $tbar-bgr-size;
 
@@ -219,7 +219,7 @@
      }
   }
 
-  .e-toolbar {
+  #{&}.e-toolbar {
     border-radius: $tbar-radius;
     display: block;
     height: $tbar-nrml-size;

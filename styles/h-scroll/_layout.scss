@@ -1,8 +1,8 @@
 @include export-module('h-scroll') {
   /*! h-scroll layout */
 
-  .e-bigger .e-hscroll,
-  .e-hscroll.e-bigger {
+  .e-bigger #{&}.e-hscroll,
+  #{&}.e-hscroll.e-bigger {
     min-height: $hscroll-nav-bgr-minheight;
 
     &:not(.e-scroll-device) {
@@ -20,7 +20,7 @@
 
   }
 
-  .e-hscroll {
+  #{&}.e-hscroll {
     display: block;
     position: relative;
     width: inherit;

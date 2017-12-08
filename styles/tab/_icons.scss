@@ -1,6 +1,6 @@
 @include export-module('tab-icons') {
   /*! tab icons */
-  .e-tab {
+  #{&}.e-tab {
 
     .e-tab-header {
 

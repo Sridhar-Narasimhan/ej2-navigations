@@ -1,6 +1,6 @@
 @include export-module('hscroll-icons') {
   /*! hscroll icons */
-  .e-hscroll {
+  #{&}.e-hscroll {
 
     &.e-rtl {
 
