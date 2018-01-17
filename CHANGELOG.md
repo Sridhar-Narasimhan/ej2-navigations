@@ -2,6 +2,38 @@
 
 ## [Unreleased]
 
+## 15.4.23-preview (2017-12-27)
+
+### Common
+
+#### New Features
+
+- Added typing file for ES5 global scripts (dist/global/index.d.ts)
+
+#### Breaking Changes
+
+- Modified the module bundle file name for ES6 bundling
+
+### Toolbar
+
+#### Bug Fixes
+
+- Issue with changing separate items property has been fixed.
+
+- The Toolbar Popup and scrollable creation issue in non visible element is fixed.
+
+- Dynamic Items updating with toolbar alignment is fixed.
+
+- Removed unwanted space available in the Toolbar Popup mode initial time.
+
+## 15.4.22-preview (2017-12-14)
+
+### ContextMenu
+
+#### Bug Fixes
+
+- Destroy method issue in angular is fixed.
+
 ## 15.4.21-preview (2017-12-08)
 
 ### Tab
