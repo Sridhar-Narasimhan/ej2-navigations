@@ -4,6 +4,7 @@
 import { ScrollEventArgs, TouchEventArgs, Browser } from '@syncfusion/ej2-base';
 import { createElement, isVisible, setStyleAttribute } from '@syncfusion/ej2-base';
 import { Toolbar, ClickEventArgs } from '../src/toolbar/toolbar';
+import {  ItemModel } from '../src/toolbar/toolbar-model';
 import { HScroll } from '../src/common/h-scroll';
 import { Button } from '@syncfusion/ej2-buttons';
 import '../node_modules/es6-promise/dist/es6-promise';
@@ -12,7 +13,7 @@ let ieUa: string = 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; .NET
     'Tablet PC 2.0; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; rv:11.0) like Gecko';
 
 describe('Toolbar Control', () => {
-    let css: string = ".e-toolbar { height: auto } .e-separator { border-right:1px solid; height: 15px; margin: 7.5px 3px} .e-toolbar .e-toolbar-items .e-toolbar-item.e-separator + .e-separator { display:none } .e-toolbar-items { display: inline-block; } .e-toolbar-items.e-hscroll { width:inherit; }  .e-toolbar .e-fix-width {width : 0px !important; } .e-toolbar .e-tbarpop  { position: fixed; } .e-toolbar-items .e-toolbar-item, .e-toolbar-left, .e-toolbar-center, .e-toolbar-right { display: inline-block; } .e-toolbar .e-hor-nav { float:right; width:30px; }  .e-toolbar .e-toolbar-pop { position: fixed;} .e-popup-open { display:block } .e-popup-close { display: none } button {font-family:Arial; font-size: 14px; padding: 1px 6px} ";
+    let css: string = ".e-toolbar { height: auto;white-space: nowrap; display:block;position:relative } .e-separator { border-right:1px solid; height: 15px; margin: 7.5px 3px} .e-toolbar .e-toolbar-items .e-toolbar-item.e-separator + .e-separator { display:none } .e-toolbar-items { display: inline-block; } .e-toolbar-items.e-hscroll { width:inherit; }  .e-toolbar .e-fix-width {width : 0px !important; } .e-toolbar .e-tbarpop  { position: fixed; } .e-toolbar-items .e-toolbar-item, .e-toolbar-left, .e-toolbar-center, .e-toolbar-right { display: inline-block; } .e-toolbar .e-hor-nav { float:right; width:30px; }  .e-toolbar .e-toolbar-pop { position: fixed;} .e-popup-open { display:block } .e-popup-close { display: none } button {font-family:Arial; font-size: 14px; padding: 1px 6px} ";
     let style: HTMLStyleElement = document.createElement('style'); style.type = 'text/css';
     let styleNode: Node = style.appendChild(document.createTextNode(css));
     document.getElementsByTagName('head')[0].appendChild(style);
@@ -74,6 +75,7 @@ describe('Toolbar Control', () => {
             expect(toolbar.items[0].template).toEqual('');
             expect(toolbar.items[0].tooltipText).toEqual('');
             expect(toolbar.items[0].align).toEqual('left');
+            expect(toolbar.items[0].showAlwaysInPopup).toBe(false);
         });
     });
 
@@ -976,6 +978,10 @@ describe('Toolbar Control', () => {
             }); toolbar.appendTo('#ej2Toolbar');
             expect(document.querySelectorAll('#Template').length).toBe(1);
             expect(element.querySelector('#Template').parentElement.classList.contains('e-toolbar-item')).toEqual(true);
+            expect(toolbar.items[0].template !== '#Template').toBe(true);
+            toolbar.refresh();
+            expect(element.querySelector('#Template').parentElement.classList.contains('e-toolbar-item')).toEqual(true);
+            expect(element.querySelector('#Template').parentElement.classList.contains('e-template')).toEqual(true);
         });
         it('Template text given as string', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
@@ -3635,6 +3641,19 @@ describe('Toolbar Control', () => {
                 { type: 'Button', text: 'Underline1' }, { type: 'Button', text: 'Bold1' }
             ], 7);
             expect(toolbar.items.length === 7).toEqual(false);
+            toolbar.width = 'auto';
+            toolbar.dataBind();
+            expect(toolbar.element.querySelector('.e-toolbar-items').childElementCount).toBe(5);
+            toolbar.addItems([
+                { type: 'Button', text: 'Underline6', align: 'center' }
+            ], 1);
+            expect(toolbar.items.length).toBe(6);
+            expect(toolbar.element.querySelector('.e-toolbar-items').childElementCount).toBe(3);
+            let leftItem: any = element.querySelector('.e-toolbar-items .e-toolbar-left');
+            let centerItem: any = element.querySelector('.e-toolbar-items .e-toolbar-center');
+            let rightItem: any = element.querySelector('.e-toolbar-items .e-toolbar-right');
+            expect(centerItem.childElementCount).toBe(1);
+            expect(leftItem.childElementCount).toBe(5);
         });
         it('addItem method without passing index', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
@@ -4919,6 +4938,45 @@ describe('Toolbar Control', () => {
             expect(scrollAlignEle[1].querySelectorAll(".e-tbar-btn-text")[1].textContent).toEqual("ChartButton");
             expect(scrollAlignEle[1].querySelectorAll(".e-tbar-btn-text")[0].textContent).toEqual("UnderlineBtn");
             expect(scrollAlignEle[2].querySelectorAll(".e-tbar-btn-text")[0].textContent).toEqual("Next_Prev_Btn");
+        });
+        it("Without align type with dynamic items updating in toolbar testing", () => {
+            toolbar = new Toolbar({
+                width: 250,
+                overflowMode: "Popup",
+                items: [
+                    {
+                        type: "Button", text: "Hii", overflow: "Show",
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: "Show",
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: "Show", align: "center"
+                    },
+                    {
+                        type: "Button", text: "ChartButton", overflow: "Show", align: "center"
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: "Hide", align: "right"
+                    }
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.element.children[2].childElementCount).toBe(3);
+            let items: ItemModel[] = [
+                {
+                    type: "Button", text: "HHii", overflow: "Show",
+                },
+                {
+                    type: "Button", text: "New CChart Button", overflow: "Show",
+                },
+                {
+                    type: "Button", text: "UUnderlineBtn", overflow: "Show"
+                }]
+            toolbar.items = items;
+            toolbar.dataBind();
+            expect(toolbar.element.children[0].childElementCount).toBe(2);
+            expect(toolbar.element.children[0].classList.contains('e-tbar-pos')).toBe(false);
+            expect(toolbar.element.children[2].childElementCount).toBe(1);
         });
         it("Without align type toolbar testing", () => {
             toolbar = new Toolbar({
@@ -6437,6 +6495,586 @@ describe('Toolbar Control', () => {
             };
             toolbar.keyActionHandler(keyEventArgs);
             expect(document.activeElement.id === 'e-itemTemplate').toBe(true);
+        });
+    });
+
+    describe('margin calculation without element visible case in both popup and scrollable', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('margin calculation without element visible case in  scrollable mode', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            element.style.display = 'none';
+            toolbar = new Toolbar({
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', template: ' <div id ="e-itemTemplate" tabindex="0" >Hii</div>'
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', align: 'center'
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show', htmlAttributes: {'style': 'margin-right:15px ' }
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelectorAll('.e-hscroll').length).toBe(0);
+            expect(element.querySelectorAll('.e-scroll-nav').length).toBe(0);
+        });
+        it('margin calculation without element visible case in  Popup mode', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            element.style.display = 'none';
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', template: ' <div id ="e-itemTemplate" tabindex="0" >Hii</div>'
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', align: 'center'
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show', htmlAttributes: {'style': 'margin-right:15px ' }
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelectorAll('.e-popup').length).toBe(0);
+            expect(element.querySelectorAll('.e-hor-nav').length).toBe(0);
+        });
+    });
+    describe('Popup Priority preference feature testing', () => {
+        let toolbar: Toolbar;
+        let keyEventArgs: any;
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('showAlwaysInPopup property testing', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    }
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.items[0].showAlwaysInPopup).toBe(false);
+        });
+        it('showAlwaysInPopup property testing with Popup mode', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", showAlwaysInPopup: true
+                    }
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.items[0].showAlwaysInPopup).toBe(true);
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(1);
+        });
+        it('showAlwaysInPopup property testing with Popup mode with Toolbar priority', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide',
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.items[0].showAlwaysInPopup).toBe(true);
+            expect(element.querySelectorAll('.e-popup').length).toBe(0);
+        });
+        it('showAlwaysInPopup property testing with Popup mode with Popup priority', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.items[0].showAlwaysInPopup).toBe(true);
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(2);
+        });
+        it('showAlwaysInPopup property testing with Popup mode with Popup priority', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(toolbar.items[0].showAlwaysInPopup).toBe(true);
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(2);
+        });
+        it('showAlwaysInPopup property testing with Popup mode with Popup priority', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            let toolbarObj: any = new Toolbar({
+                overflowMode: 'Popup',
+                width: 150 ,
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show', showAlwaysInPopup: true
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(4);
+            toolbarObj.width = 400;
+            toolbarObj.dataBind();
+            toolbarObj.refreshOverflow();
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(2);
+            toolbarObj.width = 'auto';
+            toolbarObj.dataBind();
+            toolbarObj.refreshOverflow();
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(2);
+        });
+        it('showAlwaysInPopup property testing with Popup mode with Popup priority', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            let toolbarObj: any = new Toolbar({
+                overflowMode: 'Popup',
+                width: 150 ,
+                items: [
+                    {
+                        type: "Button", text: "GridBtn"
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', align: 'right', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show'
+                    },
+                ],
+            }, "#ej2Toolbar");
+
+        });
+        it('showAlwaysInPopup property testing with Popup mode with align items', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            let toolbarObj: any = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn"
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', align: 'right', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show'
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(2);
+            expect((<HTMLElement>element.querySelectorAll('.e-popup .e-tbar-btn')[1].firstElementChild).innerText).toBe('Next_Prev_Btn');
+            expect((<HTMLElement>element.querySelectorAll('.e-popup .e-tbar-btn')[0].firstElementChild).innerText).toBe('New Chart Button');
+            expect(element.querySelectorAll('.e-toolbar-left').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-center').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-right').length).toBe(0);
+            toolbarObj.items[1].showAlwaysInPopup = false;
+            toolbarObj.dataBind();
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(1);
+            expect((<HTMLElement>element.querySelectorAll('.e-popup .e-tbar-btn')[0].firstElementChild).innerText).toBe('Next_Prev_Btn');
+            expect(element.querySelectorAll('.e-toolbar-left').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-center').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-right').length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.lefts.length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.centers.length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.rights.length).toBe(0);
+            toolbarObj.items[2].showAlwaysInPopup = false;
+            toolbarObj.dataBind();
+            expect(element.querySelectorAll('.e-popup').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-left').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-center').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-right').length).toBe(1);
+            expect((<HTMLElement>element.querySelectorAll('.e-toolbar-right .e-tbar-btn')[0].firstElementChild).innerText).toBe('Next_Prev_Btn');
+            expect(toolbarObj.tbarAlgEle.lefts.length).toBe(4);
+            expect(toolbarObj.tbarAlgEle.centers.length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.rights.length).toBe(1);
+            toolbarObj.items[2].showAlwaysInPopup = true;
+            toolbarObj.dataBind();
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelector('.e-popup').childElementCount).toBe(1);
+            expect((<HTMLElement>element.querySelectorAll('.e-popup .e-tbar-btn')[0].firstElementChild).innerText).toBe('Next_Prev_Btn');
+            expect(element.querySelectorAll('.e-toolbar-left').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-center').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-right').length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.lefts.length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.centers.length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.rights.length).toBe(0);
+            toolbarObj.items[2].overflow = 'Show';
+            toolbarObj.dataBind();
+            expect(element.querySelectorAll('.e-popup').length).toBe(0);
+            expect(element.querySelectorAll('.e-toolbar-left').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-center').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-right').length).toBe(1);
+            expect((<HTMLElement>element.querySelectorAll('.e-toolbar-right .e-tbar-btn')[0].firstElementChild).innerText).toBe('Next_Prev_Btn');
+            expect(toolbarObj.tbarAlgEle.lefts.length).toBe(4);
+            expect(toolbarObj.tbarAlgEle.centers.length).toBe(0);
+            expect(toolbarObj.tbarAlgEle.rights.length).toBe(1);
+        });
+        it('showAlwaysInPopup property testing with Popup mode, align items and private properties testing', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            let toolbarObj: any = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn"
+                    },
+                    {
+                        type: "Button", text: "New Chart Button",align: 'center',
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn", overflow: 'Hide', align: 'right', showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show', align: 'right',
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show'
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelectorAll('.e-popup').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-left').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-center').length).toBe(1);
+            expect(element.querySelectorAll('.e-toolbar-right').length).toBe(1);
+            expect((<HTMLElement>element.querySelectorAll('.e-toolbar-right .e-tbar-btn')[0].firstElementChild).innerText).toBe('New RibbonBtn');
+            expect(toolbarObj.tbarAlgEle.lefts.length).toBe(2);
+            expect(toolbarObj.tbarAlgEle.centers.length).toBe(1);
+            expect(toolbarObj.tbarAlgEle.rights.length).toBe(1);
+            expect((<HTMLElement>element.querySelectorAll('.e-popup .e-tbar-btn')[0].firstElementChild).innerText).toBe('Next_Prev_Btn');
+        });
+        it('showAlwaysInPopup property testing with Popup mode with separator check', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            let toolbarObj: any = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "New Chart Button", overflow: 'Hide'
+                    },
+                    {
+                        type: "Separator", showAlwaysInPopup: true
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn", overflow: 'Show'
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn", overflow: 'Show'
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelectorAll('.e-popup').length).toBe(0);
+        });
+    });
+    describe('Separate items property chaning with onPropertyChange.', () => {
+        let toolbar: any;
+        let keyEventArgs: any;
+        beforeEach((): void => {
+            toolbar = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Toolbar' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (toolbar) {
+                toolbar.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Items "Text, prefixIcon and suffixIcon property changing in onPropertyChange Testing  ', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                items: [
+                    {
+                        type: "Button", text: "GridBtn"
+                    },
+                    {
+                        type: "Button", text: "New Chart Button"
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn"
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn"
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn"
+                    },
+                ],
+            }, "#ej2Toolbar");
+            let tbarBtns: any = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[1].firstElementChild.innerText).toBe('New Chart Button');
+            toolbar.items[1].text = '2ndButton';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[1].firstElementChild.innerText).toBe('2ndButton');
+            expect(toolbar.tbarEle[1].firstElementChild.firstElementChild.innerText).toBe('2ndButton');
+            expect(tbarBtns[2].firstElementChild.innerText).toBe('Next_Prev_Btn');
+            expect(toolbar.tbarEle[1] === tbarBtns[1].parentElement).toBe(true);
+            toolbar.items[2].text = '3rdButton';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[2].firstElementChild.innerText).toBe('3rdButton');
+            expect(toolbar.tbarEle[2].firstElementChild.firstElementChild.innerText).toBe('3rdButton');
+            expect(toolbar.tbarEle[2] === tbarBtns[2].parentElement).toBe(true);
+            toolbar.items[2].prefixIcon = 'e-prefix';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[2].childElementCount).toBe(2);
+            expect(tbarBtns[2].firstElementChild.classList.contains('e-prefix')).toBe(true);
+            expect(toolbar.tbarEle[2].firstElementChild.childElementCount).toBe(2);
+            expect(toolbar.tbarEle[2].firstElementChild.firstElementChild.classList.contains('e-prefix')).toBe(true);
+            expect(toolbar.tbarEle[2] === tbarBtns[2].parentElement).toBe(true);
+            toolbar.items[3].suffixIcon = 'e-suffix';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[3].childElementCount).toBe(2);
+            expect(tbarBtns[3].children[1].classList.contains('e-suffix')).toBe(true);
+            expect(toolbar.tbarEle[3].firstElementChild.childElementCount).toBe(2);
+            expect(toolbar.tbarEle[3].firstElementChild.children[1].classList.contains('e-suffix')).toBe(true);
+            expect(toolbar.tbarEle[3] === tbarBtns[3].parentElement).toBe(true);
+            toolbar.items[4].prefixIcon = 'e-prefix';
+            toolbar.items[4].suffixIcon = 'e-suffix';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[4].childElementCount).toBe(2);
+            expect(tbarBtns[4].firstElementChild.classList.contains('e-prefix')).toBe(true);
+            expect(toolbar.tbarEle[4].firstElementChild.childElementCount).toBe(2);
+            expect(toolbar.tbarEle[4].firstElementChild.firstElementChild.classList.contains('e-prefix')).toBe(true);
+            expect(toolbar.tbarEle[4] === tbarBtns[4].parentElement).toBe(true);
+            toolbar.items[0].tooltipText = '1st_toolbarItem';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[0].parentElement.getAttribute('title')).toBe('1st_toolbarItem');
+            expect(toolbar.tbarEle[0].getAttribute('title')).toBe('1st_toolbarItem');
+            expect(toolbar.tbarEle[0] === tbarBtns[0].parentElement).toBe(true);
+            toolbar.items[1].type = 'Separator';
+            toolbar.items[2].id = 'tbarItem'
+            toolbar.items[1].htmlAttributes =  { 'style': "color:red" };
+            toolbar.dataBind();
+            let separator:any = element.querySelectorAll('.e-toolbar-items .e-separator');
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
+            expect(separator.length).toBe(1);
+            expect(separator[0].style.color).toBe('red');
+            expect(tbarBtns[1].classList.contains('e-separator')).toBe(true);
+            expect(toolbar.tbarEle[1].classList.contains('e-separator')).toBe(true);
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(toolbar.tbarEle[2].firstElementChild.getAttribute('id')).toBe('tbarItem');
+            expect(toolbar.tbarEle[2] === tbarBtns[1].parentElement).toBe(true);
+            toolbar.items[2].template = '<div>hi</div>';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
+            expect(tbarBtns[2].firstElementChild.innerText).toBe('hi');
+            expect(tbarBtns[2].classList.contains('e-template')).toBe(true);
+            expect(toolbar.tbarEle[2] === tbarBtns[2]).toBe(true);
+            toolbar.items[0].id = 'newBtnId';
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[0].id).toBe('newBtnId');
+            toolbar.items[0].width = 50;
+            toolbar.dataBind();
+            tbarBtns = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(tbarBtns[0].style.width).toBe('50px');
+        });
+        it('Items "Text, prefixIcon and suffixIcon property changing in onPropertyChange Testing  ', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                items: [
+                    {
+                        type: "Button", text: "GridBtn"
+                    },
+                    {
+                        type: "Button", text: "New Chart Button"
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn"
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn"
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn"
+                    },
+                ],
+            }, "#ej2Toolbar");
+            expect(element.querySelector('.e-toolbar-items').childElementCount).toBe(5);
+            toolbar.items[2].align = 'center';
+            toolbar.dataBind();
+            expect(element.querySelector('.e-toolbar-items').childElementCount).toBe(3);
+            let tbarItem: any = element.querySelectorAll('.e-toolbar-items .e-toolbar-item');
+            let leftItem: any = element.querySelector('.e-toolbar-items .e-toolbar-left');
+            let centerItem: any = element.querySelector('.e-toolbar-items .e-toolbar-center');
+            let rightItem: any = element.querySelector('.e-toolbar-items .e-toolbar-right');
+            expect(centerItem.childElementCount).toBe(1);
+            expect(leftItem.childElementCount).toBe(4);
+            expect(toolbar.tbarAlgEle.lefts.length).toBe(4)
+            expect(toolbar.tbarAlgEle.centers.length).toBe(1)
+            expect(centerItem.querySelectorAll('.e-tbar-btn')[0].firstElementChild.innerText).toBe('Next_Prev_Btn');
+            toolbar.items[2].align = 'right';
+            toolbar.dataBind();
+            leftItem = element.querySelector('.e-toolbar-items .e-toolbar-left');
+            centerItem = element.querySelector('.e-toolbar-items .e-toolbar-center');
+            rightItem = element.querySelector('.e-toolbar-items .e-toolbar-right');
+            expect(toolbar.tbarAlgEle.lefts.length).toBe(4);
+            expect(toolbar.tbarAlgEle.centers.length).toBe(0);
+            expect(toolbar.tbarAlgEle.rights.length).toBe(1);
+            expect(centerItem.querySelectorAll('.e-tbar-btn').length).toBe(0);
+            expect(rightItem.querySelectorAll('.e-tbar-btn')[0].firstElementChild.innerText).toBe('Next_Prev_Btn');
+            toolbar.items[2].align = 'left';
+            toolbar.dataBind();
+            expect(element.querySelector('.e-toolbar-items').childElementCount).toBe(5);
+        });
+        it('Items "Text, prefixIcon and suffixIcon property changing in onPropertyChange Testing  ', () => {
+            let element: HTMLElement = document.getElementById("ej2Toolbar");
+            toolbar = new Toolbar({
+                overflowMode: 'Popup',
+                items: [
+                    {
+                        type: "Button", text: "GridBtn"
+                    },
+                    {
+                        type: "Button", text: "New Chart Button"
+                    },
+                    {
+                        type: "Button", text: "Next_Prev_Btn"
+                    },
+                    {
+                        type: "Button", text: "New RibbonBtn"
+                    },
+                    {
+                        type: "Button", text: "UnderlineBtn"
+                    },
+                ],
+            }, "#ej2Toolbar");
+            let popupCheck: any = element.querySelectorAll('.e-popup');
+            expect(popupCheck.length).toBe(0);
+            toolbar.items[2].showAlwaysInPopup = true;
+            toolbar.dataBind();
+            popupCheck = element.querySelectorAll('.e-popup');
+            expect(popupCheck.length).toBe(1);
+            expect(toolbar.tbarEle[2] === popupCheck[0].children[0]).toBe(true);
+            let popupChildCount: any = element.querySelector('.e-popup').childElementCount;
+            expect(popupChildCount).toBe(1);
+            toolbar.items[2].overflow = 'Hide';
+            toolbar.dataBind();
+            popupCheck = element.querySelectorAll('.e-popup');
+            expect(popupCheck.length).toBe(1);
+            popupChildCount = element.querySelector('.e-popup').childElementCount;
+            expect(popupChildCount).toBe(1);
+            expect(toolbar.tbarEle[2] === popupCheck[0].children[0]).toBe(true);
+            toolbar.items[2].overflow = 'Show';
+            toolbar.dataBind();
+            popupCheck = element.querySelectorAll('.e-popup');
+            expect(popupCheck.length).toBe(0);
+            let tbarBtns: any = element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(toolbar.tbarEle[2] === tbarBtns[2].parentElement).toBe(true);
+            toolbar.items[2].overflow = 'Hide';
+            toolbar.dataBind();
+            popupCheck = element.querySelectorAll('.e-popup');
+            expect(popupCheck.length).toBe(1);
+            popupChildCount = element.querySelector('.e-popup').childElementCount;
+            expect(popupChildCount).toBe(1);
+            expect(toolbar.tbarEle[2] === popupCheck[0].children[0]).toBe(true);
+            toolbar.items[2].showAlwaysInPopup = false;
+            toolbar.dataBind();
+            popupCheck = element.querySelectorAll('.e-popup');
+            expect(popupCheck.length).toBe(0);
+            tbarBtns= element.querySelectorAll('.e-toolbar-items .e-tbar-btn');
+            expect(toolbar.tbarEle[2] === tbarBtns[2].parentElement).toBe(true);
         });
     });
 });

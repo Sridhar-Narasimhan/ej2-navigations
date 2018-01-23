@@ -12,7 +12,7 @@ $ripple-bigger-small-height: 40px;
 $ripple-bigger-small-width: 40px;
 
 // sass-lint:disable no-vendor-prefixes
-.e-treeview {
+#{&}.e-treeview {
 
   .e-list-item {
 

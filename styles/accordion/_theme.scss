@@ -1,14 +1,10 @@
-@include export-module('accordion-theme') {
+﻿@include export-module('accordion-theme') {
   /*! accordion theme */
   // sass-lint:disable no-vendor-prefixes
   #{&}.e-accordion {
     -webkit-tap-highlight-color: $acrdn-tab-highlight-color;
     background: $acrdn-bg-color;
     border: $acrdn-border-size $acrdn-border-type $acrdn-default-border;
-
-    .e-active {
-      background: $acrdn-active-bg;
-    }
 
     .e-acrdn-item {
       @if $skin-name == 'fabric' {
@@ -79,12 +75,12 @@
           border: $acrdn-border-size solid $acrdn-default-border;
         }
 
-        .e-acrdn-panel .e-content {
+        .e-acrdn-panel .e-acrdn-content {
           color: $acrdn-content-color;
         }
 
         @if $skin-name == 'material' {
-          .e-acrdn-panel .e-content .e-content-icon {
+          .e-acrdn-panel .e-acrdn-content .e-content-icon {
             color: $acrdn-icon-color;
         }
       }
@@ -206,8 +202,9 @@
          }
 
         > .e-acrdn-panel {
+          background: $acrdn-active-bg;
 
-          .e-content {
+          .e-acrdn-content {
             color: $acrdn-content-color;
           }
 

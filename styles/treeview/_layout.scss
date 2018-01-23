@@ -1,4 +1,4 @@
-// sass-lint:disable no-vendor-prefixes
+﻿// sass-lint:disable no-vendor-prefixes
 @mixin user-select {
   -moz-user-select: none;
   -ms-user-select: none;
@@ -54,8 +54,8 @@
     }
   }
 
-  .e-bigger .e-treeview,
-  .e-treeview.e-bigger {
+  .e-bigger #{&}.e-treeview,
+  #{&}.e-treeview.e-bigger {
 
     .e-fullrow {
       height: $treeview-big-item-height;
@@ -149,7 +149,7 @@
     }
   }
 
-  .e-treeview {
+  #{&}.e-treeview {
     display: block;
     overflow: hidden;
     position: relative;

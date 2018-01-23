@@ -1,11 +1,10 @@
 import { Component, EventHandler, Property, Event, EmitType, AnimationModel, KeyboardEvents, rippleEffect } from '@syncfusion/ej2-base';
 import { KeyboardEventArgs, BaseEventArgs, Effect, getUniqueID, compile as templateCompiler } from '@syncfusion/ej2-base';
 import { addClass, isVisible, closest, attributes, classList, detach, select } from '@syncfusion/ej2-base';
-import { INotifyPropertyChanged, NotifyPropertyChanges, CreateBuilder, ChildProperty, Collection, Animation } from '@syncfusion/ej2-base';
+import { INotifyPropertyChanged, NotifyPropertyChanges, ChildProperty, Collection, Animation } from '@syncfusion/ej2-base';
 import { createElement as buildTag, setStyleAttribute as setStyle, Complex  } from '@syncfusion/ej2-base';
 import { isNullOrUndefined as isNOU, formatUnit } from '@syncfusion/ej2-base';
 import { AccordionModel, AccordionItemModel, AccordionAnimationSettingsModel, AccordionActionSettingsModel } from './accordion-model';
-import { AccordionHelper } from './accordion-builder';
 
 /**
  * Specifies the option to expand single or multiple panel at a time.
@@ -25,7 +24,7 @@ const CLS_HEADER: Str = 'e-acrdn-header';
 const CLS_HEADERICN: Str = 'e-acrdn-header-icon';
 const CLS_HEADERCTN: Str = 'e-acrdn-header-content';
 const CLS_CONTENT: Str = 'e-acrdn-panel';
-const CLS_CTENT: Str = 'e-content';
+const CLS_CTENT: Str = 'e-acrdn-content';
 const CLS_TOOGLEICN: Str = 'e-toggle-icon';
 const CLS_COLLAPSEICN: Str = 'e-tgl-collapse-icon e-icons';
 const CLS_EXPANDICN: Str = 'e-expand-icon';
@@ -311,7 +310,8 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
         if (this.enableRtl) {
             this.add(this.element, CLS_RTL);
         }
-        this.expandedItems = [];
+        if (!this.enablePersistence || isNOU(this.expandedItems)) {
+          this.expandedItems = []; }
     }
     private add(ele: HTEle, val : Str): void {
       ele.classList.add(val);
@@ -1003,4 +1003,3 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       }
     }
 }
-export let accordionBuilder: AccordionHelper = <AccordionHelper>CreateBuilder(Accordion);

@@ -5,6 +5,7 @@ import { ContextMenu } from '../src/context-menu/context-menu';
 import { MenuItemModel } from '../src/context-menu/context-menu-model';
 import { createElement, select } from '@syncfusion/ej2-base';
 import { EventHandler, Browser } from '@syncfusion/ej2-base';
+import { getScrollableParent } from '@syncfusion/ej2-popups';
 
 function copyObject(source: any, destination: any): Object {
     for (let prop in source) {
@@ -92,6 +93,9 @@ describe('ContextMenu', () => {
     let div: HTMLElement = createElement('div', { id: 'target', styles: 'width: 300px;height: 300px' });
     let filterDiv: HTMLElement = createElement('div', { className: 'e-list-item', styles: 'width: 100px;height: 100px' });
     let ulEle: HTMLElement = createElement('ul', { id: 'list' });
+    let androidUserAgent: string = 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JWR66Y) ' +
+                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.92 Safari/537.36';
+
     describe('DOM', () => {
         afterEach(() => {
             contextMenu.destroy();
@@ -541,6 +545,7 @@ describe('ContextMenu', () => {
 
     describe('Device Mode Checking', () => {
         afterEach(() => {
+            Browser.userAgent="";
             contextMenu.destroy();
         });
         let mouseEventArgs: any = {
@@ -549,8 +554,6 @@ describe('ContextMenu', () => {
             type: 'click'
         };
         it('Click event Checking', () => {
-            let androidUserAgent: string = 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JWR66Y) ' +
-                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.92 Safari/537.36';
             Browser.userAgent = androidUserAgent;
             document.body.appendChild(div);
             document.body.appendChild(ul);
@@ -563,7 +566,7 @@ describe('ContextMenu', () => {
             contextMenu.clickHandler(mouseEventArgs);
             let childUL: HTMLElement = contextMenu.getWrapper().children[1];
             let headerLI: Element = childUL.children[0];
-            expect(headerLI.classList.contains('e-menuheader')).toEqual(true);
+            expect(headerLI.classList.contains('e-menu-header')).toEqual(true);
         });
         it('Click event Checking for ios', () => {
             let iosUserAgent: string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) ' +
@@ -575,8 +578,6 @@ describe('ContextMenu', () => {
             contextMenu.getIdx(ul, ul.children[0]);
         });
         it('Header Element Click', () => {
-            let androidUserAgent: string = 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JWR66Y) ' +
-                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.92 Safari/537.36';
             Browser.userAgent = androidUserAgent;
             document.body.appendChild(div);
             document.body.appendChild(ul);
@@ -589,14 +590,12 @@ describe('ContextMenu', () => {
             contextMenu.clickHandler(mouseEventArgs);
             let childUL: HTMLElement = contextMenu.getWrapper().children[1];
             let headerLI: Element = childUL.children[0];
-            expect(headerLI.classList.contains('e-menuheader')).toEqual(true);
+            expect(headerLI.classList.contains('e-menu-header')).toEqual(true);
             mouseEventArgs.target = headerLI;
             contextMenu.clickHandler(mouseEventArgs);
             expect(contextMenu.getWrapper().children[0].style.display).toBe('none');
         });
         it('Header', () => {
-            let androidUserAgent: string = 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JWR66Y) ' +
-                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.92 Safari/537.36';
             Browser.userAgent = androidUserAgent;
             document.body.appendChild(div);
             document.body.appendChild(ul);
@@ -609,11 +608,12 @@ describe('ContextMenu', () => {
             contextMenu.clickHandler(mouseEventArgs);
             let childUL: HTMLElement = contextMenu.getWrapper().children[1];
             let headerLI: Element = childUL.children[0];
-            expect(headerLI.classList.contains('e-menuheader')).toEqual(true);
+            expect(headerLI.classList.contains('e-menu-header')).toEqual(true);
             mouseEventArgs.target = childUL.children[1];
             contextMenu.clickHandler(mouseEventArgs);
         });
          it('enableItems', () => {
+            Browser.userAgent = androidUserAgent;
             document.body.appendChild(div);
             document.body.appendChild(ul);
             contextMenu = new ContextMenu(options, '#contextmenu');
@@ -629,6 +629,7 @@ describe('ContextMenu', () => {
             changedTouches: [{ clientX: 0, clientY: 0 }]
         };
         it('enableItems for Child', () => {
+            Browser.userAgent = androidUserAgent;
             document.body.appendChild(div);
             document.body.appendChild(ul);
             contextMenu = new ContextMenu(options, '#contextmenu');
@@ -642,6 +643,7 @@ describe('ContextMenu', () => {
             contextMenu.enableItems(['Share All'], false);
         });
         it('hideItems', () => {
+            Browser.userAgent = androidUserAgent;
             document.body.appendChild(div);
             document.body.appendChild(ul);
             contextMenu = new ContextMenu(options, '#contextmenu');
@@ -690,6 +692,7 @@ describe('ContextMenu', () => {
         it('target', () => {
             document.body.appendChild(div);
             document.body.appendChild(ul);
+            document.body.appendChild(ulEle);
             contextMenu = new ContextMenu({ items: items, target: '#target' }, '#contextmenu');
             contextMenu.target = '#list';
             contextMenu.dataBind();
@@ -698,7 +701,9 @@ describe('ContextMenu', () => {
             document.body.appendChild(div);
             document.body.appendChild(ul);
             contextMenu = new ContextMenu({ items: items, target: '#target' }, '#contextmenu');
-            contextMenu.items = [{text: 'Cut'},{text: 'Copy'},{text: 'Paste'}];
+            contextMenu.items[0].text = "Cut";
+            contextMenu.items[1].text = "Copy";
+            contextMenu.items[2].text = "Paste"
             contextMenu.dataBind();
         });
     });
@@ -993,8 +998,7 @@ describe('ContextMenu', () => {
         it('right arrow action with separator as first element', () => {
             document.body.appendChild(div);
             document.body.appendChild(ul);
-            contextMenu = new ContextMenu({target: '#target', items: [{text: 'Cut'},{text: 'Copy'},{text: 'Paste', items: [{separator: true},{text: 'Paste Special'}]}]}, '#contextmenu');
-            contextMenu.appendTo('#contextmenu');
+            contextMenu = new ContextMenu({target: '#target', items: [{text: 'Cut'},{text: 'Copy'},{text: 'Paste', items: [{separator: true},{separator: true},{text: 'Paste Special'}]}]}, '#contextmenu');
             let contextmenu: any = getEventObject('MouseEvents', 'contextmenu');
             contextmenu = setMouseCoordinates(contextmenu, 5, 5, select('#target'));
             EventHandler.trigger(div, 'contextmenu', contextmenu);
@@ -1067,9 +1071,10 @@ describe('ContextMenu', () => {
         });
         it('Prerender Checking', () => {
             ul.remove();
+            document.body.appendChild(div);
             document.body.appendChild(createElement('EJ-CONTEXTMENU', { id: 'contextmenu' }));
             contextMenu = new ContextMenu(options, '#contextmenu');
-            expect(contextMenu.element.parentElement.tagName).toEqual('EJ-CONTEXTMENU');
+            expect(contextMenu.element.parentElement.tagName).toEqual('DIV');
             expect(contextMenu.element.parentElement.classList.contains('e-contextmenu-wrapper')).toEqual(true);
         });
         it('Get scrollable parents Checking', () => {
@@ -1081,7 +1086,7 @@ describe('ContextMenu', () => {
             document.body.appendChild(div);
             document.body.appendChild(ul);
             contextMenu = new ContextMenu(options, '#contextmenu');
-            let parents: HTMLElement[] = contextMenu.getScrollableParents(document.getElementById('target1'));
+            let parents: HTMLElement[] = getScrollableParent(document.getElementById('target1'));
             expect(parents.length).toBe(2);
         });
         it('Collision Checking', () => {

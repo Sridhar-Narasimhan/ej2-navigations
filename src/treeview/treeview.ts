@@ -1,4 +1,4 @@
-﻿import { Component, EmitType, isUndefined, CreateBuilder, Browser, compile } from '@syncfusion/ej2-base';
+﻿import { Component, EmitType, isUndefined, Browser, compile } from '@syncfusion/ej2-base';
 import { Property, INotifyPropertyChanged, NotifyPropertyChanges, ChildProperty, Complex } from '@syncfusion/ej2-base';
 import { Event, EventHandler, KeyboardEvents, KeyboardEventArgs } from '@syncfusion/ej2-base';
 import { rippleEffect, Effect, Animation, AnimationOptions, RippleOptions } from '@syncfusion/ej2-base';
@@ -11,7 +11,6 @@ import { createCheckBox } from '@syncfusion/ej2-buttons';
 import { Input, InputObject } from '@syncfusion/ej2-inputs';
 import { createSpinner, showSpinner, hideSpinner } from '@syncfusion/ej2-popups';
 import { TreeViewModel, FieldsSettingsModel, NodeAnimationSettingsModel, ActionSettingsModel } from './treeview-model';
-import { TreeViewHelper } from './treeview-builder';
 
 const ROOT: string = 'e-treeview';
 const COLLAPSIBLE: string = 'e-icon-collapsible';
@@ -3115,8 +3114,3 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     }
 
 }
-
-/**
- * builder for TreeView
- */
-export let treeViewHelper: TreeViewHelper = <TreeViewHelper>CreateBuilder(TreeView);

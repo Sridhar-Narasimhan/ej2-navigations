@@ -6328,17 +6328,17 @@ describe('Tab Control', () => {
             let fNestContent: HTMLElement = rootCon.querySelector('#Tab1').children[1] as HTMLElement;
             expect(rootCon.children[0].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[0].classList.contains('e-active')).toBe(true);
-            expect(fNestContent.children[0].children[0].innerHTML).toBe('1India');
+            expect(fNestContent.children[0].innerHTML).toBe('<div>1India</div>');
             (<HTMLElement>fNested.children[0].children[0].children[2]).click();
-            expect(fNestContent.children[1].children[0].innerHTML).toBe('1Australia');
+            expect(fNestContent.children[1].innerHTML).toBe('<div>1Australia</div>');
             expect(fNestContent.children[1].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[0].classList.contains('e-active')).toBe(false);
             (<HTMLElement>fNested.children[0].children[0].children[3]).click();
-            expect(fNestContent.children[2].children[0].innerHTML).toBe('1The United States of America');
+            expect(fNestContent.children[2].innerHTML).toBe('<div>1The United States of America</div>');
             expect(fNestContent.children[2].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[1].classList.contains('e-active')).toBe(false);
             (<HTMLElement>fNested.children[0].children[0].children[4]).click();
-            expect(fNestContent.children[3].children[0].innerHTML).toBe('1France');
+            expect(fNestContent.children[3].innerHTML).toBe('<div>1France</div>');
             expect(fNestContent.children[3].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[2].classList.contains('e-active')).toBe(false);
             let sNested: HTMLElement = rootCon.querySelector('#Tab2') as HTMLElement;
@@ -6346,17 +6346,17 @@ describe('Tab Control', () => {
             (<HTMLElement>rootEle.children[0].children[0].children[2]).click();
             expect(rootCon.children[1].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[0].classList.contains('e-active')).toBe(true);
-            expect(sNestContent.children[0].children[0].innerHTML).toBe('2India');
+            expect(sNestContent.children[0].innerHTML).toBe('<div>2India</div>');
             (<HTMLElement>sNested.children[0].children[0].children[2]).click();
-            expect(sNestContent.children[1].children[0].innerHTML).toBe('2Australia');
+            expect(sNestContent.children[1].innerHTML).toBe('<div>2Australia</div>');
             expect(sNestContent.children[1].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[0].classList.contains('e-active')).toBe(false);
             (<HTMLElement>sNested.children[0].children[0].children[3]).click();
-            expect(sNestContent.children[2].children[0].innerHTML).toBe('2The United States of America');
+            expect(sNestContent.children[2].innerHTML).toBe('<div>2The United States of America</div>');
             expect(sNestContent.children[2].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[1].classList.contains('e-active')).toBe(false);
             (<HTMLElement>sNested.children[0].children[0].children[4]).click();
-            expect(sNestContent.children[3].children[0].innerHTML).toBe('2France');
+            expect(sNestContent.children[3].innerHTML).toBe('<div>2France</div>');
             expect(sNestContent.children[3].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[2].classList.contains('e-active')).toBe(false);
             let tNested: HTMLElement = rootCon.querySelector('#Tab3') as HTMLElement;
@@ -6364,17 +6364,17 @@ describe('Tab Control', () => {
             (<HTMLElement>rootEle.children[0].children[0].children[3]).click();
             expect(rootCon.children[2].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[0].classList.contains('e-active')).toBe(true);
-            expect(tNestContent.children[0].children[0].innerHTML).toBe('3India');
+            expect(tNestContent.children[0].innerHTML).toBe('<div>3India</div>');
             (<HTMLElement>tNested.children[0].children[0].children[2]).click();
-            expect(tNestContent.children[1].children[0].innerHTML).toBe('3Australia');
+            expect(tNestContent.children[1].innerHTML).toBe('<div>3Australia</div>');
             expect(tNestContent.children[1].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[0].classList.contains('e-active')).toBe(false);
             (<HTMLElement>tNested.children[0].children[0].children[3]).click();
-            expect(tNestContent.children[2].children[0].innerHTML).toBe('3The United States of America');
+            expect(tNestContent.children[2].innerHTML).toBe('<div>3The United States of America</div>');
             expect(tNestContent.children[2].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[1].classList.contains('e-active')).toBe(false);
             (<HTMLElement>tNested.children[0].children[0].children[4]).click();
-            expect(tNestContent.children[3].children[0].innerHTML).toBe('3France');
+            expect(tNestContent.children[3].innerHTML).toBe('<div>3France</div>');
             expect(tNestContent.children[3].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[2].classList.contains('e-active')).toBe(false);
         });
@@ -6498,17 +6498,17 @@ describe('Tab Control', () => {
             let fNestContent: HTMLElement = rootCon.querySelector('#Tab1').children[1] as HTMLElement;
             expect(rootCon.children[0].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[0].classList.contains('e-active')).toBe(true);
-            expect(fNestContent.children[0].children[0].innerHTML).toBe('1India');
+            expect(fNestContent.children[0].innerHTML).toBe('<div>1India</div>');
             (<HTMLElement>fNested.children[0].children[0].children[2]).click();
-            expect(fNestContent.children[1].children[0].innerHTML).toBe('1Australia');
+            expect(fNestContent.children[1].innerHTML).toBe('<div>1Australia</div>');
             expect(fNestContent.children[1].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[0].classList.contains('e-active')).toBe(false);
             (<HTMLElement>fNested.children[0].children[0].children[3]).click();
-            expect(fNestContent.children[2].children[0].innerHTML).toBe('1The United States of America');
+            expect(fNestContent.children[2].innerHTML).toBe('<div>1The United States of America</div>');
             expect(fNestContent.children[2].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[1].classList.contains('e-active')).toBe(false);
             (<HTMLElement>fNested.children[0].children[0].children[4]).click();
-            expect(fNestContent.children[3].children[0].innerHTML).toBe('1France');
+            expect(fNestContent.children[3].innerHTML).toBe('<div>1France</div>');
             expect(fNestContent.children[3].classList.contains('e-active')).toBe(true);
             expect(fNestContent.children[2].classList.contains('e-active')).toBe(false);
             let sNested: HTMLElement = rootCon.querySelector('#Tab2') as HTMLElement;
@@ -6516,17 +6516,17 @@ describe('Tab Control', () => {
             (<HTMLElement>rootEle.children[1].children[0].children[2]).click();
             expect(rootCon.children[1].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[0].classList.contains('e-active')).toBe(true);
-            expect(sNestContent.children[0].children[0].innerHTML).toBe('2India');
+            expect(sNestContent.children[0].innerHTML).toBe('<div>2India</div>');
             (<HTMLElement>sNested.children[0].children[0].children[2]).click();
-            expect(sNestContent.children[1].children[0].innerHTML).toBe('2Australia');
+            expect(sNestContent.children[1].innerHTML).toBe('<div>2Australia</div>');
             expect(sNestContent.children[1].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[0].classList.contains('e-active')).toBe(false);
             (<HTMLElement>sNested.children[0].children[0].children[3]).click();
-            expect(sNestContent.children[2].children[0].innerHTML).toBe('2The United States of America');
+            expect(sNestContent.children[2].innerHTML).toBe('<div>2The United States of America</div>');
             expect(sNestContent.children[2].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[1].classList.contains('e-active')).toBe(false);
             (<HTMLElement>sNested.children[0].children[0].children[4]).click();
-            expect(sNestContent.children[3].children[0].innerHTML).toBe('2France');
+            expect(sNestContent.children[3].innerHTML).toBe('<div>2France</div>');
             expect(sNestContent.children[3].classList.contains('e-active')).toBe(true);
             expect(sNestContent.children[2].classList.contains('e-active')).toBe(false);
             let tNested: HTMLElement = rootCon.querySelector('#Tab3') as HTMLElement;
@@ -6534,17 +6534,17 @@ describe('Tab Control', () => {
             (<HTMLElement>rootEle.children[1].children[0].children[3]).click();
             expect(rootCon.children[2].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[0].classList.contains('e-active')).toBe(true);
-            expect(tNestContent.children[0].children[0].innerHTML).toBe('3India');
+            expect(tNestContent.children[0].innerHTML).toBe('<div>3India</div>');
             (<HTMLElement>tNested.children[0].children[0].children[2]).click();
-            expect(tNestContent.children[1].children[0].innerHTML).toBe('3Australia');
+            expect(tNestContent.children[1].innerHTML).toBe('<div>3Australia</div>');
             expect(tNestContent.children[1].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[0].classList.contains('e-active')).toBe(false);
             (<HTMLElement>tNested.children[0].children[0].children[3]).click();
-            expect(tNestContent.children[2].children[0].innerHTML).toBe('3The United States of America');
+            expect(tNestContent.children[2].innerHTML).toBe('<div>3The United States of America</div>');
             expect(tNestContent.children[2].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[1].classList.contains('e-active')).toBe(false);
             (<HTMLElement>tNested.children[0].children[0].children[4]).click();
-            expect(tNestContent.children[3].children[0].innerHTML).toBe('3France');
+            expect(tNestContent.children[3].innerHTML).toBe('<div>3France</div>');
             expect(tNestContent.children[3].classList.contains('e-active')).toBe(true);
             expect(tNestContent.children[2].classList.contains('e-active')).toBe(false);
         });
@@ -6750,6 +6750,298 @@ describe('Tab Control', () => {
             expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
             (<HTMLElement>element.children[0].children[0].children[1]).click();
             expect(element.children[1].querySelectorAll('.e-active').length).toBe(1);
+        });
+    });
+    describe('Disable functionality testing', () => {
+        let tab: any;
+        let toolbar: DomElements;
+        let keyEventArgs: any;
+        let toolbarObj: any;
+        beforeEach((): void => {
+            tab = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (tab) {
+                tab.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('items onpropertychange testing with zeor item', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: "#templateId" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            tab.enableTab(1, false);
+            tab.disable(true);
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            toolbar = <DomElements> element.querySelector('.e-tab-header');
+            toolbarObj = <Toolbar> toolbar.ej2_instances[0];
+            expect(element.classList.contains('e-disable')).toBe(true);
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'tab',
+                target: element,
+            };
+            tab.keyHandler(keyEventArgs);
+            let actEle1: HTMLElement = <HTMLElement> document.activeElement;
+            expect(closest(actEle1, '.e-toolbar-item').id).toEqual('e-item_0');
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveRight',
+                target: actEle1,
+            };
+            toolbarObj.keyActionHandler(keyEventArgs);
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'moveRight',
+                target: actEle1,
+            };
+            tab.keyHandler(keyEventArgs);
+            let actEle2: HTMLElement = <HTMLElement> document.activeElement;
+            expect(closest(actEle2, '.e-toolbar-item').id).toEqual('e-item_1');
+            tab.disable(false);
+            keyEventArgs = {
+                preventDefault: function () { },
+                action: 'enter',
+                target: actEle2,
+            };
+            tab.keyHandler(keyEventArgs);
+            let actEle3: HTMLElement = <HTMLElement> document.activeElement;
+            expect(element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(true);
+        });
+    });
+    describe('Content template property testing', () => {
+        let tab: any;
+        beforeEach((): void => {
+            tab = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            document.body.appendChild(ele);
+            let el2: HTMLElement = createElement('div', { id: 'templateId' });
+            el2.innerHTML= "<span class='content-template'>Content Template</span>";
+            document.body.appendChild(el2);
+            let el3: HTMLElement = createElement('div', { className: 'templateId' });
+            el3.innerHTML= "<span class='content-template'>Content Template</span>";
+            document.body.appendChild(el3);
+        });
+        afterEach((): void => {
+            if (tab) {
+                tab.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('heightAdjustMode with class based content template testing', () => {
+            tab = new Tab({
+                heightAdjustMode: 'Auto',
+                items: [
+                    { header: { "text": "item1" }, content: ".templateId" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('.e-content #e-content_0 .templateId')).not.toEqual(undefined);
+            expect(element.querySelector('.e-content #e-content_0 .templateId .content-template').innerHTML).toEqual('Content Template');
+        });
+        it('Unknown class based content template testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: ".templateIdui" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('.e-content #e-content_0').innerHTML).toEqual('<div>.templateIdui</div>');
+        });
+    });
+    describe('Onproperty change testing for items', () => {
+        let tab: any;
+        beforeEach((): void => {
+            tab = undefined;
+            let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (tab) {
+                tab.destroy();
+            }
+            document.body.innerHTML = '';
+        });
+        it('Items object change', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1" },
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2" }
+                ]
+             });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items[0].content).toEqual('Content1');
+            expect(tab.items[0].cssClass).toEqual('tabCssClass1');
+            expect(tab.items[0].disabled).toEqual(false);
+            expect(tab.items[0].header instanceof Object).toEqual(true);
+            expect(tab.items[0].header.text).toEqual('item1');
+            expect(tab.items[0].header.iconCss).toEqual('e-icon');
+            expect(tab.items[0].header.iconPosition).toEqual('right');
+            expect(tab.items[1].content).toEqual('Content2');
+            expect(tab.items[1].cssClass).toEqual('tabCssClass2');
+            expect(tab.items[1].disabled).toEqual(false);
+            expect(tab.items[1].header instanceof Object).toEqual(true);
+            expect(tab.items[1].header.text).toEqual('item2');
+            expect(tab.items[1].header.iconCss).toEqual('e-icon');
+            expect(tab.items[1].header.iconPosition).toEqual('left');
+            tab.items = [
+                { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2", disabled: false },
+                { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1", disabled: true }
+            ];
+            tab.dataBind();
+            expect(tab.items[0].content).toEqual('Content2');
+            expect(tab.items[0].cssClass).toEqual('tabCssClass2');
+            expect(tab.items[0].disabled).toEqual(false);
+            expect(tab.items[0].header instanceof Object).toEqual(true);
+            expect(tab.items[0].header.text).toEqual('item2');
+            expect(tab.items[0].header.iconCss).toEqual('e-icon');
+            expect(tab.items[0].header.iconPosition).toEqual('left');
+            expect(tab.items[1].content).toEqual('Content1');
+            expect(tab.items[1].disabled).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(true);
+            expect(tab.items[1].cssClass).toEqual('tabCssClass1');
+            expect(tab.items[1].header instanceof Object).toEqual(true);
+            expect(tab.items[1].header.text).toEqual('item1');
+            expect(tab.items[1].header.iconCss).toEqual('e-icon');
+            expect(tab.items[1].header.iconPosition).toEqual('right');
+        });
+        it('Items - content property change testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1" },
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2" }
+                ]
+             });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items[0].content).toEqual('Content1');
+            expect(tab.element.querySelector('#e-content_0').innerText).toEqual('Content1');
+            tab.items[0].content = 'New Content 1';
+            tab.dataBind();
+            expect(tab.items[0].content).toEqual('New Content 1');
+            expect(tab.element.querySelector('#e-content_0').innerText).toEqual('New Content 1');
+            expect(tab.items[1].content).toEqual('Content2');
+            expect(tab.element.querySelector('#e-content_1')).toEqual(null);
+            tab.items[1].content = 'New Content 2';
+            tab.dataBind();
+            expect(tab.items[1].content).toEqual('New Content 2');
+            tab.select(1);
+            expect(tab.element.querySelector('#e-content_1')).not.toEqual(null);
+            expect(tab.element.querySelector('#e-content_1').innerText).toEqual('New Content 2');
+            tab.element.querySelector('#e-content_0').classList.remove('e-active');
+            tab.items[0].content = 'New Content 11';
+            tab.dataBind();
+            expect(tab.items[0].content).toEqual('New Content 11');
+            expect(tab.element.querySelector('#e-content_1')).not.toEqual(null);
+            expect(tab.element.querySelector('#e-content_1').innerText).toEqual('New Content 2');
+            tab.select(0);
+            expect(tab.element.querySelector('#e-content_0')).not.toEqual(null);
+            expect(tab.element.querySelector('#e-content_0').innerText).toEqual('New Content 11');
+        });
+        it('Items - cssClass property change testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1" },
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2" }
+                ]
+             });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items[0].cssClass).toEqual('tabCssClass1');
+            expect(tab.items[1].cssClass).toEqual('tabCssClass2');
+            expect(tab.element.querySelector('#e-item_0').classList.contains('tabCssClass1')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('tabCssClass2')).toEqual(true);
+            tab.items[0].cssClass = 'test1';
+            tab.dataBind();
+            expect(tab.items[0].cssClass).toEqual('test1');
+            expect(tab.items[1].cssClass).toEqual('tabCssClass2');
+            expect(tab.element.querySelector('#e-item_0').classList.contains('tabCssClass1')).not.toEqual(true);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('test1')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('tabCssClass2')).toEqual(true);
+            tab.items[1].cssClass = 'test2';
+            tab.dataBind();
+            expect(tab.items[0].cssClass).toEqual('test1');
+            expect(tab.items[1].cssClass).toEqual('test2');
+            expect(tab.element.querySelector('#e-item_0').classList.contains('tabCssClass1')).not.toEqual(true);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('test1')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('tabCssClass2')).not.toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('test2')).toEqual(true);
+        });
+        it('Items - disabled property change testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1", disabled: true },
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2", disabled: false }
+                ]
+             });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items[0].disabled).toEqual(true);
+            expect(tab.items[1].disabled).toEqual(false);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-disable')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(false);
+            tab.items[0].disabled = false;
+            tab.dataBind();
+            expect(tab.items[0].disabled).toEqual(false);
+            expect(tab.items[1].disabled).toEqual(false);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-disable')).toEqual(false);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(false);
+            tab.items[1].disabled = true;
+            tab.dataBind();
+            expect(tab.items[0].disabled).toEqual(false);
+            expect(tab.items[1].disabled).toEqual(true);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-disable')).toEqual(false);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(true);
+        });
+        it('Items - header each single property testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1" },
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            expect(tab.items[0].header instanceof Object).toEqual(true);
+            expect(tab.items[0].header.text).toEqual('item1');
+            expect(tab.items[0].header.iconCss).toEqual('e-icon');
+            expect(tab.items[0].header.iconPosition).toEqual('right');
+            expect(tab.items[1].header instanceof Object).toEqual(true);
+            expect(tab.items[1].header.text).toEqual('item2');
+            expect(tab.items[1].header.iconCss).toEqual('e-icon');
+            expect(tab.items[1].header.iconPosition).toEqual('left');
+            tab.items[0].header.text = 'headerText1';
+            tab.dataBind();
+            expect(tab.items[0].header.text).toEqual('headerText1');
+            expect(tab.element.querySelector('#e-item_0 .e-tab-text').innerText).toEqual('headerText1');
+            tab.items[0].header.iconCss = 'e-new-icon';
+            tab.dataBind();
+            expect(tab.items[0].header.iconCss).toEqual('e-new-icon');
+            expect(tab.element.querySelector('#e-item_0 .e-tab-icon').classList.contains('e-new-icon')).toEqual(true);
+            tab.items[0].header.iconPosition = 'left';
+            tab.dataBind();
+            expect(tab.items[0].header.iconPosition).toEqual('left');
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-ileft')).toEqual(true);
+            tab.items[1].header.text = 'headerText2';
+            tab.dataBind();
+            expect(tab.items[1].header.text).toEqual('headerText2');
+            expect(tab.element.querySelector('#e-item_1 .e-tab-text').innerText).toEqual('headerText2');
+            tab.items[1].header.iconCss = 'e-new-icons';
+            tab.dataBind();
+            expect(tab.items[1].header.iconCss).toEqual('e-new-icons');
+            expect(tab.element.querySelector('#e-item_1 .e-tab-icon').classList.contains('e-new-icons')).toEqual(true);
+            tab.items[1].header.iconPosition = 'right';
+            tab.dataBind();
+            expect(tab.items[1].header.iconPosition).toEqual('right');
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-iright')).toEqual(true);
         });
     });
 });

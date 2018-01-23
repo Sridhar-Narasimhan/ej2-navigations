@@ -1,6 +1,6 @@
 @include export-module('treeview-icons') {
   /*! TreeView icons */
-  .e-treeview {
+  #{&}.e-treeview {
 
     .e-list-item {
 

@@ -438,7 +438,7 @@ describe('TreeView control', () => {
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
                     expect(li[7].classList.contains('e-active')).toBe(true);
-                    expect(treeObj.selectedNodes.length).toBe(2);
+                    expect(treeObj.selectedNodes.length).toBe(3);
                     expect(treeObj.selectedNodes).not.toContain('02');
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('04');
@@ -3189,7 +3189,7 @@ describe('TreeView control', () => {
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
                     expect(li[7].classList.contains('e-active')).toBe(true);
-                    expect(treeObj.selectedNodes.length).toBe(2);
+                    expect(treeObj.selectedNodes.length).toBe(3);
                     expect(treeObj.selectedNodes).not.toContain('02');
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('04');

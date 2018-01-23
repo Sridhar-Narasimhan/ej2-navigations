@@ -1,17 +1,19 @@
 {
 	"name": "@syncfusion/ej2-navigations",
-	"version": "15.4.21",
+	"version": "15.4.26",
 	"description": "Essential JS 2 Navigation Components",
 	"author": "Syncfusion Inc.",
 	"license": "SEE LICENSE IN license",
-	"module": "dist/es6/index.js",
+	"main": "./dist/ej2-navigations.umd.min.js",
+	"module": "./dist/es6/ej2-navigations.es5.js",
+	"es2015": "./dist/es6/ej2-navigations.es2015.js",
 	"dependencies": {
-		"@syncfusion/ej2-base": "^15.4.21",
-		"@syncfusion/ej2-data": "^15.4.20",
-		"@syncfusion/ej2-buttons": "^15.4.21",
-		"@syncfusion/ej2-popups": "^15.4.21",
-		"@syncfusion/ej2-lists": "^15.4.20",
-		"@syncfusion/ej2-inputs": "^15.4.21"
+		"@syncfusion/ej2-base": "*",
+		"@syncfusion/ej2-data": "*",
+		"@syncfusion/ej2-buttons": "*",
+		"@syncfusion/ej2-popups": "*",
+		"@syncfusion/ej2-lists": "*",
+		"@syncfusion/ej2-inputs": "*"
 	},
 	"devDependencies": {
 		"@types/chai": "^3.4.28",

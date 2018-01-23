@@ -1,12 +1,11 @@
-import { Component, CreateBuilder, Property, ChildProperty, NotifyPropertyChanges, INotifyPropertyChanged } from '@syncfusion/ej2-base';
+import { Component, Property, ChildProperty, NotifyPropertyChanges, INotifyPropertyChanged } from '@syncfusion/ej2-base';
 import { Event, EventHandler, EmitType, BaseEventArgs, KeyboardEvents, KeyboardEventArgs, Touch, TapEventArgs } from '@syncfusion/ej2-base';
 import { attributes, Animation, AnimationOptions, TouchEventArgs, MouseEventArgs } from '@syncfusion/ej2-base';
 import { Browser, Collection, setValue, getValue, getUniqueID, getInstance } from '@syncfusion/ej2-base';
-import { select, selectAll, closest, createElement, detach, append, rippleEffect, isVisible } from '@syncfusion/ej2-base';
+import { select, selectAll, closest, createElement, detach, append, rippleEffect, isVisible, remove } from '@syncfusion/ej2-base';
 import { ListBase, ListBaseOptions } from '@syncfusion/ej2-lists';
-import { calculatePosition, OffsetPosition, isCollide, fit } from '@syncfusion/ej2-popups';
+import { calculatePosition, OffsetPosition, isCollide, fit, getScrollableParent } from '@syncfusion/ej2-popups';
 import { ContextMenuModel, MenuItemModel } from './context-menu-model';
-import { ContextMenuHelper } from './context-menu-builder';
 
 const DOWNARROW: string = 'downarrow';
 
@@ -16,7 +15,7 @@ const ESCAPE: string = 'escape';
 
 const FOCUSED: string = 'e-focused';
 
-const HEADER: string = 'e-menuheader';
+const HEADER: string = 'e-menu-header';
 
 const LEFTARROW: string = 'leftarrow';
 
@@ -60,21 +59,21 @@ export class MenuItem extends ChildProperty<MenuItem> {
     public iconCss: string;
 
     /**
-     * Specifies id for menu item.
+     * Specifies the id for menu item.
      * @default ''
      */
     @Property('')
     public id: string;
 
     /**
-     * Specifies separator between menu items. Separator are horizontal lines used to group menu items.
+     * Specifies separator between the menu items. Separator are horizontal lines used to group menu items.
      * @default false
      */
     @Property(false)
     public separator: boolean;
 
     /**
-     * Specifies the sub menu items which is array of MenuItem model.
+     * Specifies the sub menu items that is the array of MenuItem model.
      * @default []
      */
     @Collection<MenuItemModel>([], MenuItem)
@@ -88,7 +87,7 @@ export class MenuItem extends ChildProperty<MenuItem> {
     public text: string;
 
     /**
-     * Specifies url for menu item which creates the anchor link to navigate to url provided.
+     * Specifies url for menu item that creates the anchor link to navigate to the url provided.
      * @default ''
      */
     @Property('')
@@ -96,7 +95,7 @@ export class MenuItem extends ChildProperty<MenuItem> {
 }
 
 /**
- * ContextMenu is a graphical user interface that appears on user right click / touch hold operation.
+ * The ContextMenu is a graphical user interface that appears on the user right click/touch hold operation.
  * ```html
  * <div id = 'target'></div>
  * <ul id = 'contextmenu'></ul>
@@ -110,25 +109,27 @@ export class MenuItem extends ChildProperty<MenuItem> {
 @NotifyPropertyChanges
 export class ContextMenu extends Component<HTMLUListElement> implements INotifyPropertyChanged {
     private animation: Animation = new Animation({});
+    private ngElement: HTMLElement;
     private navIdx: number[] = [];
     private isTapHold: boolean = false;
+    private targetElement: HTMLElement;
     /**
      * Defines class/multiple classes separated by a space in the ContextMenu wrapper.
-     * ContextMenu customization can be achieved using this.
+     * ContextMenu customization can be achieved by using this.
      * @default ''
      */
     @Property('')
     public cssClass: string;
 
     /**
-     * Specifies the filter selector for elements inside the target in which the context menu will be opened.
+     * Specifies the filter selector for elements inside the target in that the context menu will be opened.
      * @default ''
      */
     @Property('')
     public filter: string;
 
     /**
-     * Specifies whether to show sub menu on click or not.
+     * Specifies whether to show the sub menu or not on click.
      * When set to true, the sub menu will open only on mouse click.
      * @default false
      */
@@ -143,14 +144,14 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     public items: MenuItemModel[];
 
     /**
-     * Specifies target element selector in which ContextMenu should be opened.
+     * Specifies target element selector in which the ContextMenu should be opened.
      * @default ''
      */
     @Property('')
     public target: string;
 
     /**
-     * Specifies the animation settings for sub menu open.
+     * Specifies the animation settings for the sub menu open.
      * @default { duration: 400, easing: 'ease', effect: 'SlideDown' }
      */
     @Property<MenuAnimationSettings>({ duration: 400, easing: 'ease', effect: 'SlideDown' })
@@ -212,15 +213,15 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
      */
     protected preRender(): void {
         if (this.element.tagName === 'EJ-CONTEXTMENU') {
+            this.element.style.display = 'none';
+            this.element.classList.remove('e-' + this.getModuleName());
+            this.element.classList.remove('e-control');
             let ejInst: Object = getValue('ej2_instances', this.element);
             let ul: Element = createElement('ul');
-            let wrapper: Element = createElement('EJ-CONTEXTMENU', { className: WRAPPER });
-            this.element.parentNode.insertBefore(ul, this.element);
-            detach(this.element);
+            this.ngElement = this.element;
             this.element = ul as HTMLUListElement;
+            this.element.classList.add('e-control');
             this.element.classList.add('e-' + this.getModuleName());
-            document.body.appendChild(wrapper);
-            wrapper.appendChild(this.element);
             setValue('ej2_instances', ejInst, this.element);
             if (!this.element.id) {
                 this.element.id = getUniqueID(this.getModuleName());
@@ -262,6 +263,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         }
         let ul: Element = this.createItems(this.items);
         append(Array.prototype.slice.call(ul.children), this.element);
+        this.element.classList.add('e-menu-parent');
     }
 
     private wireEvents(): void {
@@ -277,7 +279,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     EventHandler.add(target, 'contextmenu', this.cmenuHandler, this);
                 }
             }
-            for (let parent of this.getScrollableParents(target)) {
+            this.targetElement = target;
+            for (let parent of getScrollableParent(this.targetElement)) {
                 EventHandler.add(parent, 'scroll', this.scrollHandler, this);
             }
         }
@@ -306,23 +309,6 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         }
     }
 
-    private getScrollableParents(target: HTMLElement): HTMLElement[] {
-        let elemStyle: CSSStyleDeclaration = getComputedStyle(target);
-        let parentCollection: HTMLElement[] = [];
-        let regex: RegExp = /(auto|scroll)/;
-        let parentEle: HTMLElement = target.parentElement;
-        while (parentEle && parentEle.tagName !== 'HTML') {
-            let parentStyle: CSSStyleDeclaration = getComputedStyle(parentEle);
-            if (!(elemStyle.position === 'absolute' && parentStyle.position === 'static')
-                && regex.test(parentStyle.overflow + parentStyle.overflowY + parentStyle.overflowX)) {
-                parentCollection.push(parentEle);
-            }
-            parentEle = parentEle.parentElement;
-        }
-        parentCollection.push(<HTMLElement & Document>document);
-        return parentCollection;
-    }
-
     private keyBoardHandler(e: KeyboardEventArgs): void {
         e.preventDefault();
         switch (e.action) {
@@ -331,16 +317,16 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 this.upDownKeyHandler(e);
                 break;
             case RIGHTARROW:
-                this.rightEnterKeyHandler({ action: RIGHTARROW } as KeyboardEventArgs);
+                this.rightEnterKeyHandler(e);
                 break;
             case LEFTARROW:
-                this.leftEscKeyHandler({ action: LEFTARROW } as KeyboardEventArgs);
+                this.leftEscKeyHandler(e);
                 break;
             case ENTER:
-                this.rightEnterKeyHandler({ action: ENTER } as KeyboardEventArgs);
+                this.rightEnterKeyHandler(e);
                 break;
             case ESCAPE:
-                this.leftEscKeyHandler({ action: ESCAPE } as KeyboardEventArgs);
+                this.leftEscKeyHandler(e);
                 break;
         }
     }
@@ -368,17 +354,18 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private isValidLI(cli: Element, index: number, action: string): number {
         let wrapper: Element = this.getWrapper();
         let cul: Element = wrapper.children[this.navIdx.length];
-        if (cli.classList.contains(SEPARATOR) || cli.classList.contains(DISABLED)) {
-            action === (DOWNARROW || RIGHTARROW) ? index++ : index--;
+        if (cli.classList.contains(SEPARATOR) || cli.classList.contains(DISABLED) || cli.classList.contains(HIDE)) {
+            ((action === DOWNARROW) || (action === RIGHTARROW)) ? index++ : index--;
         }
         cli = cul.children[index];
-        if (cli.classList.contains(SEPARATOR) || cli.classList.contains(DISABLED)) {
+        if (cli.classList.contains(SEPARATOR) || cli.classList.contains(DISABLED) || cli.classList.contains(HIDE)) {
             index = this.isValidLI(cli, index, action);
         }
         return index;
     }
 
     private rightEnterKeyHandler(e: KeyboardEventArgs): void {
+        let eventArgs: MenuEventArgs;
         let wrapper: Element = this.getWrapper();
         let cul: Element = wrapper.children[this.navIdx.length];
         let fli: Element = this.getLIByClass(cul, FOCUSED);
@@ -393,7 +380,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 fli.classList.remove(FOCUSED);
                 fli.classList.add(SELECTED);
                 if (e.action === ENTER) {
-                    let eventArgs: MenuEventArgs = { element: fli as HTMLElement, item: item };
+                    eventArgs = { element: fli as HTMLElement, item: item };
                     this.trigger('select', eventArgs);
                 }
                 (fli as HTMLElement).focus();
@@ -403,7 +390,11 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 (cul.children[index] as HTMLElement).focus();
             } else {
                 if (e.action === ENTER) {
-                    this.close();
+                    fli.classList.remove(FOCUSED);
+                    fli.classList.add(SELECTED);
+                    eventArgs = { element: fli as HTMLElement, item: item };
+                    this.trigger('select', eventArgs);
+                    this.closeMenu(null, e);
                 }
             }
         }
@@ -415,15 +406,15 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             this.closeMenu(this.navIdx.length, e);
             let cul: Element = wrapper.children[this.navIdx.length];
             let sli: Element = this.getLIByClass(cul, SELECTED);
-            sli.setAttribute('aria-expanded', 'false');
             if (sli) {
+                sli.setAttribute('aria-expanded', 'false');
                 sli.classList.remove(SELECTED);
                 sli.classList.add(FOCUSED);
                 (sli as HTMLElement).focus();
             }
         } else {
             if (e.action === ESCAPE) {
-                this.close();
+                this.closeMenu(null, e);
             }
         }
     }
@@ -442,9 +433,9 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         this.closeMenu(null, e);
         if (this.canOpen(e.target as Element)) {
             if (e.changedTouches) {
-                this.openMenu(null, null, e.changedTouches[0].clientY, e.changedTouches[0].clientX, e);
+                this.openMenu(null, null, e.changedTouches[0].clientY + 1, e.changedTouches[0].clientX + 1, e);
             } else {
-                this.openMenu(null, null, e.clientY, e.clientX, e);
+                this.openMenu(null, null, e.clientY + 1, e.clientX + 1, e);
             }
         }
     }
@@ -519,7 +510,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 (wrapper.lastChild as HTMLElement).style.display = 'none';
                 let data: { [key: string]: string } = { text: item.text, iconCss: ICONS + ' e-previous' };
                 let hdata: MenuItem = new MenuItem(this.items[0] as MenuItem, null, data, true);
-                let hli: Element = this.createItem([hdata], true, 'menu', true);
+                let hli: Element = this.createItems([hdata] as MenuItemModel[]).children[0];
+                hli.classList.add(HEADER);
                 ul.insertBefore(hli, ul.children[0]);
             }
             ul.style.zIndex = this.element.style.zIndex;
@@ -537,15 +529,6 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             this.setPosition(li, ul, top, left);
             this.toggleAnimation(ul);
         }
-    }
-
-    private createItem(item: MenuItemModel[], showIcon: boolean, moduleName: string, isHeader: boolean = true): Element {
-        let listOpt: ListBaseOptions = { showIcon: showIcon, moduleName: moduleName };
-        if (isHeader) {
-            listOpt.itemClass = HEADER;
-        }
-        let li: HTMLElement[] = ListBase.createListItemFromJson(this.toRawObject(item), listOpt, 0, true);
-        return li[0];
     }
 
     private setPosition(li: Element, ul: HTMLElement, top: number, left: number): void {
@@ -609,15 +592,14 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     role: 'menuitem',
                     tabindex: '-1'
                 };
-                if (showIcon && !args.curData.iconCss) {
-                    args.curData.iconCss = ICONS + ' e-blankicon';
-                }
             },
             itemCreated: (args: { curData: MenuItemModel, item: Element }): void => {
                 if (args.curData.separator) {
-                    args.item.classList.remove(ITEM);
                     args.item.classList.add(SEPARATOR);
                     args.item.removeAttribute('role');
+                }
+                if (showIcon && !args.curData.iconCss && !args.curData.separator) {
+                    (args.item as HTMLElement).classList.add('e-blankicon');
                 }
                 if (args.curData.items && args.curData.items.length) {
                     let span: Element = createElement('span', { className: ICONS + ' ' + CARET });
@@ -833,9 +815,44 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     this.wireEvents();
                     break;
                 case 'items':
-                    this.refresh();
-                    break;
+                let idx: number;
+                let navIdx: number[];
+                let item: MenuItemModel[];
+                let keys: string[] = Object.keys(newProp.items);
+                for (let i: number = 0; i < keys.length; i++) {
+                    navIdx = this.getChangedItemIndex(newProp, [], Number(keys[i]));
+                    if (navIdx.length <= this.getWrapper().children.length) {
+                        idx = navIdx.pop();
+                        item = this.getItems(navIdx);
+                        this.insertAfter([item[idx]], item[idx].text);
+                        this.removeItem(item, navIdx, idx);
+                    }
+                    navIdx.length = 0;
+                }
+                break;
             }
+        }
+    }
+
+    private getChangedItemIndex(newProp: ContextMenuModel, index: number[], idx: number): number[] {
+        index.push(idx);
+        let key: string = Object.keys(newProp.items[idx]).pop();
+        if (key === 'items') {
+            let item: MenuItemModel = newProp.items[idx];
+            this.getChangedItemIndex(item, index, Number(Object.keys(item.items).pop()));
+        } else {
+            if (key === 'isParentArray' && index.length > 1) {
+                index.pop();
+            }
+        }
+        return index;
+    }
+
+    private removeItem(item: MenuItemModel[], navIdx: number[], idx: number): void {
+        item.splice(idx, 1);
+        let uls: HTMLCollection = this.getWrapper().children;
+        if (navIdx.length < uls.length) {
+            detach(uls[navIdx.length].children[idx]);
         }
     }
 
@@ -860,10 +877,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     EventHandler.remove(target, 'contextmenu', this.cmenuHandler);
                 }
             }
-            if (target) {
-                for (let parent of this.getScrollableParents(target)) {
-                    EventHandler.remove(parent, 'scroll', this.scrollHandler);
-                }
+            for (let parent of getScrollableParent(this.targetElement)) {
+                EventHandler.remove(parent, 'scroll', this.scrollHandler);
             }
         }
         if (!Browser.isDevice) {
@@ -977,7 +992,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     /**
      * This method is used to enable or disable the menu items in the ContextMenu based on the items and enable argument.
      * @param items Text items that needs to be enabled/disabled.
-     * @param enable Set `true`/`false` to enable/disable list items.
+     * @param enable Set `true`/`false` to enable/disable the list items.
      * @returns void
      */
     public enableItems(items: string[], enable: boolean = true): void {
@@ -1066,17 +1081,14 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             navIdx = this.getIndex(items[i]);
             idx = navIdx.pop();
             iitems = this.getItems(navIdx);
-            iitems.splice(idx, 1);
-            if (!navIdx.length) {
-                detach(this.element.children[idx]);
-            }
+            this.removeItem(iitems, navIdx, idx);
         }
     }
 
     /**
      * It is used to insert the menu items after the specified menu item text.
      * @param items Items that needs to be inserted.
-     * @param text Text item after which the element to be inserted.
+     * @param text Text item after that the element to be inserted.
      * @returns void
      */
     public insertAfter(items: MenuItemModel[], text: string): void {
@@ -1086,7 +1098,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     /**
      * It is used to insert the menu items before the specified menu item text.
      * @param items Items that needs to be inserted.
-     * @param text Text item before which the element to be inserted.
+     * @param text Text item before that the element to be inserted.
      * @returns void
      */
     public insertBefore(items: MenuItemModel[], text: string): void {
@@ -1106,11 +1118,12 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             iitems = this.getItems(navIdx);
             menuitem = new MenuItem(iitems[0] as MenuItem, null, items[i], true);
             iitems.splice(isAfter ? idx + 1 : idx, 0, menuitem);
-            if (!navIdx.length) {
+            let uls: HTMLCollection = this.getWrapper().children;
+            if (navIdx.length < uls.length) {
                 idx = isAfter ? idx + 1 : idx;
                 showIcon = this.hasField(iitems, 'iconCss');
-                li = this.createItem([menuitem], showIcon, 'menu', false);
-                this.element.insertBefore(li, this.element.children[idx]);
+                li = this.createItems(iitems).children[idx];
+                uls[navIdx.length].insertBefore(li, uls[navIdx.length].children[idx]);
             }
         }
     }
@@ -1132,7 +1145,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     }
 
     /**
-     * To destroy the widget.
+     * Destroys the widget.
      * @returns void
      */
 
@@ -1141,17 +1154,21 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         if (wrapper) {
             super.destroy();
             this.unWireEvents();
-            this.closeMenu();
-            this.element.innerHTML = '';
-            ['top', 'left', 'display', 'z-index'].forEach((key: string) => {
-                this.element.style.removeProperty(key);
-            });
-            ['role', 'tabindex', 'class', 'style'].forEach((key: string) => {
-                if (['class', 'style'].indexOf(key) === -1 || !this.element.getAttribute(key)) {
-                    this.element.removeAttribute(key);
-                }
-            });
-            wrapper.parentNode.insertBefore(this.element, wrapper);
+            if (this.ngElement) {
+                this.ngElement.style.display = 'block';
+            } else {
+                this.closeMenu();
+                this.element.innerHTML = '';
+                ['top', 'left', 'display', 'z-index'].forEach((key: string) => {
+                    this.element.style.removeProperty(key);
+                });
+                ['role', 'tabindex', 'class', 'style'].forEach((key: string) => {
+                    if (['class', 'style'].indexOf(key) === -1 || !this.element.getAttribute(key)) {
+                        this.element.removeAttribute(key);
+                    }
+                });
+                wrapper.parentNode.insertBefore(this.element, wrapper);
+            }
             detach(wrapper);
         }
     }
@@ -1179,7 +1196,7 @@ export interface BeforeOpenCloseMenuEventArgs extends BaseEventArgs {
 }
 
 /**
- * Interface for open / close event.
+ * Interface for open/close event.
  */
 export interface OpenCloseMenuEventArgs extends BaseEventArgs {
     element: HTMLElement;
@@ -1192,15 +1209,19 @@ export interface OpenCloseMenuEventArgs extends BaseEventArgs {
  */
 export interface MenuAnimationSettings {
     /**
-     * Specifies effect that shown in sub menu transform.
+     * Specifies the effect that shown in the sub menu transform.
+     * The possible effects are:
+     * * None: Specifies the sub menu transform with no animation effect.
+     * * SlideDown: Specifies the sub menu transform with slide down effect.
+     * * ZoomIn: Specifies the sub menu transform with zoom in effect.
      */
     effect?: MenuEffect;
     /**
-     * Specifies time duration to transform object.
+     * Specifies the time duration to transform object.
      */
     duration?: number;
     /**
-     * Specifies easing effect applied while transform.
+     * Specifies the easing effect applied while transform.
      */
     easing?: string;
 }
@@ -1208,9 +1229,3 @@ export interface MenuAnimationSettings {
 export interface ListBaseMenuModel extends MenuItemModel {
     htmlAttributes: { [key: string]: string };
 }
-
-/**
- * Builder for ContextMenu.
- * @private
- */
-export let contextMenuBuilder: ContextMenuHelper = <ContextMenuHelper>CreateBuilder(ContextMenu);
