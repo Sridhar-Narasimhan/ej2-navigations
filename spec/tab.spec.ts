@@ -621,7 +621,9 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(true);
         });
     });
     describe('overflowMode property testing', () => {
@@ -2039,10 +2041,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(true);
         });
         it('Items - enableTab as true', () => {
             tab = new Tab({
@@ -2054,13 +2060,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(true);
             tab.enableTab(1, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Items - enableTab as false to active item', () => {
             tab = new Tab({
@@ -2072,9 +2084,12 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(0, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(true);
             expect(tab.selectedItem).toEqual(1);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-active')).toEqual(true);
         });
@@ -2088,10 +2103,15 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);        
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(2, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Items - enableTab as true with unknown index', () => {
             tab = new Tab({
@@ -2103,13 +2123,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(2, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(2, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Items - enableTab as false with negative index', () => {
             tab = new Tab({
@@ -2121,10 +2147,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(-1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Items - enableTab as true with negative index', () => {
             tab = new Tab({
@@ -2136,13 +2166,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(-1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(-1, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Items - enableTab as false with NaN index', () => {
             tab = new Tab({
@@ -2154,10 +2190,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(NaN, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Items - enableTab as true with NaN index', () => {
             tab = new Tab({
@@ -2169,13 +2209,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(NaN, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(NaN, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as false', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2186,10 +2232,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(true);
         });
         it('Template - enableTab as true', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2200,13 +2250,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(true);
             tab.enableTab(1, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as false to active item', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2217,9 +2273,12 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(0, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(true);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(true);
             expect(tab.selectedItem).toEqual(1);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-active')).toEqual(true);
         });
@@ -2232,10 +2291,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(2, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as true with unknown index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2246,13 +2309,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(2, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(2, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as false with negative index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2263,10 +2332,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(-1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as true with negative index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2277,13 +2350,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(-1, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(-1, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as false with NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2294,10 +2373,14 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(NaN, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
         it('Template - enableTab as true with NaN index', () => {
             let ele: HTMLElement = document.getElementById('ej2Tab');
@@ -2308,13 +2391,19 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(NaN, false);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
             tab.enableTab(NaN, true);
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
+            expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
         });
     });
     describe('addTab method testing', () => {
@@ -4528,7 +4617,7 @@ describe('Tab Control', () => {
             expect(element.querySelector('.e-content #e-content_5').innerHTML).toEqual('Content5');
         });
     });
-    describe('Scrollable mode - Active item focusd view testing', () => {
+    describe('Scrollable mode - Active item focused view testing', () => {
         let tab: any;
         let keyEventArgs: any;
         let toolbar: DomElements;
@@ -5841,12 +5930,12 @@ describe('Tab Control', () => {
             L10n.load({
                 'fr-BE': {
                     'tab': {
-                        'title': "Cls",
+                        'closeButtonTitle': "Cls",
                     }
                 },
                 'en-US': {
                     'tab': {
-                        'title': 'Close',
+                        'closeButtonTitle': 'Close',
                     }
                 }
             });
@@ -6834,6 +6923,32 @@ describe('Tab Control', () => {
             }
             document.body.innerHTML = '';
         });
+        it('ID based content template testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: "#templateId" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('.e-content #e-content_0 #templateId')).not.toEqual(undefined);
+            expect(element.querySelector('.e-content #e-content_0 #templateId .content-template').innerHTML).toEqual('Content Template');
+        });
+        it('Class based content template testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: ".templateId" },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('.e-content #e-content_0 .templateId')).not.toEqual(undefined);
+            expect(element.querySelector('.e-content #e-content_0 .templateId .content-template').innerHTML).toEqual('Content Template');
+        });
         it('heightAdjustMode with class based content template testing', () => {
             tab = new Tab({
                 heightAdjustMode: 'Auto',
@@ -6859,6 +6974,32 @@ describe('Tab Control', () => {
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
             expect(element.querySelector('.e-content #e-content_0').innerHTML).toEqual('<div>.templateIdui</div>');
+        });
+        it('HTMLElement with ID based content template testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: document.getElementById('templateId') },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('.e-content #e-content_0 #templateId')).not.toEqual(undefined);
+            expect(element.querySelector('.e-content #e-content_0 #templateId .content-template').innerHTML).toEqual('Content Template');
+        });
+        it('HTMLElement with class based content template testing', () => {
+            tab = new Tab({
+                items: [
+                    { header: { "text": "item1" }, content: <HTMLElement>document.getElementsByClassName('templateId')[0] },
+                    { header: { "text": "item2" }, content: "Content2" }
+                ]
+            });
+            tab.appendTo('#ej2Tab');
+            let element: HTMLElement = document.getElementById('ej2Tab');
+            expect(element.querySelector('#e-item_0').classList.contains('e-active')).toEqual(true);
+            expect(element.querySelector('.e-content #e-content_0 .templateId')).not.toEqual(undefined);
+            expect(element.querySelector('.e-content #e-content_0 .templateId .content-template').innerHTML).toEqual('Content Template');
         });
     });
     describe('Onproperty change testing for items', () => {
@@ -6911,6 +7052,7 @@ describe('Tab Control', () => {
             expect(tab.items[1].content).toEqual('Content1');
             expect(tab.items[1].disabled).toEqual(true);
             expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-overlay')).toEqual(true);
             expect(tab.items[1].cssClass).toEqual('tabCssClass1');
             expect(tab.items[1].header instanceof Object).toEqual(true);
             expect(tab.items[1].header.text).toEqual('item1');
@@ -6953,7 +7095,8 @@ describe('Tab Control', () => {
             tab = new Tab({
                 items: [
                     { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1" },
-                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2" }
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2" },
+                    { content: "Content3", cssClass: "tabCssClass3" }
                 ]
              });
             tab.appendTo('#ej2Tab');
@@ -6976,31 +7119,42 @@ describe('Tab Control', () => {
             expect(tab.element.querySelector('#e-item_0').classList.contains('test1')).toEqual(true);
             expect(tab.element.querySelector('#e-item_1').classList.contains('tabCssClass2')).not.toEqual(true);
             expect(tab.element.querySelector('#e-item_1').classList.contains('test2')).toEqual(true);
+            tab.items[2].cssClass = 'test3';
+            tab.dataBind();
+            expect(tab.items[2].cssClass).toEqual('test3');
         });
         it('Items - disabled property change testing', () => {
             tab = new Tab({
                 items: [
                     { header: { "text": "item1", "iconCss": "e-icon", "iconPosition": "right" }, content: "Content1", cssClass: "tabCssClass1", disabled: true },
-                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2", disabled: false }
+                    { header: { "text": "item2", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content2", cssClass: "tabCssClass2", disabled: false },
+                    { header: { "text": "item3", "iconCss": "e-icon", "iconPosition": "left" }, content: "Content3", cssClass: "tabCssClass2", disabled: true }
                 ]
              });
             tab.appendTo('#ej2Tab');
             expect(tab.items[0].disabled).toEqual(true);
             expect(tab.items[1].disabled).toEqual(false);
             expect(tab.element.querySelector('#e-item_0').classList.contains('e-disable')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-overlay')).toEqual(true);
             expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(false);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-overlay')).toEqual(false);
             tab.items[0].disabled = false;
             tab.dataBind();
             expect(tab.items[0].disabled).toEqual(false);
             expect(tab.items[1].disabled).toEqual(false);
             expect(tab.element.querySelector('#e-item_0').classList.contains('e-disable')).toEqual(false);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-overlay')).toEqual(false);
             expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(false);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-overlay')).toEqual(false);
             tab.items[1].disabled = true;
             tab.dataBind();
+            tab.select(1);
             expect(tab.items[0].disabled).toEqual(false);
             expect(tab.items[1].disabled).toEqual(true);
             expect(tab.element.querySelector('#e-item_0').classList.contains('e-disable')).toEqual(false);
+            expect(tab.element.querySelector('#e-item_0').classList.contains('e-overlay')).toEqual(false);
             expect(tab.element.querySelector('#e-item_1').classList.contains('e-disable')).toEqual(true);
+            expect(tab.element.querySelector('#e-item_1').classList.contains('e-overlay')).toEqual(true);
         });
         it('Items - header each single property testing', () => {
             tab = new Tab({

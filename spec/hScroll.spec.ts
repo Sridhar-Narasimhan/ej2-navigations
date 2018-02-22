@@ -60,6 +60,8 @@ describe('Horizontal scroll bar Base items', () => {
             scroll = new HScroll({}, ele);
             expect((<HTMLElement>ele.querySelector('.e-hscroll-content')).childElementCount == 3).toEqual(true);
             expect(ele.childElementCount).toBe(3);
+            expect(ele.children[0].id).toBe("inneritems_nav_left");
+            expect(ele.children[2].id).toBe("inneritems_nav_right");
         });
     });
     describe('HSCrollbar Persistance Testing', () => {
@@ -212,7 +214,7 @@ describe('Horizontal scroll bar Base items', () => {
             let ele: HTMLElement = document.createElement('div');
             ele.style.overflow = 'hidden';
             ele.id = 'Sample';
-            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' style='display: inline-block;'><button> Stylllllle</button></div></div>";
+            ele.innerHTML = "<div id= 'inneritems' style='display: inline-block;'><div id='item' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' class='e-overlay' style='display: inline-block;'><button> Stylllllle</button></div><div id='item' class='e-overlay' style='display: inline-block;'><button> Stylllllle</button></div></div>";
             setStyleAttribute(ele, { width: '50px', 'white-space': 'nowrap' });
             document.body.appendChild(ele);
         });
@@ -237,11 +239,17 @@ describe('Horizontal scroll bar Base items', () => {
             navEleRight.click();
             scrollEle.dispatchEvent(scrollEvent);
             expect(navEle.parentElement.classList.contains('e-overlay')).toBe(false);
+            expect(scrollEle.firstElementChild.children[2].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[1].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[0].classList.contains('e-overlay')).toBe(false);
             expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('false');
             expect(navEle.parentElement.getAttribute('tabindex')).toBe('0');
             scrollEle.dispatchEvent(scrollEvent);
             navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
+            expect(scrollEle.firstElementChild.children[2].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[1].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[0].classList.contains('e-overlay')).toBe(false);
             expect(navEle.parentElement.classList.contains('e-overlay')).toBe(true);
             expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('true');
             expect(navEle.parentElement.getAttribute('tabindex')).toBe(null);
@@ -254,6 +262,9 @@ describe('Horizontal scroll bar Base items', () => {
             navEleRight.click();
             navEleRight.click();
             scrollEle.dispatchEvent(scrollEvent);
+            expect(scrollEle.firstElementChild.children[2].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[1].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[0].classList.contains('e-overlay')).toBe(false);
             expect(navEleRight.parentElement.classList.contains('e-overlay')).toBe(true);
             expect(navEleRight.parentElement.getAttribute('aria-disabled')).toBe('true');
             expect(navEleRight.parentElement.getAttribute('tabindex')).toBe(null);
@@ -266,6 +277,9 @@ describe('Horizontal scroll bar Base items', () => {
             navEle.click();
             navEle.click();navEle.click();
             scrollEle.dispatchEvent(scrollEvent);
+            expect(scrollEle.firstElementChild.children[2].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[1].classList.contains('e-overlay')).toBe(true);
+            expect(scrollEle.firstElementChild.children[0].classList.contains('e-overlay')).toBe(false);
             expect(navEle.parentElement.classList.contains('e-overlay')).toBe(true);
             expect(navEle.parentElement.getAttribute('aria-disabled')).toBe('true');
             expect(navEle.parentElement.getAttribute('tabindex')).toBe(null);

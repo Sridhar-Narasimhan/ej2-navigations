@@ -19,6 +19,7 @@
         }
 
     &.e-right.e-close {
+      box-shadow: none;
       transform: translateX(100%);
       transition: transform .5s ease, visibility 500ms;
       visibility: hidden;
@@ -30,13 +31,19 @@
       visibility: visible;
 	}
 
-    &.e-left.e-close {
-      transform: translateX(-100%);
+    &.e-left.e-transition.e-close,
+    &.e-right.e-transition.e-close {
       transition: transform .5s ease, visibility 500ms;
+	}
+
+    &.e-left.e-close {
+      box-shadow: none;
+      transform: translateX(-100%);
       visibility: hidden;
         }
 
     &.e-right.e-close {
+      box-shadow: none;
       transform: translateX(100%);
       transition: transform .5s ease, visibility 500ms;
       visibility: hidden;
@@ -58,6 +65,13 @@
 
     &.e-left.e-close.e-dock {
       transform: translateX(0%);
+      transition: transform ease;
+      visibility: visible;
+    }
+
+    &.e-right.e-close.e-dock {
+      transform: translateX(0%);
+      transition: transform ease;
       visibility: visible;
     }
 
@@ -77,14 +91,15 @@
     }
     }
 
-  .e-context-absolute {
+  .e-sidebar-absolute {
 
     position: absolute;
 
    }
 
-  .e-context-relative {
+  .e-sidebar-context {
 
+    overflow-x: hidden;
     position: relative;
 
    }
@@ -102,9 +117,9 @@
 
 	}
 
-  .e-content {
+  .e-content-animation {
 
-    transition: transform .3s ease-in-out, margin .3s ease-in-out;
+    transition: margin .5s ease, -webkit-transform .5s ease, transform .5s ease;
 
     &.e-overlay {
       box-sizing: border-box;
@@ -112,6 +127,12 @@
       user-select: none;
     }
 }
+
+  // sass-lint:disable-all
+  .e-sidebar-overflow {
+        overflow-x: hidden !important;
+    }
+  // sass-lint:enable-all
 
   .e-sidebar-overlay {
     background-color: $sidebar-overlay;

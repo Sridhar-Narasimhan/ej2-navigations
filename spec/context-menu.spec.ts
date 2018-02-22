@@ -1072,7 +1072,7 @@ describe('ContextMenu', () => {
         it('Prerender Checking', () => {
             ul.remove();
             document.body.appendChild(div);
-            document.body.appendChild(createElement('EJ-CONTEXTMENU', { id: 'contextmenu' }));
+            document.body.appendChild(createElement('EJS-CONTEXTMENU', { id: 'contextmenu' }));
             contextMenu = new ContextMenu(options, '#contextmenu');
             expect(contextMenu.element.parentElement.tagName).toEqual('DIV');
             expect(contextMenu.element.parentElement.classList.contains('e-contextmenu-wrapper')).toEqual(true);

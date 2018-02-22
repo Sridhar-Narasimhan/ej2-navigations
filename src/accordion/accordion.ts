@@ -3,14 +3,13 @@ import { KeyboardEventArgs, BaseEventArgs, Effect, getUniqueID, compile as templ
 import { addClass, isVisible, closest, attributes, classList, detach, select } from '@syncfusion/ej2-base';
 import { INotifyPropertyChanged, NotifyPropertyChanges, ChildProperty, Collection, Animation } from '@syncfusion/ej2-base';
 import { createElement as buildTag, setStyleAttribute as setStyle, Complex  } from '@syncfusion/ej2-base';
-import { isNullOrUndefined as isNOU, formatUnit } from '@syncfusion/ej2-base';
+import { isNullOrUndefined as isNOU, formatUnit, selectAll } from '@syncfusion/ej2-base';
 import { AccordionModel, AccordionItemModel, AccordionAnimationSettingsModel, AccordionActionSettingsModel } from './accordion-model';
 
 /**
  * Specifies the option to expand single or multiple panel at a time.
  */
 export type ExpandMode  = 'Single' | 'Multiple';
-
 
 type HTEle = HTMLElement;
 type Str = string;
@@ -55,24 +54,23 @@ export interface ExpandEventArgs extends BaseEventArgs {
   /** Defines the prevent action. */
   cancel?: boolean;
 }
-export type AccordionEffect = 'None' |Effect;
 
 export class AccordionActionSettings extends ChildProperty<AccordionActionSettings> {
   /**
    * Specifies the type of animation.
-   * @default : 'SlideDown';
+   * @default : 'SlideDown'
    */
   @Property('SlideDown')
-  public effect: AccordionEffect;
+  public effect: 'None' | Effect;
   /**
    * Specifies the duration to animate.
-   * @default : 400;
+   * @default : 400
    */
   @Property(400)
   public duration: number;
   /**
    * Specifies the animation timing function.
-   * @default : 'linear';
+   * @default : 'linear'
    */
   @Property('linear')
   public easing: string;
@@ -81,13 +79,13 @@ export class AccordionActionSettings extends ChildProperty<AccordionActionSettin
 export class AccordionAnimationSettings extends ChildProperty<AccordionAnimationSettings> {
   /**
    * Specifies the animation to appear while collapsing the Accordion item.
-   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }.
+   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
    */
   @Complex<AccordionActionSettingsModel>({ effect: 'SlideUp', duration: 400, easing: 'linear' }, AccordionActionSettings)
   public collapse: AccordionActionSettingsModel;
   /**
    * Specifies the animation to appear while expanding the Accordion item.
-   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }.
+   * @default { effect: 'SlideDown', duration: 400, easing: 'linear' }
    */
   @Complex<AccordionActionSettingsModel>({ effect: 'SlideDown', duration: 400, easing: 'linear' }, AccordionActionSettings)
   public expand: AccordionActionSettingsModel;
@@ -109,7 +107,7 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
      *        });
      *   accordionObj.appendTo('#accordion');
      * ```
-     * @default undefined.
+     * @default undefined
      */
     @Property(undefined)
     public content : string;
@@ -126,7 +124,7 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
      *        });
      *   accordionObj.appendTo('#accordion');
      * ```
-     * @default undefined.
+     * @default undefined
      */
     @Property(undefined)
     public header : string;
@@ -158,7 +156,7 @@ export class AccordionItem extends ChildProperty<AccordionItem>  {
     public iconCss : string;
     /**
      * Sets the expand (true) or collapse (false) state of the Accordion item. By default, all the items are in a collapsed state.
-     * @default 'false'.
+     * @default 'false'
      */
     @Property(false)
     public expanded  : Boolean;
@@ -185,6 +183,7 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     private initExpand: number[];
     private isNested: Boolean;
     private isDestroy: Boolean;
+    private templateEle: string[];
     /**
      * Contains the keyboard configuration of the Accordion.
      */
@@ -218,7 +217,7 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     public width: string | number;
     /**
      * Specifies the height of the Accordion in pixels/number/percentage. Number value is considered as pixels.
-     * @default 'auto'.
+     * @default 'auto'
      */
     @Property('auto')
     public height: string | number;
@@ -227,14 +226,14 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
      * The possible values are:
      * - Single: Sets to expand only one Accordion item at a time.
      * - Multiple: Sets to expand more than one Accordion item at a time.
-     * @default 'Multiple'.
+     * @default 'Multiple'
      */
     @Property('Multiple')
     public expandMode : ExpandMode;
     /**
      * Specifies the animation configuration settings for expanding and collapsing the panel.
      * @default { expand: { effect: 'SlideDown', duration: 400, easing: 'linear' },
-     * collapse: { effect: 'SlideUp', duration: 400, easing: 'linear' }}.
+     * collapse: { effect: 'SlideUp', duration: 400, easing: 'linear' }}
      */
     @Complex<AccordionAnimationSettingsModel>({}, AccordionAnimationSettings)
     public animation: AccordionAnimationSettingsModel;
@@ -286,6 +285,9 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       super.destroy();
       this.unwireEvents();
       this.isDestroy = true;
+      this.templateEle.forEach((eleStr: Str): void => {
+        (<HTEle>document.body.appendChild(this.element.querySelector(eleStr))).style.display = 'none';
+      });
       while (ele.firstChild) {
         ele.removeChild(ele.firstChild); }
       if (this.trgtEle) {
@@ -299,6 +301,7 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
     protected preRender(): void {
         let nested: Element = closest(this.element, '.' + CLS_CONTENT);
         this.isNested = false;
+        this.templateEle = [];
         if (!this.isDestroy) {
           this.isDestroy = false; }
         if (!isNOU(nested)) {
@@ -528,10 +531,11 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       }
     }
     private keyActionHandler(e: KeyboardEventArgs): void {
+      let trgt: HTEle = <HTEle>e.target;
+      if (trgt.tagName === 'INPUT') { return; }
       e.preventDefault();
       let clst: HTEle;
       let root: HTEle = this.element;
-      let trgt: HTEle = <HTEle>e.target;
       let content: HTEle;
       switch (e.action) {
         case 'moveUp':
@@ -611,10 +615,10 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       let temString: Str;
       try {
         if (document.querySelectorAll(value).length) {
-          let eleVal: Element = document.querySelector(value);
+          let eleVal: HTEle = <HTEle>document.querySelector(value);
           temString = eleVal.outerHTML.trim();
-          templateFn = templateCompiler(temString);
-          detach(eleVal);
+          ele.appendChild(eleVal);
+          eleVal.style.display = '';
         }
       } catch (e) {
         templateFn = templateCompiler(value);
@@ -626,15 +630,11 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
           }
           ele.appendChild(el);
         });
-        if (!isNOU(temString)) {
-          if (isHeader) {
-            this.items[index].header = temString;
-          } else {
-            this.items[index].content = temString;
-          }
-        }
-      } else {
+      } else if (ele.childElementCount === 0) {
           ele.innerHTML = value;
+      }
+      if (!isNOU(temString)) {
+        this.templateEle.push(value);
       }
       return ele;
     }
@@ -677,7 +677,7 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       if (!isNOU(expandState)) {
         expandState.classList.remove(CLS_EXPANDSTATE); }
       trgtItemEle.classList.add(CLS_EXPANDSTATE);
-      if ((animation.name === <AccordionEffect>'None')) {
+      if ((animation.name === <Effect>'None')) {
         this.expandProgress('begin', icon, trgt, trgtItemEle, eventArgs);
         this.expandProgress('end', icon, trgt, trgtItemEle, eventArgs);
         return;
@@ -756,7 +756,7 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       this.expandedItemsPop(trgtItemEle);
       trgtItemEle.classList.add(CLS_EXPANDSTATE);
       icon.classList.add(CLS_TOGANIMATE);
-      if ((animation.name === <AccordionEffect>'None')) {
+      if ((animation.name === <Effect>'None')) {
         this.collapseProgress('begin', icon, trgt, trgtItemEle, eventArgs);
         this.collapseProgress('end', icon, trgt, trgtItemEle, eventArgs);
         return;
@@ -966,6 +966,17 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       }
       isExpand ? this.expand(ctn) : this.collapse(ctn);
     }
+    private destroyItems(): void {
+      [].slice.call(this.element.querySelectorAll('.' + CLS_ITEM)).forEach ((el: HTEle) => { detach(el); });
+    }
+    private updateItem(item: HTEle, index: number): void {
+      if (!isNOU(item)) {
+        let itemObj: Object = this.items[index];
+        this.items.splice(index, 1);
+        detach(item);
+        this.addItem(itemObj, index);
+      }
+    }
     protected getPersistData(): string {
         let keyEntity: string[] = ['expandedItems'];
         return this.addOnPersist(keyEntity);
@@ -981,6 +992,31 @@ export class Accordion extends Component<HTMLElement> implements INotifyProperty
       let acrdn: HTEle = this.element;
       for (let prop of Object.keys(newProp)) {
         switch (prop) {
+          case 'items':
+            if (!(newProp.items instanceof Array && oldProp.items instanceof Array)) {
+              let changedProp: Object[] = Object.keys(newProp.items);
+              for (let i : number = 0; i < changedProp.length; i++) {
+                let index: number =  parseInt(Object.keys(newProp.items)[i], 10);
+                let property: Str = Object.keys(newProp.items[index])[0];
+                let oldVal: Str = Object(oldProp.items[index])[property];
+                let newVal: Str = Object(newProp.items[index])[property];
+                let item: HTEle = <HTEle> selectAll('.' + CLS_ITEM, this.element)[index];
+                if (property === 'header' || property === 'iconCss' || property === 'expanded') { this.updateItem(item, index); }
+                if (property === 'cssClass' && !isNOU(item)) {
+                  item.classList.remove(oldVal);
+                  item.classList.add(newVal);
+                }
+                if (property === 'content' && !isNOU(item) && item.children.length === 2) {
+                  if (item.classList.contains(CLS_SLCTED)) { this.expandItem(false, index); }
+                  detach(item.querySelector('.' + CLS_CONTENT));
+                }
+              }
+            } else {
+              this.destroyItems();
+              this.renderItems();
+              this.initItemExpand();
+            }
+            break;
           case 'enableRtl':
             newProp.enableRtl ? this.add(acrdn, CLS_RTL) : this.remove(acrdn, CLS_RTL);
             break;

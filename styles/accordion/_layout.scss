@@ -7,6 +7,10 @@
 
       .e-acrdn-header .e-acrdn-header-content {
         font-size: $acrdn-header-font-bgr-size;
+
+        @if $skin-name == 'highcontrast' {
+          font-size: 14px;
+        }
       }
     }
 
@@ -56,6 +60,10 @@
 
       .e-acrdn-panel .e-acrdn-content {
         padding: $acrdn-bgr-content-padding;
+
+        @if $skin-name == 'highcontrast' {
+          font-size: 13px;
+        }
 
         .e-acrdn-panel {
 
@@ -182,8 +190,12 @@
       }
 
       > .e-acrdn-header .e-acrdn-header-content {
-        font-weight: $acrdn-header-font-weight;
-      }
+        font-weight: $acrdn-slct-header-font-weight;
+
+        @if $skin-name == 'highcontrast' {
+          font-weight: 600;
+          }
+        }
 
       &.e-selected {
         padding-top: 0;
@@ -191,7 +203,6 @@
         > .e-acrdn-header .e-acrdn-header-content {
           font-weight: $acrdn-slct-header-font-weight;
         }
-
       }
     }
 
@@ -299,8 +310,12 @@
             }
           }
 
-          .e-acrdn-item.e-select.e-selected .e-acrdn-header > .e-acrdn-header-content  {
+          .e-acrdn-item.e-select.e-selected .e-acrdn-header > .e-acrdn-header-content {
             font-weight: normal;
+
+            @if $skin-name == 'highcontrast' {
+              font-weight: 600;
+            }
           }
 
           .e-nested .e-accordion .e-acrdn-item .e-acrdn-header .e-acrdn-header-content {

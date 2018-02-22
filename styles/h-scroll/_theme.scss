@@ -14,20 +14,27 @@
         &.e-scroll-left-nav {
           border-left: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
           border-right: 0;
-      }
+        }
 
         &.e-scroll-right-nav {
           border-left: 0;
           border-right: $hscroll-border-size $hscroll-border-type $hscroll-default-border;
-      }
+        }
 
         &:hover {
           background: $hscroll-hover-bg;
           border: $hscroll-hover-border;
           border-color: $hscroll-hover-border-color;
           color: $hscroll-hover-font;
+
+          @if $skin-name == 'highcontrast' {
+
+            &:active {
+              background: $hscroll-press-bg;
+            }
+          }
         }
-       }
+      }
     }
 
     .e-scroll-nav  {
@@ -46,6 +53,11 @@
         border: $hscroll-focus-border;
         border-color: $hscroll-hover-border-color;
         color: $hscroll-hover-font;
+
+        @if $skin-name == 'highcontrast' {
+          background: inherit;
+          border: $hscroll-dash-border;
+        }
       }
 
       &::after {
@@ -60,6 +72,14 @@
         background: $hscroll-hover-bg;
         border: $hscroll-hover-border;
         color: $hscroll-hover-font;
+
+        @if $skin-name == 'highcontrast' {
+          border: 2px solid $hover-border;
+
+          &:active {
+            border: 0;
+          }
+        }
       }
 
       &:active {
@@ -67,7 +87,12 @@
         border: $hscroll-active-border;
         box-shadow: $hscroll-active-box-shadow;
         color: $hscroll-active-font-color;
+        @if $skin-name == 'highcontrast' {
+          .e-icons {
+            color: $selection-font;
+          }
+        }
       }
-      }
- }
- }
+    }
+  }
+}

@@ -80,31 +80,6 @@
     .e-checkbox-wrapper {
       margin: $treeview-big-check-margin;
 
-      & .e-frame {
-        height: $bigger-small-height;
-        line-height: $bigger-small-lineheight;
-        margin: 0;
-        width: $bigger-small-width;
-      }
-
-      & .e-check {
-        font-size: $bigger-small-check-fontsize;
-      }
-
-      & .e-stop {
-        font-size: $bigger-small-indeterminate-fontsize;
-        line-height: $bigger-small-indeterminate-lineheight;
-      }
-
-      & .e-ripple-container {
-        bottom: $ripple-bigger-small-size;
-        height: $ripple-bigger-small-height;
-        left: $ripple-bigger-small-size;
-        right: $ripple-bigger-small-size;
-        top: $ripple-bigger-small-size;
-        width: $ripple-bigger-small-width;
-      }
-
       & + .e-list-icon,
       & + .e-list-img {
         margin: $treeview-big-check-image-margin;
@@ -393,10 +368,10 @@
       }
 
       .e-drop-count {
-        border: 1px solid;
+        border: $treeview-drop-count-border-size solid;
         border-radius: 15px;
         box-sizing: content-box;
-        font-size: 13px;
+        font-size: $treeview-drop-count-font-size;
         line-height: normal;
         margin-left: -12px;
         min-width: 12px;

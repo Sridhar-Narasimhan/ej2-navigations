@@ -1,5 +1,6 @@
 /*! Bootstrap theme definition's */
 /*! component's theme wise override definitions and variables */
+$skin-name: 'bootstrap';
 $tab-text-transform: capitalize;
 $tab-big-height: 50px;
 $tab-nrml-height: 40px;
@@ -34,6 +35,8 @@ $tab-border-color: $grey;
 $tab-disable-border-color: rgba($grey, .38);
 $tab-alt-border-color: $grey;
 $tab-alt-disable-border-color: rgba($grey, .38);
+$tab-bg-color: transparent;
+$tab-border: none;
 
 $tab-alt-hdr-bg-color: inherit;
 $tab-focus-hscroll-content-padding: 1px 0;
@@ -81,9 +84,9 @@ $tab-nrml-rtl-item-margin: 1px 0 -4px 2px;
 $tab-big-rtl-alt-item-margin: 0 0 0 2px;
 $tab-nrml-rtl-alt-item-margin: 0 0 0 2px;
 $tab-mob-pop-item-height: 50px;
-$tab-ripple-bg-color: rgba($grey, .12);
-$tab-fill-ripple-bg-color: rgba($grey, .05);
-$tab-alt-ripple-bg-color: rgba($grey, .1);
+$tab-ripple-bg-color: rgba($grey, 0);
+$tab-fill-ripple-bg-color: rgba($grey, 0);
+$tab-alt-ripple-bg-color: rgba($grey, 0);
 $tab-item-border: 1px solid transparent;
 $tab-alt-item-border: 0;
 $tab-active-item-border: 1px solid #ddd;
@@ -268,10 +271,14 @@ $tab-rtl-big-pop-close-icon-margin: 0;
 $tab-rtl-nrml-pop-close-icon-margin: 0;
 $tab-big-close-icon-top-bottom-right: 20px;
 $tab-nrml-close-icon-top-bottom-right: 15px;
+$tab-big-pop-close-icon-top-bottom-right: 24px;
+$tab-nrml-pop-close-icon-top-bottom-right: 20px;
 $tab-rtl-big-close-icon-top-bottom-right: 0;
 $tab-rtl-nrml-close-icon-top-bottom-right: 0;
 $tab-rtl-big-close-icon-top-bottom-left: 20px;
 $tab-rtl-nrml-close-icon-top-bottom-left: 15px;
+$tab-rtl-big-pop-close-icon-top-bottom-left: 24px;
+$tab-rtl-nrml-pop-close-icon-top-bottom-left: 20px;
 $tab-pop-close-icon-right: 16px;
 $tab-pop-close-icon-top: 0;
 $tab-rtl-pop-close-icon-left: 16px;

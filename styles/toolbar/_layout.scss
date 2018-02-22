@@ -77,13 +77,20 @@
     .e-toolbar-item {
 
       .e-tbar-btn-text {
-        line-height: inherit;
+        line-height: $tbar-btn-txt-line-height;
+
+        @if $skin-name == 'bootstrap' {
+          line-height: inherit;
+        }
       }
     }
 
     .e-toolbar-pop {
 
       .e-toolbar-item {
+        @if $skin-name == 'material' {
+          height: 48px;
+        }
 
         &:not(.e-separator) {
           min-width: 48px;
@@ -106,12 +113,17 @@
             padding: $tbar-pop-icon-bgr-padding;
           }
 
+          .e-icon-left {
+            @if $skin-name == 'material' {
+              padding-right: 16px;
+            }
+          }
+
           .e-tbar-btn-text {
             padding: $tbar-pop-btn-txt-bgr-pad;
           }
-
-         }
-     }
+        }
+      }
     }
 
     .e-toolbar-items {
@@ -146,6 +158,16 @@
           }
       }
 
+      &.e-tbar-pos {
+        .e-toolbar-left,
+        .e-toolbar-center,
+        .e-toolbar-right {
+          @if $skin-name == 'bootstrap' {
+            top: 1px;
+          }
+        }
+      }
+
       .e-toolbar-item {
         min-height: $tbar-bgr-items-size;
 
@@ -161,6 +183,8 @@
         }
 
         .e-icons {
+          line-height: $tbar-btn-icon-bgr-line-height;
+          min-height: $tbar-btn-icon-bgr-height;
           min-width: $tbar-btn-icon-bgr-width;
         }
 
@@ -187,6 +211,8 @@
           padding: $tbar-btn-bgr-padding;
 
           @if $skin-name == 'bootstrap' {
+            line-height: 34px;
+
             &:focus {
               padding: 0 6px;
             }
@@ -251,6 +277,10 @@
         display: inline-block;
         padding: $btn-txt-nrml-padding;
      }
+
+      &.e-hidden {
+        display: none;
+     }
     }
 
     &.e-corner {
@@ -264,6 +294,10 @@
       position: absolute;
 
       .e-toolbar-item  {
+
+        &.e-toolbar-popup.e-hidden {
+          display: none;
+        }
 
         .e-tbar-btn.e-btn {
           display: inline-flex;
@@ -283,10 +317,15 @@
             width: auto;
           }
 
+          .e-icon-left {
+            @if $skin-name == 'material' {
+              padding-right: 16px;
+            }
+          }
+
           .e-tbar-btn-text {
             padding: $tbar-pop-btn-txt-nrml-pad;
           }
-
        }
 
         .e-icons {
@@ -304,7 +343,7 @@
           .e-icons {
             min-width: 100%;
           }
-      }
+        }
       }
 
       .e-toolbar-item {
@@ -313,6 +352,10 @@
         display: flex;
         height: auto;
         justify-content: center;
+
+        @if $skin-name == 'material' {
+          height: 36px;
+        }
 
         > * {
           height: 100%;
@@ -327,9 +370,8 @@
 
       .e-toolpopup {
         text-align: center;
-       }
-
       }
+    }
 
     .e-toolbar-popup {
       text-align: center;
@@ -394,7 +436,7 @@
 
           .e-toolbar-item:last-child {
             margin-left: $tbar-item-nrml-mrgn;
-            }
+          }
         }
 
         &:not(.e-tbar-pos) {
@@ -403,7 +445,7 @@
             margin-left: 0;
             margin-right: $tbar-item-nrml-mrgn;
           }
-      }
+        }
 
         &:first-child {
 
@@ -419,14 +461,14 @@
                 margin-left: 0;
                 margin-right: $tbar-item-nrml-mrgn;
               }
-          }
+            }
 
             .e-toolbar-center {
 
               .e-toolbar-item:last-child {
                 margin-right: 0;
-          }
-          }
+              }
+            }
 
             .e-toolbar-right {
 
@@ -435,33 +477,43 @@
                 &:last-child {
                   margin-left: $tbar-item-nrml-mrgn;
                   margin-right: 0;
-              }
+                }
 
                 &:first-child {
                   margin-right: 0;
+                }
               }
             }
-          }
 
             .e-toolbar-item:last-child {
               margin-left: $tbar-item-nrml-mrgn;
               margin-right: 0;
-           }
-        }
+            }
+          }
 
           > .e-toolbar-item:last-child,
           > .e-toolbar-right .e-toolbar-item {
 
             &:last-child {
               margin-right: 0;
-         }
+            }
 
             &:first-child {
               margin-right: $tbar-item-nrml-mrgn;
-        }
+            }
+          }
         }
       }
-    }
+
+      .e-toolbar-pop {
+
+        .e-toolbar-item .e-tbar-btn.e-btn .e-icon-left {
+          @if $skin-name == 'material' {
+            padding-left: 16px;
+            padding-right: 0;
+          }
+        }
+      }
 
       .e-hor-nav {
         left: $tbar-zero-value;
@@ -469,7 +521,7 @@
         @if $skin-name == 'bootstrap' {
           border-radius: $tbar-radius 0 0 $tbar-radius;
         }
-    }
+      }
     }
 
     .e-hor-nav {
@@ -484,7 +536,6 @@
       right: $tbar-zero-value;
       top: $tbar-zero-value;
       width: $tbar-nav-nrml-width;
-      z-index: 100;
 
       &.e-ie-align {
         display: table;
@@ -503,8 +554,16 @@
       border-radius:  $tbar-radius 0 0 $tbar-radius;
       display: inline-block;
       height: 100%;
+      margin: 1px 0;
       min-height: $tbar-nrml-items-size;
       vertical-align: middle;
+
+      .e-toolbar-item {
+        .e-icons {
+          line-height: $tbar-btn-icon-nrml-line-height;
+          min-height: $tbar-btn-icon-nrml-height;
+        }
+      }
 
       &.e-tbar-pos {
         display: block;
@@ -526,8 +585,13 @@
           right: 0;
         }
 
+        .e-toolbar-right .e-toolbar-item .e-tbar-btn {
+          line-height: $tbar-right-item-line-height;
+        }
+
         .e-toolbar-left {
           left: 0;
+          line-height: $tbar-left-item-line-height;
         }
 
         .e-toolbar-center {
@@ -675,18 +739,32 @@
           padding: $tbar-btn-nrml-padding;
 
           @if $skin-name == 'bootstrap' {
+            line-height: 27px;
+
             &:focus {
               padding: 0 1.5px;
-              }
+            }
 
             &:hover {
               padding: 0 1.5px;
-              }
+            }
 
             &:active {
               padding: 0 1.5px;
-              }
             }
+          }
+
+          @if $skin-name == 'highcontrast' {
+            &:focus {
+              outline: none;
+            }
+          }
+
+          @if $skin-name == 'fabric' {
+            &:focus {
+              outline: none;
+            }
+          }
 
           &.e-tbtn-txt {
 

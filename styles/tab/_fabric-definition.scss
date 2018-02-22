@@ -1,5 +1,6 @@
 /*! Fabric theme definition's */
 /*! component's theme wise override definitions and variables */
+$skin-name: 'fabric';
 $tab-text-transform: capitalize;
 $tab-big-height: 50px;
 $tab-nrml-height: 40px;
@@ -34,6 +35,8 @@ $tab-border-color: $theme-primary;
 $tab-disable-border-color: $neutral-tertiary;
 $tab-alt-border-color: $theme-primary;
 $tab-alt-disable-border-color: $neutral-tertiary;
+$tab-bg-color: transparent;
+$tab-border: none;
 
 $tab-alt-hdr-bg-color: $neutral-lighter;
 $tab-focus-hscroll-content-padding: 1px 0;
@@ -170,8 +173,8 @@ $tab-rtl-big-text-container-margin-right: 0;
 $tab-rtl-nrml-text-container-margin-right: 0;
 $tab-rtl-big-text-container-margin-left: 22px;
 $tab-rtl-nrml-text-container-margin-left: 20px;
-$tab-big-active-text-container-height: 48px;
-$tab-nrml-active-text-container-height: 38px;
+$tab-big-active-text-container-height: 50px;
+$tab-nrml-active-text-container-height: 40px;
 $tab-big-active-it-text-container-height: 50px;
 $tab-nrml-active-it-text-container-height: 40px;
 $tab-fill-big-active-it-text-container-height: 48px;
@@ -269,10 +272,14 @@ $tab-rtl-big-pop-close-icon-margin: 0;
 $tab-rtl-nrml-pop-close-icon-margin: 0;
 $tab-big-close-icon-top-bottom-right: 8px;
 $tab-nrml-close-icon-top-bottom-right: 8px;
+$tab-big-pop-close-icon-top-bottom-right: 16px;
+$tab-nrml-pop-close-icon-top-bottom-right: 16px;
 $tab-rtl-big-close-icon-top-bottom-right: 0;
 $tab-rtl-nrml-close-icon-top-bottom-right: 0;
 $tab-rtl-big-close-icon-top-bottom-left: 8px;
 $tab-rtl-nrml-close-icon-top-bottom-left: 8px;
+$tab-rtl-big-pop-close-icon-top-bottom-left: 16px;
+$tab-rtl-nrml-pop-close-icon-top-bottom-left: 16px;
 $tab-pop-close-icon-right: 16px;
 $tab-pop-close-icon-top: 1px;
 $tab-rtl-pop-close-icon-left: 16px;

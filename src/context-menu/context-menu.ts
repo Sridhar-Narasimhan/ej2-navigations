@@ -44,7 +44,7 @@ const ICONS: string = 'e-icons';
 /**
  * Menu animation effects
  */
-export type MenuEffect = 'None' | 'SlideDown' | 'ZoomIn';
+export type MenuEffect = 'None' | 'SlideDown' | 'ZoomIn' | 'FadeIn';
 
 /**
  * Specifies context menu items.
@@ -113,6 +113,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
     private navIdx: number[] = [];
     private isTapHold: boolean = false;
     private targetElement: HTMLElement;
+    private delegateClickHandler: Function;
     /**
      * Defines class/multiple classes separated by a space in the ContextMenu wrapper.
      * ContextMenu customization can be achieved by using this.
@@ -212,7 +213,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
      * @private
      */
     protected preRender(): void {
-        if (this.element.tagName === 'EJ-CONTEXTMENU') {
+        if (this.element.tagName === 'EJS-CONTEXTMENU') {
             this.element.style.display = 'none';
             this.element.classList.remove('e-' + this.getModuleName());
             this.element.classList.remove('e-control');
@@ -288,7 +289,8 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             EventHandler.add(wrapper, 'mouseover', this.moverHandler, this);
             EventHandler.add(document, 'mousedown', this.mouseDownHandler, this);
         }
-        EventHandler.add(document, 'click', this.clickHandler, this);
+        this.delegateClickHandler = this.clickHandler.bind(this);
+        EventHandler.add(document, 'click', this.delegateClickHandler, this);
         new KeyboardEvents(wrapper, {
             keyAction: this.keyBoardHandler.bind(this),
             keyConfigs: {
@@ -885,7 +887,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             EventHandler.remove(wrapper, 'mouseover', this.moverHandler);
             EventHandler.remove(document, 'mousedown', this.mouseDownHandler);
         }
-        EventHandler.remove(document, 'click', this.clickHandler);
+        EventHandler.remove(document, 'click', this.delegateClickHandler);
         let keyboardModule: KeyboardEvents = getInstance(wrapper, KeyboardEvents) as KeyboardEvents;
         if (keyboardModule) {
             keyboardModule.destroy();
@@ -1214,6 +1216,7 @@ export interface MenuAnimationSettings {
      * * None: Specifies the sub menu transform with no animation effect.
      * * SlideDown: Specifies the sub menu transform with slide down effect.
      * * ZoomIn: Specifies the sub menu transform with zoom in effect.
+     * * FadeIn: Specifies the sub menu transform with fade in effect.
      */
     effect?: MenuEffect;
     /**

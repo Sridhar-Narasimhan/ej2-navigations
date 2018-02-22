@@ -11,9 +11,22 @@
 @mixin active-hover-theme {
   background-color: $treeview-item-active-hover-bg;
   border-color: $treeview-item-active-hover-border-color;
-  @if $treeview-skin-name == 'bootstrap' {
+  @if $treeview-skin-name == 'bootstrap' or $treeview-skin-name == 'highcontrast' {
     -webkit-box-shadow: $treeview-border-shadow;
     box-shadow: $treeview-border-shadow;
+  }
+}
+@mixin active-editing-theme {
+  background-color: $treeview-item-border-color;
+  border-color: $treeview-item-border-color;
+  @if $treeview-skin-name == 'bootstrap' {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+}
+@mixin active-font-weight {
+  @if $treeview-skin-name == 'highcontrast' {
+    font-weight: $treeview-active-font-weight;
   }
 }
 @include export-module('treeview-theme') {
@@ -41,11 +54,25 @@
     .e-list-text {
       color: $treeview-text-color;
       font-size: $treeview-font-size;
-    }
+
+      .e-input {
+        @include active-font-weight;
+      }
+     }
 
     .e-list-icon,
     .e-list-img {
       font-size: $treeview-image-font-size;
+    }
+
+    .e-icon-collapsible,
+    .e-icon-expandable {
+      color: $treeview-icon-color;
+    }
+
+    .e-icon-collapsible::before,
+    .e-icon-expandable::before {
+      font-size: $treeview-icon-font-size;
     }
 
     .e-list-item.e-active,
@@ -70,12 +97,21 @@
       color: $treeview-text-active-color;
 
       .e-list-text {
+        @include active-font-weight;
         color: $treeview-text-active-color;
       }
 
       .e-icon-collapsible,
       .e-icon-expandable {
         color: $treeview-icon-active-color;
+      }
+
+      .e-check {
+        @if $treeview-skin-name == 'highcontrast' {
+          background-color: $treeview-checkmark-bgcolor;
+          border-color: $treeview-checkmark-border-color;
+          color: $treeview-checkmark-color;
+        }
       }
     }
 
@@ -89,6 +125,24 @@
       .e-icon-collapsible,
       .e-icon-expandable {
         color: $treeview-icon-active-hover-color;
+      }
+    }
+
+    .e-list-item.e-editing.e-active > .e-text-content,
+    .e-list-item.e-editing.e-hover > .e-text-content {
+      color: $treeview-text-color;
+
+      .e-list-text {
+        color: $treeview-text-color;
+
+        .e-input {
+          @include active-font-weight;
+        }
+      }
+
+      .e-icon-collapsible,
+      .e-icon-expandable {
+        color: $treeview-icon-color;
       }
     }
 
@@ -106,14 +160,9 @@
       @include active-hover-theme;
     }
 
-    .e-icon-collapsible,
-    .e-icon-expandable {
-      color: $treeview-icon-color;
-    }
-
-    .e-icon-collapsible::before,
-    .e-icon-expandable::before {
-      font-size: $treeview-icon-font-size;
+    .e-list-item.e-editing.e-active > .e-fullrow,
+    .e-list-item.e-editing.e-hover > .e-fullrow {
+      @include active-editing-theme;
     }
 
     .e-list-item.e-disable {
@@ -177,6 +226,11 @@
       .e-list-item.e-active.e-hover > .e-text-content {
         @include active-hover-theme;
       }
+
+      .e-list-item.e-editing.e-active > .e-text-content,
+      .e-list-item.e-editing.e-hover > .e-text-content {
+        @include active-editing-theme;
+      }
     }
 
     &.e-fullrow-wrap {
@@ -196,11 +250,12 @@
       }
 
       .e-list-text {
+        @include active-font-weight;
         color: $treeview-drag-item-color;
+      }
 
-        .e-icons {
-          color: $treeview-drag-icon-color;
-        }
+      .e-icons {
+        color: $treeview-drag-icon-color;
       }
 
       .e-drop-count {

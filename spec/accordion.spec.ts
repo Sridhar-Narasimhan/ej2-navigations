@@ -516,6 +516,8 @@ describe("Accordion Testing", () => {
             expect(ele.children[0].childElementCount).toBe(1);
             expect(eleItem.querySelector('.' + CLS_HEADER).firstElementChild.firstElementChild.tagName).toBe('BUTTON');
             accordion.destroy();
+            expect(document.querySelectorAll('#ButtonEle').length).toBe(1);
+            expect(accordion.element.querySelectorAll('#ButtonEle').length).toBe(0);
             document.body.innerHTML = "";
         });
         it("Accordion Content behaviour eith Template Testing", (done: Function) => {
@@ -2790,6 +2792,191 @@ describe("Accordion Testing", () => {
             expect(ele.children[0].children[1].getAttribute('aria-hidden')).toBe('false');
             (<HTMLElement>ele.children[1].children[0]).click();
             setTimeout(() => { done(); }, TIME_DELAY);
+        });
+    });
+    describe("Accordion - separate items value change", () => {
+        let accordion: Accordion;
+        document.body.innerHTML = "";
+        beforeEach((done: Function) => {
+            let ele: HTMLElement = document.createElement("div");
+            ele.id = "accordion";
+            document.body.appendChild(ele);
+            accordion = new Accordion(
+                {
+                    items: [
+                        { header: "Item1", content: "Content of Item1", iconCss: 'e-icon1', cssClass: 'testClass1', expanded: true },
+                        { header: "Item2", content: "Content of Item2", iconCss: 'e-icon2', cssClass: 'testClass2', expanded: false }
+                    ]
+                }, ele);
+            (<HTMLElement>ele.querySelector("." + CLS_HEADER)).click();
+            setTimeout(() => { done(); }, TIME_DELAY);
+        });
+        afterEach((): void => {
+            if (accordion) {
+                accordion.destroy();
+            }
+            document.body.innerHTML = "";
+        });
+        it("Items property change testing", () => {
+            let ele: HTMLElement = document.getElementById('accordion');
+            accordion.items = [
+                { header: "header1", content: "Content1", iconCss: 'e-icons1', cssClass: 'Class1', expanded: false },
+                { header: "header2", content: "Content2", iconCss: 'e-icons2', cssClass: 'Class2', expanded: true }
+            ];
+            accordion.dataBind();
+            expect(accordion.items[0].header).toEqual('header1');
+            expect(accordion.items[0].content).toEqual('Content1');
+            expect(accordion.items[0].iconCss).toEqual('e-icons1');
+            expect(accordion.items[0].cssClass).toEqual('Class1');
+            expect(accordion.items[0].expanded).toEqual(false);
+            expect(accordion.items[1].header).toEqual('header2');
+            expect(accordion.items[1].content).toEqual('Content2');
+            expect(accordion.items[1].iconCss).toEqual('e-icons2');
+            expect(accordion.items[1].cssClass).toEqual('Class2');
+            expect(accordion.items[1].expanded).toEqual(true);
+        });
+        it("Items - cssClass property change testing", () => {
+            let ele: HTMLElement = document.getElementById('accordion');
+            accordion.items[0].cssClass = 'testingClass1';
+            accordion.dataBind();
+            expect(accordion.items[0].cssClass).toEqual('testingClass1');
+            expect(ele.children[0].classList.contains('testingClass1')).toEqual(true);
+            accordion.items[1].cssClass = 'testingClass2';
+            accordion.dataBind();
+            expect(accordion.items[1].cssClass).toEqual('testingClass2');
+            expect(ele.children[1].classList.contains('testingClass2')).toEqual(true);
+        });
+        it("Items - iconCss property change testing", () => {
+            let ele: HTMLElement = document.getElementById('accordion');
+            expect((ele.children[0]).querySelector('.e-acrdn-header .e-acrdn-header-icon')).not.toEqual(undefined);
+            expect((ele.children[0]).querySelector('.e-acrdn-header .e-acrdn-header-icon span').classList.contains('e-icon1')).toEqual(true);
+            accordion.items[0].iconCss = 'e-test-icon1';
+            accordion.dataBind();
+            expect(accordion.items[0].iconCss).toEqual('e-test-icon1');
+            expect((ele.children[0]).querySelector('.e-acrdn-header .e-acrdn-header-icon')).not.toEqual(undefined);
+            expect((ele.children[0]).querySelector('.e-acrdn-header .e-acrdn-header-icon span').classList.contains('e-test-icon1')).toEqual(true);
+            accordion.items[1].iconCss = 'e-test-icon2';
+            accordion.dataBind();
+            expect(accordion.items[1].iconCss).toEqual('e-test-icon2');
+            expect((ele.children[1]).querySelector('.e-acrdn-header .e-acrdn-header-icon')).not.toEqual(undefined);
+            expect((ele.children[1]).querySelector('.e-acrdn-header .e-acrdn-header-icon span').classList.contains('e-test-icon2')).toEqual(true);
+        });
+        it("Items - header property change testing", () => {
+            let ele: HTMLElement = document.getElementById('accordion');
+            accordion.items[0].header = 'testingItem1';
+            accordion.dataBind();
+            expect(accordion.items[0].header).toEqual('testingItem1');
+            expect(ele.children[0].querySelectorAll('.e-acrdn-header').length).toEqual(1);
+            expect(ele.children[0].querySelectorAll('.e-acrdn-header-content').length).toEqual(1);
+            expect(ele.children[0].querySelectorAll('.e-acrdn-header-content')[0].innerHTML).toEqual('testingItem1');
+            accordion.items[1].header = 'testingItem2';
+            accordion.dataBind();
+            expect(accordion.items[1].header).toEqual('testingItem2');
+            expect(ele.children[1].querySelectorAll('.e-acrdn-header').length).toEqual(1);
+            expect(ele.children[1].querySelectorAll('.e-acrdn-header-content').length).toEqual(1);
+            expect(ele.children[1].querySelectorAll('.e-acrdn-header-content')[0].innerHTML).toEqual('testingItem2');
+        });
+        it("Items - expanded property change testing", (done: Function) => {
+            let ele: HTMLElement = document.getElementById('accordion');
+            accordion.items[0].expanded = true;
+            accordion.dataBind();
+            setTimeout(function() {
+                expect(accordion.items[0].expanded).toEqual(true);
+                expect(ele.children[0].classList.contains('e-expand-state')).toEqual(true);
+                expect(ele.children[0].classList.contains('e-selected')).toEqual(true);
+                expect(ele.children[0].classList.contains('e-active')).toEqual(true);
+                done();
+            }, 1000);
+        });
+        it("Items - content property change testing", (done: Function) => {
+            let ele: HTMLElement = document.getElementById('accordion');
+            accordion.items[0].content = 'Content1';
+            accordion.dataBind();
+            expect(accordion.items[0].content).toEqual('Content1');
+            setTimeout(function() {
+                expect(accordion.items[0].content).toEqual('Content1');
+                (<HTMLElement>ele.children[0].children[0]).click();
+                setTimeout(function() {
+                    expect(ele.children[0].querySelectorAll('.e-acrdn-panel').length).toEqual(1);
+                    expect(ele.children[0].querySelectorAll('.e-acrdn-content').length).toEqual(1);
+                    expect(ele.children[0].querySelectorAll('.e-acrdn-content')[0].innerHTML).toEqual('Content1');
+                    done();
+                }, 1000);
+            }, 1000);
+        });
+    });
+    describe("Accordion keyboard testing when input component render inside the accordion", () => {
+        let accordion: any;
+        let keyEventArgs: any;
+        let clickCount: number = 0;
+        function click(): void {
+            clickCount++;
+        }
+        beforeEach((): void => {
+            let ele: HTMLElement = document.createElement("div");
+            ele.id = "accordion";
+            document.body.appendChild(ele);
+        });
+        afterEach((): void => {
+            if (accordion) {
+                accordion.destroy();
+            }
+            document.body.removeAttribute('style');
+            document.body.innerHTML = "";
+        });
+        it("Accordion content with input element, 'home' keyboard navigation and focus testing", (done: Function) => {
+            let ele: HTMLElement = document.getElementById("accordion");
+            accordion = new Accordion(
+                {
+                    expandMode: "Single",
+                    items: [
+                        { header: "Item1", content: "<input type='text' value='hello' />" },
+                        { header: "Item2", content: "Content of Item2" },
+                        { header: "Item3", content: "Content of Item3" }
+                    ]
+                }, ele);
+            accordion.expandItem(true, 0);
+            setTimeout(function () {
+                let elefirst: HTMLInputElement = ele.querySelector('.e-acrdn-item input');
+                elefirst.focus();
+                let actEle1: HTMLElement = <HTMLElement> document.activeElement;
+                keyEventArgs = {
+                    preventDefault: function () { },
+                    action: 'home',
+                    target: actEle1,
+                };
+                accordion.keyActionHandler(keyEventArgs);
+                let actEle2: HTMLElement = <HTMLElement> document.activeElement;
+                expect(document.activeElement === elefirst).toBe(true);
+                done();
+            }, 1000);
+        });
+        it("Accordion content with input element, 'end' keyboard navigation and focus testing", (done: Function) => {
+            let ele: HTMLElement = document.getElementById("accordion");
+            accordion = new Accordion(
+                {
+                    expandMode: "Single",
+                    items: [
+                        { header: "Item1", content: "<input type='text' value='hello' />" },
+                        { header: "Item2", content: "Content of Item2" },
+                        { header: "Item3", content: "Content of Item3" }
+                    ]
+                }, ele);
+            accordion.expandItem(true, 0);
+            setTimeout(function () {
+                let elefirst: HTMLInputElement = ele.querySelector('.e-acrdn-item input');
+                elefirst.focus();
+                let actEle1: HTMLElement = <HTMLElement> document.activeElement;
+                keyEventArgs = {
+                    preventDefault: function () { },
+                    action: 'home',
+                    target: actEle1,
+                };
+                accordion.keyActionHandler(keyEventArgs);
+                let actEle2: HTMLElement = <HTMLElement> document.activeElement;
+                expect(document.activeElement === elefirst).toBe(true);
+                done();
+            }, 1000);
         });
     });
 });

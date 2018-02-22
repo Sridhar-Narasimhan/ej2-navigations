@@ -6,11 +6,17 @@
     .e-popup-down-icon::before {
       content: $tbar-popup-down-icon;
       line-height: normal;
+      @if $skin-name == 'highcontrast' {
+        content: '\e84f';
+      }
     }
 
     .e-popup-up-icon::before {
       content: $tbar-popup-up-icon;
       line-height: normal;
+      @if $skin-name == 'highcontrast' {
+        content: '\e85e';
+      }
     }
-   }
+  }
 }

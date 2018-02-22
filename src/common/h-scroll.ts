@@ -128,7 +128,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
         let ele: HTEle = this.element;
         ele.style.display = '';
         ele.classList.remove(CLS_ROOT);
-        let nav: HTEle[] =  selectAll('#' + ele.id + '_nav.e-' + ele.id + '_nav');
+        let nav: HTEle[] =  selectAll('.e-' + ele.id + '_nav.' + CLS_HSCROLLNAV, ele);
         for (let elem of [].slice.call(this.scrollItems.children)) {
             ele.appendChild(elem);
         }
@@ -146,11 +146,11 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
     private createNavIcon(element: HTEle): void {
         let id: string = element.id.concat('_nav');
         let clsRight: string = 'e-' + element.id.concat('_nav ' + CLS_HSCROLLNAV + ' ' + CLS_HSCROLLNAVRIGHT);
-        let nav: HTEle = buildTag('div', { id: id, className: clsRight });
+        let nav: HTEle = buildTag('div', { id: id.concat('_right'), className: clsRight });
         nav.setAttribute('aria-disabled', 'false');
         let navItem: HTEle = buildTag('div', { className: CLS_NAVRIGHTARROW + ' ' + CLS_NAVARROW + ' e-icons' });
         let clsLeft: string = 'e-' + element.id.concat('_nav ' + CLS_HSCROLLNAV + ' ' + CLS_HSCROLLNAVLEFT);
-        let navEle: HTEle = buildTag('div', { id: id, className: clsLeft + ' ' + CLS_DISABLE });
+        let navEle: HTEle = buildTag('div', { id: id.concat('_left'), className: clsLeft + ' ' + CLS_DISABLE });
         navEle.setAttribute('aria-disabled', 'true');
         let navLeftItem: HTEle = buildTag('div', { className: CLS_NAVLEFTARROW + ' ' + CLS_NAVARROW + ' e-icons' });
         navEle.appendChild(navLeftItem);
@@ -288,7 +288,7 @@ export class HScroll extends Component<HTMLElement> implements INotifyPropertyCh
                 this.arrowDisabling(navLeftEle, navRightEle);
             }
         } else {
-            let disEle: HTEle = <HTEle>this.element.querySelector('.' + CLS_DISABLE);
+            let disEle: HTEle = <HTEle>this.element.querySelector('.' + CLS_HSCROLLNAV + '.' + CLS_DISABLE);
             if (disEle) {
                 disEle.classList.remove(CLS_DISABLE);
                 disEle.setAttribute('aria-disabled', 'false');

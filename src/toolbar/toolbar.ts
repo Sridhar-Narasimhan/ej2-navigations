@@ -29,7 +29,7 @@ type HTEle = HTMLElement;
 type Str = string;
 type ItmAlign = 'lefts' | 'centers' | 'rights';
 
-export type ItemAlign = 'left' | 'center' | 'right';
+export type ItemAlign = 'Left' | 'Center' | 'Right';
 
 const CLS_ITEMS: Str = 'e-toolbar-items';
 const CLS_ITEM: Str = 'e-toolbar-item';
@@ -58,6 +58,7 @@ const CLS_TBARBTNTEXT: Str = 'e-tbar-btn-text';
 const CLS_TBARNAVACT: Str = 'e-nav-active';
 const CLS_TBARIGNORE: Str = 'e-ignore';
 const CLS_POPPRI: Str = 'e-popup-alone';
+const CLS_HIDDEN: string = 'e-hidden';
 
 interface Template {
     appendTo: Function;
@@ -82,7 +83,7 @@ export interface ClickEventArgs extends BaseEventArgs {
 export class Item extends ChildProperty<Item>  {
     /**
      * Specifies the unique ID to be used with button or input element of Toolbar items.
-     * @default "".
+     * @default ""
      */
     @Property('')
     public id: string;
@@ -94,34 +95,34 @@ export class Item extends ChildProperty<Item>  {
     public text: string;
     /**
      * Specifies the width of the Toolbar button commands.
-     * @default 'auto'.
+     * @default 'auto'
      */
     @Property('auto')
     public width: number | string;
     /**
      * Defines single/multiple classes (separated by space) to be used for customization of commands.
-     * @default "".
+     * @default ""
      */
     @Property('')
     public cssClass: string;
     /**
      * Defines the priority of items to display it in popup always.
      * It allows to maintain toolbar item on popup always but it does not work for toolbar priority items.
-     * @default false.
+     * @default false
      */
     @Property(false)
     public showAlwaysInPopup: boolean;
     /**
      * Defines single/multiple classes separated by space used to specify an icon for the button.
      * The icon will be positioned before the text content if text is available, otherwise the icon alone will be rendered.
-     * @default "".
+     * @default ""
      */
     @Property('')
     public prefixIcon: string;
     /**
      * Defines single/multiple classes separated by space used to specify an icon for the button.
      * The icon will be positioned after the text content if text is available.
-     * @default "".
+     * @default ""
      */
     @Property('')
     public suffixIcon: string;
@@ -131,7 +132,7 @@ export class Item extends ChildProperty<Item>  {
      * - show:  Always shows the item as the primary priority on the *Toolbar*.
      * - hide: Always shows the item as the secondary priority on the *popup*.
      * - none: No priority for display, and as per normal order moves to popup when content exceeds.
-     * @default 'None'.
+     * @default 'None'
      */
     @Property('None')
     public overflow: OverflowOption;
@@ -140,7 +141,7 @@ export class Item extends ChildProperty<Item>  {
      * ```
      * E.g - items: [{ template: '<input placeholder="Search"/>' },{ template: '#checkbox1' }]
      * ```
-     * @default "".
+     * @default ""
      */
     @Property('')
     public template: string | Object;
@@ -151,7 +152,7 @@ export class Item extends ChildProperty<Item>  {
      * - Separator: Adds a horizontal line that separates the Toolbar commands.
      * - Input: Creates an input element that is applicable to template rendering with Syncfusion controls like DropDownList,
      * AutoComplete, etc.
-     * @default 'Button'.
+     * @default 'Button'
      */
     @Property('Button')
     public type: ItemType;
@@ -161,20 +162,20 @@ export class Item extends ChildProperty<Item>  {
      * - Toolbar:  Text will be displayed on *Toolbar* only.
      * - Overflow: Text will be displayed only when content overflows to *popup*.
      * - Both: Text will be displayed on *popup* and *Toolbar*.
-     * @default 'Both'.
+     * @default 'Both'
      */
     @Property('Both')
     public showTextOn: DisplayMode;
     /**
      * Defines htmlAttributes used to add custom attributes to Toolbar command.
      * Supports HTML attributes such as style, class, etc.
-     * @default 'null'.
+     * @default 'null'
      */
     @Property(null)
     public htmlAttributes: { [key: string]: string; };
     /**
      * Specifies the text to be displayed on the Toolbar button.
-     * @default "".
+     * @default ""
      */
     @Property('')
     public tooltipText: string;
@@ -191,16 +192,16 @@ export class Item extends ChildProperty<Item>  {
      * let toolbar: Toolbar = new Toolbar({
      *     items: [
      *         { text: "Home" },
-     *         { text: "My Home Page" , align: 'center' },
-     *         { text: "Search", align: 'right' }
-     *         { text: "Settings", align: 'right' }
+     *         { text: "My Home Page" , align: 'Center' },
+     *         { text: "Search", align: 'Right' }
+     *         { text: "Settings", align: 'Right' }
      *     ]
      * });
      * toolbar.appendTo('#element');
      * ```
-     * @default "left".
+     * @default "Left"
      */
-    @Property('left')
+    @Property('Left')
     public align: ItemAlign;
 }
 /**
@@ -253,13 +254,13 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
     };
     /**
      * An array of items that is used to configure Toolbar commands.
-     * @default [].
+     * @default []
      */
     @Collection<ItemModel>([], Item)
     public items: ItemModel[];
     /**
      * Specifies the width of the Toolbar in pixels/numbers/percentage. Number value is considered as pixels.
-     * @default 'auto'.
+     * @default 'auto'
      */
     @Property('auto')
     public width: string | number;
@@ -275,13 +276,13 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
      * - Scrollable: All the elements are displayed in a single line with horizontal scrolling enabled.
      * - Popup: Prioritized elements are displayed on the Toolbar and the rest of elements are moved to the *popup*.
      * If the popup content overflows the height of the page, the rest of the elements will be hidden.
-     * @default 'Scrollable'.
+     * @default 'Scrollable'
      */
     @Property('Scrollable')
     public overflowMode: OverflowMode;
     /**
      * Specifies the direction of the Toolbar commands. For cultures like Arabic, Hebrew, etc. direction can be switched to right to left.
-     * @default 'false'.
+     * @default 'false'
      */
     @Property(false)
     public enableRtl: boolean;
@@ -365,6 +366,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         this.element.setAttribute('tabIndex', '0');
     }
     private docKeyDown (e: KeyboardEvent): void {
+        if ((<HTEle>e.target).tagName === 'INPUT') { return; }
         if (e.keyCode === 9 && (<HTEle> e.target).classList.contains('e-hor-nav') === true && isVisible(this.popObj.element)) {
             this.popObj.hide({ name: 'SlideUp', duration: 100 }); }
         let keyCheck: boolean = (e.keyCode === 40 || e.keyCode === 38 || e.keyCode === 35 || e.keyCode === 36);
@@ -535,9 +537,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         }
     }
     private keyActionHandler(e: KeyboardEventArgs): void {
+        let trgt: HTEle = <HTEle>e.target;
+        if (trgt.tagName === 'INPUT') { return; }
         e.preventDefault();
         let clst: HTEle;
-        let trgt: HTEle = <HTEle>e.target;
         let tbrNavChk: boolean = trgt.classList.contains(CLS_TBARNAV);
         let tbarScrollChk: boolean = trgt.classList.contains(CLS_TBARSCRLNAV);
         clst = this.clstElement(tbrNavChk, trgt);
@@ -1039,9 +1042,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 index = this.tbarEle.indexOf(el);
                 if (this.tbarAlign) {
                     let pos: ItemAlign = this.items[index].align;
-                    index = this.tbarAlgEle[(pos + 's') as ItmAlign].indexOf(el);
-                    eleSplice = this.tbarAlgEle[(pos + 's') as ItmAlign];
-                    innerEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS + ' .' + 'e-toolbar-' + pos);
+                    index = this.tbarAlgEle[(pos + 's').toLowerCase() as ItmAlign].indexOf(el);
+                    eleSplice = this.tbarAlgEle[(pos + 's').toLowerCase() as ItmAlign];
+                    innerEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS + ' .' + 'e-toolbar-' + pos.toLowerCase());
                 }
                 let sepBeforePri: number = 0;
                 eleSplice.slice(0, index).forEach((el: HTEle) => {
@@ -1116,13 +1119,13 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
       alignDiv.push( buildTag('div', { className: CLS_TBARLEFT } ));
       alignDiv.push( buildTag('div', { className: CLS_TBARCENTER } ));
       alignDiv.push( buildTag('div', { className: CLS_TBARRIGHT } ));
-      if (pos === 0 && item.align !== 'left' )  {
+      if (pos === 0 && item.align !== 'Left' )  {
         alignDiv.forEach((ele: HTEle) => {
         itemEle.appendChild(ele);
         });
         this.tbarAlign = true;
         this.add(itemEle, CLS_TBARPOS);
-      } else if (item.align !== 'left') {
+      } else if (item.align !== 'Left') {
         let alignEle: NodeList = itemEle.childNodes;
         let leftAlign: HTEle = alignDiv[0];
         [].slice.call(alignEle).forEach((el: HTEle) => {
@@ -1173,7 +1176,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 innerPos = <HTEle>itemEleDom.querySelector('.e-toolbar-' + items[i].align.toLowerCase());
                 if (innerPos) {
                   if (!(items[i].showAlwaysInPopup && items[i].overflow !== 'Show')) {
-                    this.tbarAlgEle[(items[i].align + 's') as ItmAlign].push(innerItem); }
+                    this.tbarAlgEle[(items[i].align + 's').toLowerCase() as ItmAlign].push(innerItem); }
                   innerPos.appendChild(innerItem);
                 } else {
                     itemEleDom.appendChild(innerItem);
@@ -1233,12 +1236,12 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         let innerItems: HTEle[];
         let itemsDiv: HTEle = <HTEle>this.element.querySelector('.' + CLS_ITEMS);
         let innerEle: HTEle;
-        let itemAgn: Str = 'left';
+        let itemAgn: Str = 'Left';
         if (isNOU(index)) {
             index = 0;
         }
         items.forEach((e: ItemModel) => {
-          if (!isNOU(e.align) && e.align !== 'left' && itemAgn === 'left') {
+          if (!isNOU(e.align) && e.align !== 'Left' && itemAgn === 'Left') {
            itemAgn = e.align; }
         });
         for (let item of items) {
@@ -1249,19 +1252,19 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
             innerEle = this.renderSubComponent(item);
             if (this.tbarEle.length >= index && innerItems.length > 0) {
                 this.destroyMode();
-                let algIndex: number = item.align[0] === 'l' ? 0 : item.align[0] === 'c' ? 1 : 2;
+                let algIndex: number = item.align[0] === 'L' ? 0 : item.align[0] === 'C' ? 1 : 2;
                 let ele: Element;
-                if (!this.tbarAlign && itemAgn !== 'left') {
+                if (!this.tbarAlign && itemAgn !== 'Left') {
                  this.tbarItemAlign(item, itemsDiv, 1);
                  this.tbarAlign = true;
                  ele = closest(innerItems[0] , '.' + CLS_ITEMS).children[algIndex];
                  ele.appendChild(innerEle);
-                 this.tbarAlgEle[(item.align + 's') as ItmAlign].push(innerEle);
+                 this.tbarAlgEle[(item.align + 's').toLowerCase() as ItmAlign].push(innerEle);
                  this.refreshPositioning();
                 } else if (this.tbarAlign) {
                  ele = closest(innerItems[0] , '.' + CLS_ITEMS).children[algIndex];
                  ele.insertBefore(innerEle, ele.children[index]);
-                 this.tbarAlgEle[(item.align + 's') as ItmAlign].splice(index, 0, innerEle);
+                 this.tbarAlgEle[(item.align + 's').toLowerCase() as ItmAlign].splice(index, 0, innerEle);
                  this.refreshPositioning();
                 }else {
                 innerItems[0].parentNode.insertBefore(innerEle, innerItems[index]); }
@@ -1306,8 +1309,9 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         if (this.tbarEle[index] && innerItems[index]) {
             let eleIdx: number = this.tbarEle.indexOf(innerItems[index]);
             if (this.tbarAlign) {
-                let indexAgn: number = this.tbarAlgEle[(this.items[eleIdx].align + 's') as ItmAlign].indexOf(this.tbarEle[eleIdx]);
-                this.tbarAlgEle[(this.items[eleIdx].align + 's') as ItmAlign].splice(indexAgn, 1);
+                let indexAgn: number;
+                indexAgn = this.tbarAlgEle[(this.items[eleIdx].align + 's').toLowerCase() as ItmAlign].indexOf(this.tbarEle[eleIdx]);
+                this.tbarAlgEle[(this.items[eleIdx].align + 's').toLowerCase() as ItmAlign].splice(indexAgn, 1);
               }
             detach(innerItems[index]);
             this.items.splice(eleIdx, 1);
@@ -1375,10 +1379,10 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
         if (item.prefixIcon || item.suffixIcon) {
             if ((item.prefixIcon && item.suffixIcon) || item.prefixIcon) {
                 iconCss = item.prefixIcon + ' e-icons';
-                iconPos = 'left';
+                iconPos = 'Left';
             } else {
                 iconCss = item.suffixIcon + ' e-icons';
-                iconPos = 'right';
+                iconPos = 'Right';
             }
         }
         new Button({iconCss: iconCss, iconPosition: <IconPosition>iconPos }, dom as HTMLButtonElement);
@@ -1568,6 +1572,23 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                     if (this.tbarAlign) { this.itemPositioning(); }
                     break;
             }
+        }
+    }
+    /**
+     * Shows or hides the Toolbar item that is in the specified index.
+     * @param  {number} index - Index value of target item.
+     * @param  {boolean} value - Based on this Boolean value, item will be hide (true) or show (false). By default, value is false.
+     * @returns void.
+     */
+    public hideItem(index: number, value?: boolean): void {
+        if (this.tbarEle[index]) {
+           let innerItems: HTEle[] = [].slice.call(selectAll('.' + CLS_ITEM, this.element));
+           if (value === true) {
+              innerItems[index].classList.add(CLS_HIDDEN);
+           } else {
+              innerItems[index].classList.remove(CLS_HIDDEN);
+           }
+           this.refreshOverflow();
         }
     }
 }

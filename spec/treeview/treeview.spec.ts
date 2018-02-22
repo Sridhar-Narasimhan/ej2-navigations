@@ -74,14 +74,22 @@ describe('TreeView control', () => {
     });
     describe('Hierarchical data binding testing', () => {
         describe('Default functionality testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
             let treeObj: any;
+            let mouseEventArgs: any;
+            let tapEvent: any;
             beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
@@ -149,7 +157,7 @@ describe('TreeView control', () => {
                     expect(newli[3].getAttribute('aria-expanded')).toBe('true');
                     mouseEventArgs.target = newli[0].querySelector('.e-icons');
                     expect(newli[0].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(newli[0].childElementCount).toBe(2);
@@ -191,7 +199,7 @@ describe('TreeView control', () => {
                     expect(newli[4].getAttribute('aria-expanded')).toBe('true');
                     mouseEventArgs.target = newli[0].querySelector('.e-icons');
                     expect(newli[0].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(newli[0].childElementCount).toBe(2);
@@ -226,13 +234,13 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                    tapEvent.tapCount = 2;
                     mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                    mouseEventArgs.type = 'dblclick';
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                     expect(li[0].childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                    treeObj.expandHandler(mouseEventArgs);
+                    treeObj.touchExpandObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
@@ -254,19 +262,19 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                    mouseEventArgs.type = 'dblclick';
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                     expect(li[0].childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                    treeObj.expandHandler(mouseEventArgs);
-                    treeObj.editingHandler(mouseEventArgs);
+                    tapEvent.tapCount = 2;
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
-                        expect(li[0].childElementCount).toBe(1);
+                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                        expect(li[0].childElementCount).toBe(2);
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                         expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                         expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
@@ -275,9 +283,38 @@ describe('TreeView control', () => {
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                         expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
                         mouseEventArgs.target = li[0].querySelector('.e-list-item');
-                        treeObj.editingHandler(mouseEventArgs);
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                        done();
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                            (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                            (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                            let nli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                            mouseEventArgs.target = nli[1].querySelector('.e-list-text');
+                            treeObj.touchExpandObj.tap(tapEvent);
+                            treeObj.touchEditObj.tap(tapEvent);
+                            expect((nli[1].querySelector('.e-input') as HTMLInputElement).value).toBe('Gouttes.mp3');
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).value = 'Gouttes.mp31';
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(nli[1].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((nli[1].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Gouttes.mp31');
+                            mouseEventArgs.target = nli[1].querySelector('.e-list-text');
+                            treeObj.touchExpandObj.tap(tapEvent);
+                            treeObj.touchEditObj.tap(tapEvent);
+                            expect((nli[1].querySelector('.e-input') as HTMLInputElement).value).toBe('Gouttes.mp31');
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).value = 'Gouttes.mp3';
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(nli[1].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((nli[1].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Gouttes.mp3');
+                            done();
+                        }, 450);
                     }, 100);
                 }, 100);
             });
@@ -303,6 +340,7 @@ describe('TreeView control', () => {
                 setTimeout(function() {
                     let checkEle: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-checkbox-wrapper');
                     expect(checkEle.length).toBeGreaterThan(0);
+                    expect(treeObj.element.querySelector('.e-checkbox-wrapper').classList.contains('e-small')).toBe(false);
                     var e = new MouseEvent("mousedown", { view: window, bubbles: true, cancelable: true });
                     checkEle[0].querySelector('.e-frame').dispatchEvent(e);
                     var e = new MouseEvent("mouseup", { view: window, bubbles: true, cancelable: true });
@@ -370,24 +408,28 @@ describe('TreeView control', () => {
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).toContain('01');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
+                    mouseEventArgs.ctrlKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     // select node with id
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).not.toContain('01');
                     expect(treeObj.selectedNodes).toContain('02');
                     // checking ctrl key
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).not.toContain('01');
                     expect(treeObj.selectedNodes).toContain('02');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
                     // checking shift key
-                    li[3].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.ctrlKey = false;
+                    mouseEventArgs.shiftKey = true;
+                    mouseEventArgs.target = li[3].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[2].classList.contains('e-active')).toBe(false);
@@ -413,9 +455,10 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes.length).toBe(2);
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('04');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
                     // select node with id
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.ctrlKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -424,7 +467,8 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('02');
                     expect(treeObj.selectedNodes).toContain('04');
                     // unselect node with id
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -433,7 +477,8 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('04');
                     // select node without id
-                    li[7].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[7].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -444,7 +489,8 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('04');
                     expect(treeObj.selectedNodes).not.toContain(null);
                     // unselect node without id
-                    li[7].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[7].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -465,21 +511,24 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
                     // select middle node
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.shiftKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).toContain('02');
                     // select first node
-                    li[0].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(2);
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('02');
                     // select next node
-                    li[3].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[3].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(li[2].classList.contains('e-active')).toBe(true);
@@ -489,19 +538,22 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('02');
                     expect(treeObj.selectedNodes).toContain('03');
                     expect(treeObj.selectedNodes).toContain('04');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
                     // expand first node
-                    li[0].querySelector('.e-icons').dispatchEvent(e);
+                    mouseEventArgs.shiftKey = false;
+                    mouseEventArgs.target = li[0].querySelector('.e-icons');
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         // collpase first node
-                        li[0].querySelector('.e-icons').dispatchEvent(e);
+                        mouseEventArgs.target = li[0].querySelector('.e-icons');
+                        treeObj.touchClickObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                            var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
                             // check invisible node
-                            newli[0].querySelector('.e-list-text').dispatchEvent(e);
+                            mouseEventArgs.shiftKey = true;
+                            mouseEventArgs.target = newli[0].querySelector('.e-list-text');
+                            treeObj.touchClickObj.tap(tapEvent);
                             expect(newli[0].classList.contains('e-active')).toBe(true);
                             expect(newli[1].classList.contains('e-active')).toBe(false);
                             expect(newli[2].classList.contains('e-active')).toBe(true);
@@ -606,27 +658,62 @@ describe('TreeView control', () => {
                 treeObj = new TreeView({ 
                     fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child: "nodeChild", expanded: 'nodeExpanded1' },
                     nodeTemplate: '#template',
+                    allowEditing: true,
                 },'#tree1');
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-text-content');
-                    expect(li[0].querySelector('i')).not.toBe(null);
-                    expect(li[0].querySelector('b')).toBe(null);
-                    expect(li[1].querySelector('b')).not.toBe(null);
-                    expect(li[1].querySelector('i')).toBe(null);
-                    done();
+                    let txt: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-text-content');
+                    expect(txt[0].querySelector('i')).not.toBe(null);
+                    expect(txt[0].querySelector('b')).toBe(null);
+                    expect(txt[1].querySelector('b')).not.toBe(null);
+                    expect(txt[1].querySelector('i')).toBe(null);
+                    let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                    tapEvent.tapCount = 2;
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
+                    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                    setTimeout(function() {
+                        expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                        expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
+                        expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
+                        (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music node';
+                        (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                        expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                        expect((li[0].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Music node');
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                            (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                            (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                            expect((li[0].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Music');
+                            done();
+                        }, 450);
+                    }, 450);
                 }, 450);
             });
         });
         describe('property change testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
             let treeObj: any;
-            beforeEach(() => {
+            let mouseEventArgs: any;
+            let tapEvent: any;
+            beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
                 treeObj = new TreeView({ 
@@ -701,7 +788,7 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
                 expect(li[0].childElementCount).toBe(1);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(li[0].childElementCount).toBe(2);
                 expect(treeObj.element.querySelector('.e-list-text').innerHTML).toBe('Music');
                 expect(treeObj.element.querySelector('.e-list-item').getAttribute('data-uid')).toBe('01');
@@ -710,7 +797,7 @@ describe('TreeView control', () => {
                 let cli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect(cli[1].childElementCount).toBe(1);
                 mouseEventArgs.target = cli[1].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(cli[1].childElementCount).toBe(1);
                 expect(cli[1].querySelector('.e-icons')).toBe(null);
                 treeObj.fields = { child: "subChild" };
@@ -718,7 +805,7 @@ describe('TreeView control', () => {
                 let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = newli[0].querySelector('.e-icons');
                 expect(newli[0].childElementCount).toBe(1);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(newli[0].childElementCount).toBe(2);
                 expect(treeObj.element.querySelector('.e-list-text').innerHTML).toBe('Music');
                 expect(treeObj.element.querySelector('.e-list-item').getAttribute('data-uid')).toBe('01');
@@ -727,7 +814,7 @@ describe('TreeView control', () => {
                 let dli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect(dli[1].childElementCount).toBe(1);
                 mouseEventArgs.target = dli[1].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(dli[1].childElementCount).toBe(1);
                 expect(cli[1].querySelector('.e-icons')).toBe(null);
             });
@@ -870,28 +957,28 @@ describe('TreeView control', () => {
                 expect(treeObj.element.querySelector('.e-list-url').href.indexOf('http://ej2.syncfusion.com/demos/')).not.toBe(-1);
             });
             it('expandOn property testing', (done: Function) => {
-                treeObj.expandOn = 'click';
+                treeObj.expandOn = 'Click';
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
                 expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                 expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
-                treeObj.expandHandler(mouseEventArgs);
+                treeObj.touchExpandObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
                     expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(true);
                     expect(li[0].childElementCount).toBe(2);
                     expect(li[0].getAttribute('aria-expanded')).toBe('true');
-                    treeObj.expandHandler(mouseEventArgs);
+                    treeObj.touchExpandObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                         expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                         expect(li[0].getAttribute('aria-expanded')).toBe('false');
                         expect((li[0]).classList.contains('e-node-collapsed')).toBe(true);
-                        treeObj.expandHandler(mouseEventArgs);
+                        treeObj.touchExpandObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -980,19 +1067,19 @@ describe('TreeView control', () => {
                 treeObj.allowEditing = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.expandHandler(mouseEventArgs);
-                treeObj.editingHandler(mouseEventArgs);
+                tapEvent.tapCount = 2;
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchExpandObj.tap(tapEvent);
+                treeObj.touchEditObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
-                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
-                    expect(li[0].childElementCount).toBe(1);
+                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                    expect(li[0].childElementCount).toBe(2);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                     expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
@@ -1000,18 +1087,30 @@ describe('TreeView control', () => {
                     (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                     expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
-                    treeObj.allowEditing = false;
-                    treeObj.dataBind();
-                    treeObj.expandHandler(mouseEventArgs);
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
-                        expect(li[0].childElementCount).toBe(2);
+                        expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                        (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                        (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                        done();
+                        expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                        treeObj.allowEditing = false;
+                        treeObj.dataBind();
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                            expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                            expect(li[0].childElementCount).toBe(2);
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                            done();
+                        }, 450);
                     }, 450);
-                }, 100);
+                }, 450);
             });
             it('enableRtl property testing', () => {
                 expect(document.getElementById('tree1').classList.contains('e-rtl')).toEqual(false);
@@ -1060,8 +1159,9 @@ describe('TreeView control', () => {
                 expect(treeObj.selectedNodes).toContain('01');
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 expect(li[1].classList.contains('e-active')).toBe(true);
                 expect(treeObj.selectedNodes.length).toBe(2);
@@ -1114,14 +1214,24 @@ describe('TreeView control', () => {
             });
         });
         describe('mouse events testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             let ele: HTMLElement = createElement('div', { id: 'tree1' });
+            beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
+            });
             beforeAll(() => {
                 document.body.appendChild(ele);
                 treeObj = new TreeView({ 
@@ -1142,20 +1252,20 @@ describe('TreeView control', () => {
                 expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[3].childElementCount).toBe(1);
                 expect(treeObj.element.querySelectorAll('[aria-expanded="true"]').length).toBe(0);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
                     expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(true);
                     expect(li[3].childElementCount).toBe(2);
                     expect(li[3].getAttribute('aria-expanded')).toBe('true');
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                         expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                         expect(li[3].getAttribute('aria-expanded')).toBe('false');
-                        treeObj.clickHandler(mouseEventArgs);
+                        treeObj.touchClickObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -1166,7 +1276,7 @@ describe('TreeView control', () => {
                             expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                             expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                             expect(newli[4].childElementCount).toBe(1);
-                            treeObj.clickHandler(mouseEventArgs);
+                            treeObj.touchClickObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -1174,7 +1284,7 @@ describe('TreeView control', () => {
                                 expect(newli[4].childElementCount).toBe(2);
                                 expect(li[3].getAttribute('aria-expanded')).toBe('true');
                                 expect(newli[4].getAttribute('aria-expanded')).toBe('true');
-                                treeObj.clickHandler(mouseEventArgs);
+                                treeObj.touchClickObj.tap(tapEvent);
                                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                                 setTimeout(function() {
                                     expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
@@ -1192,13 +1302,13 @@ describe('TreeView control', () => {
                 mouseEventArgs.target = li[1].querySelector('.e-text-content');
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(0);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(li[1].getAttribute('aria-selected')).toBe('true');
                 mouseEventArgs.target = li[0].querySelector('.e-text-content');
                 expect((li[0] as Element).classList.contains('e-active')).toBe(false);            
-                treeObj.clickHandler(mouseEventArgs);            
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
@@ -1209,12 +1319,12 @@ describe('TreeView control', () => {
                 let ul: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('ul');
                 mouseEventArgs.target = ul[0];
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(li[0].getAttribute('aria-selected')).toBe('true');
                 mouseEventArgs.target = ul[1];
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect((li[3] as Element).classList.contains('e-active')).toBe(false);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
@@ -1226,20 +1336,21 @@ describe('TreeView control', () => {
                 expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                 expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[12].childElementCount).toBe(1);
-                treeObj.expandHandler(mouseEventArgs);
+                tapEvent.tapCount = 2;
+                treeObj.touchExpandObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
                     expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(true);
                     expect(li[12].childElementCount).toBe(2);
                     expect(li[12].getAttribute('aria-expanded')).toBe('true');
-                    treeObj.expandHandler(mouseEventArgs);
+                    treeObj.touchExpandObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                         expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                         expect(li[12].getAttribute('aria-expanded')).toBe('false');
-                        treeObj.expandHandler(mouseEventArgs);
+                        treeObj.touchExpandObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -1249,14 +1360,14 @@ describe('TreeView control', () => {
                             mouseEventArgs.target = newli[13].querySelector('.e-list-text');
                             expect(newli[13].querySelector('.e-icons')).toBe(null);
                             expect(newli[13].childElementCount).toBe(1);
-                            treeObj.expandHandler(mouseEventArgs);
+                            treeObj.touchExpandObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 expect(newli[13].querySelector('.e-icons')).toBe(null);
                                 expect(newli[13].childElementCount).toBe(1);
                                 expect(newli[13].getAttribute('aria-expanded')).toBe(null);
                                 mouseEventArgs.target = newli[12].querySelector('.e-icons');
-                                treeObj.expandHandler(mouseEventArgs);
+                                treeObj.touchExpandObj.tap(tapEvent);
                                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                                 setTimeout(function() {
                                     expect((newli[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -1310,7 +1421,7 @@ describe('TreeView control', () => {
                 expect(li[1].getAttribute('aria-selected')).toBe('true');
                 mouseEventArgs.target = li[0].querySelector('.e-fullrow');
                 expect((li[0] as Element).classList.contains('e-active')).toBe(false);            
-                treeObj.clickHandler(mouseEventArgs);            
+                treeObj.clickHandler(mouseEventArgs);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
@@ -1586,14 +1697,14 @@ describe('TreeView control', () => {
                 expect(li[0].querySelector('.e-input')).not.toBe(null);
                 expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                 expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
-                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music value';
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
                 keyboardEventArgs.action = 'tab';
                 keyboardEventArgs.target = li[0].querySelector('.e-input');
                 treeObj.keyActionHandler(keyboardEventArgs);
                 (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                 expect(li[0].querySelector('.e-input')).toBe(null);
-                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music value');
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = false;
                 treeObj.dataBind();
             });
@@ -1618,12 +1729,8 @@ describe('TreeView control', () => {
             });
         });
         describe('events testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let keyboardEventArgs: any = {
                 preventDefault: (): void => {},
                 action: null
@@ -1635,6 +1742,18 @@ describe('TreeView control', () => {
                 i++;
             }
             beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 i = 0;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -1676,7 +1795,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
             });
             it('nodeExpanded event is triggered', (done: Function) => {
@@ -1687,7 +1806,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -1701,10 +1820,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(i).toEqual(1);
                     done();
                 }, 450);                
@@ -1717,10 +1836,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -1736,18 +1855,19 @@ describe('TreeView control', () => {
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 i = 0;
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 mouseEventArgs.target = li[7].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[7].classList.contains('e-active')).toBe(true);
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[7].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[7].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(2);
                 expect(li[7].classList.contains('e-active')).toBe(false);
             });
@@ -1759,18 +1879,19 @@ describe('TreeView control', () => {
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 i = 0;
                 mouseEventArgs.target = li[4].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[4].classList.contains('e-active')).toBe(true);
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[4].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[4].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(2);
                 expect(li[4].classList.contains('e-active')).toBe(false);
             });
@@ -1778,17 +1899,18 @@ describe('TreeView control', () => {
                 treeObj = new TreeView({
                     fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child:"nodeChild" },
                     nodeEditing: clickFn,
+                    allowEditing: true,
                     fullRowSelect: false,
                 },'#tree1');
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
+                tapEvent.tapCount = 2;
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.editingHandler(mouseEventArgs);
+                treeObj.touchEditObj.tap(tapEvent);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
@@ -1800,22 +1922,29 @@ describe('TreeView control', () => {
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
                 expect(i).toEqual(1);
+                treeObj.touchEditObj.tap(tapEvent);
+                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
             });
             it('nodeEdited event is triggered', () => {
                 treeObj = new TreeView({
                     fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child:"nodeChild" },
                     nodeEdited: clickFn,
+                    allowEditing: true,
                     fullRowSelect: false,
                 },'#tree1');
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
+                tapEvent.tapCount = 2;
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.editingHandler(mouseEventArgs);
+                treeObj.touchEditObj.tap(tapEvent);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
@@ -1827,6 +1956,12 @@ describe('TreeView control', () => {
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
                 expect(i).toEqual(1);
+                treeObj.touchEditObj.tap(tapEvent);
+                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
             });
             it('nodeClicked event is triggered', () => {
                 treeObj = new TreeView({
@@ -1835,8 +1970,8 @@ describe('TreeView control', () => {
                 },'#tree1');
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[0].classList.contains('e-active')).toBe(true);
             });
@@ -1894,8 +2029,22 @@ describe('TreeView control', () => {
             });
         });
         describe('methods testing', () => {
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             beforeEach(() => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
                 treeObj = new TreeView({ fields: { dataSource: hierarchicalData3, id: "nodeId", text: "nodeText", child:"nodeChild" } });
@@ -1935,31 +2084,61 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 let sItems: any = JSON.parse(treeObj.getPersistData());
                 expect(sItems.selectedNodes.length).toBe(0);
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 let seItems: any = JSON.parse(treeObj.getPersistData());
                 expect(seItems.selectedNodes.length).toBe(1);
                 expect(seItems.selectedNodes).toContain('01');
             });
-            it('replaceText', () => {
+            it('updateNode', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText(li[0], 'Rain');
+                treeObj.updateNode(li[0], 'Rain');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = true;
                 treeObj.dataBind();
-                treeObj.replaceText(li[0], 'Rain');
+                treeObj.updateNode(li[0], 'Rain');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Rain');
-                treeObj.replaceText('01', 'Music');
+                treeObj.updateNode('01', 'Music');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText('011', 'Music');
+                treeObj.updateNode('011', 'Music');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText('01', null);
+                treeObj.updateNode('01', null);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText(null, null);
+                treeObj.updateNode(null, null);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = false;
                 treeObj.dataBind();
+            });            
+            it('beginEdit', () => {
+                let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                treeObj.beginEdit(li[0]);
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe(null);
+                treeObj.allowEditing = true;
+                treeObj.dataBind();
+                treeObj.beginEdit(li[0]);
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
+                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Rain';
+                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Rain');
+                treeObj.beginEdit('01');
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
+                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Rain');
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                treeObj.beginEdit(null);
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                treeObj.allowEditing = false;
+                treeObj.dataBind();                
             });
             it('expandAll', (done: Function) => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -2028,15 +2207,16 @@ describe('TreeView control', () => {
                 expect(newli[12].childElementCount).toBe(2);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                    newli[11].querySelector('.e-icons').dispatchEvent(e);
+                    mouseEventArgs.target = newli[11].querySelector('.e-icons');
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         treeObj.expandAll(null, 2, true);
                         expect(newli[12].childElementCount).toBe(2);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
-                            newli[11].querySelector('.e-icons').dispatchEvent(e);
+                            mouseEventArgs.target = newli[11].querySelector('.e-icons');
+                            treeObj.touchClickObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 treeObj.expandAll(null, 0, true);
@@ -2136,8 +2316,8 @@ describe('TreeView control', () => {
                             treeObj.collapseAll(null, 0, true);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
-                                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                                li[11].querySelector('.e-icons').dispatchEvent(e);
+                                mouseEventArgs.target = li[11].querySelector('.e-icons');
+                                treeObj.touchClickObj.tap(tapEvent);
                                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                                 setTimeout(function() {
                                     expect(li[12].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
@@ -2206,18 +2386,12 @@ describe('TreeView control', () => {
                 expect(li[8].getAttribute('aria-disabled')).toBe('true');
             });
             it('getNode', () => {
-                expect(treeObj.getNode(null)).toBe(null);
-                expect(treeObj.getNode(1)).toBe(null);
-                expect(treeObj.getNode('0')).toBe(null);
-                expect(treeObj.getNode('01')).not.toBe(null);
-            });
-            it('getNodeDetails', () => {
-                expect(treeObj.getNodeDetails(null).text).toBe('');
-                expect(treeObj.getNodeDetails(1).text).toBe('');
-                expect(treeObj.getNodeDetails('0').text).toBe('');
-                expect(treeObj.getNodeDetails('01').text).toBe('Music');
+                expect(treeObj.getNode(null).text).toBe('');
+                expect(treeObj.getNode(1).text).toBe('');
+                expect(treeObj.getNode('0').text).toBe('');
+                expect(treeObj.getNode('01').text).toBe('Music');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                expect(treeObj.getNodeDetails(li[1]).text).toBe('Videos');
+                expect(treeObj.getNode(li[1]).text).toBe('Videos');
             });
             it('moveNodes', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -2237,6 +2411,10 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 treeObj.selectedNodes = ['02'];
                 treeObj.dataBind();
+                expect(treeObj.liList.length).toBe(9);
+                treeObj.removeNodes();
+                expect(treeObj.liList.length).toBe(9);
+                treeObj.removeNodes(null);
                 expect(treeObj.liList.length).toBe(9);
                 treeObj.removeNodes('0');
                 expect(treeObj.liList.length).toBe(9);
@@ -2321,12 +2499,8 @@ describe('TreeView control', () => {
             });
         });
         describe('animation testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             let i: number = 0;
             let originalTimeout: any;
@@ -2334,6 +2508,18 @@ describe('TreeView control', () => {
                 i++;
             }
             beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 i = 0;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -2354,7 +2540,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -2368,10 +2554,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -2387,7 +2573,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -2402,10 +2588,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -2422,7 +2608,7 @@ describe('TreeView control', () => {
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -2438,10 +2624,10 @@ describe('TreeView control', () => {
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -2452,7 +2638,21 @@ describe('TreeView control', () => {
         });
         describe('Drag and drop functionality testing', () => {
             let treeObj: any;
+            let mouseEventArgs: any;
+            let tapEvent: any;
             beforeEach((done: Function): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
@@ -2743,9 +2943,11 @@ describe('TreeView control', () => {
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 // dragging non active element
                 let mousedown: any = getEventObject('MouseEvents', 'mousedown', treeObj.element, li[2].querySelector('.e-list-text'), 15, 10);
                 EventHandler.trigger(treeObj.element, 'mousedown', mousedown);
@@ -2762,7 +2964,8 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(li[1].getAttribute('aria-expanded')).toBe('true');
-                    li[2].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[2].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     treeObj.enableRtl = true;
                     treeObj.dataBind();
                     // dragging active element
@@ -2794,14 +2997,22 @@ describe('TreeView control', () => {
     });
     describe('Local data binding testing', () => {
         describe('Default functionality testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
             let treeObj: any;
+            let mouseEventArgs: any;
+            let tapEvent: any;
             beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
@@ -2869,7 +3080,7 @@ describe('TreeView control', () => {
                     expect(newli[3].getAttribute('aria-expanded')).toBe('true');
                     mouseEventArgs.target = newli[0].querySelector('.e-icons');
                     expect(newli[0].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(newli[0].childElementCount).toBe(2);
@@ -2911,7 +3122,7 @@ describe('TreeView control', () => {
                     expect(newli[4].getAttribute('aria-expanded')).toBe('true');
                     mouseEventArgs.target = newli[0].querySelector('.e-icons');
                     expect(newli[0].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(newli[0].childElementCount).toBe(2);
@@ -2946,13 +3157,13 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                    tapEvent.tapCount = 2;
                     mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                    mouseEventArgs.type = 'dblclick';
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                     expect(li[0].childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                    treeObj.expandHandler(mouseEventArgs);
+                    treeObj.touchExpandObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
@@ -2974,19 +3185,19 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                    mouseEventArgs.type = 'dblclick';
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                     expect(li[0].childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                    treeObj.expandHandler(mouseEventArgs);
-                    treeObj.editingHandler(mouseEventArgs);
+                    tapEvent.tapCount = 2;
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
-                        expect(li[0].childElementCount).toBe(1);
+                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                        expect(li[0].childElementCount).toBe(2);
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                         expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                         expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
@@ -2995,9 +3206,38 @@ describe('TreeView control', () => {
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                         expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
                         mouseEventArgs.target = li[0].querySelector('.e-list-item');
-                        treeObj.editingHandler(mouseEventArgs);
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                        done();
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                            (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                            (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                            let nli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                            mouseEventArgs.target = nli[1].querySelector('.e-list-text');
+                            treeObj.touchExpandObj.tap(tapEvent);
+                            treeObj.touchEditObj.tap(tapEvent);
+                            expect((nli[1].querySelector('.e-input') as HTMLInputElement).value).toBe('Gouttes.mp3');
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).value = 'Gouttes.mp31';
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(nli[1].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((nli[1].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Gouttes.mp31');
+                            mouseEventArgs.target = nli[1].querySelector('.e-list-text');
+                            treeObj.touchExpandObj.tap(tapEvent);
+                            treeObj.touchEditObj.tap(tapEvent);
+                            expect((nli[1].querySelector('.e-input') as HTMLInputElement).value).toBe('Gouttes.mp31');
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).value = 'Gouttes.mp3';
+                            (nli[1].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(nli[1].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((nli[1].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Gouttes.mp3');
+                            done();
+                        }, 450);
                     }, 100);
                 }, 100);
             });
@@ -3021,10 +3261,12 @@ describe('TreeView control', () => {
                 treeObj.checkedNodes= ['01', '03-03'];
                 treeObj.dataBind();     
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                treeObj.clickHandler({target:li[2].querySelector('.e-icons')});
+                mouseEventArgs.target = li[2].querySelector('.e-icons');
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler({target:li[2].querySelector('.e-ripple-container')});
+                    mouseEventArgs.target = li[2].querySelector('.e-ripple-container');
+                    treeObj.touchClickObj.tap(tapEvent);
                     setTimeout(function() {
                         expect(treeObj.checkedNodes.length === 7 ).toBe(true);
                         done();
@@ -3038,12 +3280,25 @@ describe('TreeView control', () => {
                     checkedNodes: ['01', '03', '03-03']                    
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true });
-                li[0].querySelector('.e-checkbox-wrapper').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-checkbox-wrapper');
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let checkEle: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-check');
                     expect(checkEle.length).toBeGreaterThan(1);
+                    done();
+                }, 100);
+            });
+            it('checkedNodes property with value ', (done: Function) => {
+                treeObj = new TreeView({ 
+                    fields: { dataSource: hierarchicalData1 , id: "nodeId", text: "nodeText", child: "nodeChild", expanded:"nodeExpanded" },
+                    showCheckBox: true,
+                    checkedNodes: ['04-02', '04-04']
+                });
+                treeObj.appendTo('#tree1');
+                jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                setTimeout(function() {
+                    expect(treeObj.checkedNodes.length).toBe(2);
                     done();
                 }, 100);
             });
@@ -3121,24 +3376,28 @@ describe('TreeView control', () => {
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).toContain('01');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
+                    mouseEventArgs.ctrlKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     // select node with id
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).not.toContain('01');
                     expect(treeObj.selectedNodes).toContain('02');
                     // checking ctrl key
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).not.toContain('01');
                     expect(treeObj.selectedNodes).toContain('02');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
                     // checking shift key
-                    li[3].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.ctrlKey = false;
+                    mouseEventArgs.shiftKey = true;
+                    mouseEventArgs.target = li[3].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[2].classList.contains('e-active')).toBe(false);
@@ -3164,9 +3423,10 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes.length).toBe(2);
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('04');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
                     // select node with id
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.ctrlKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -3175,7 +3435,8 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('02');
                     expect(treeObj.selectedNodes).toContain('04');
                     // unselect node with id
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -3184,7 +3445,8 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('04');
                     // select node without id
-                    li[7].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[7].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -3195,7 +3457,8 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('04');
                     expect(treeObj.selectedNodes).not.toContain(null);
                     // unselect node without id
-                    li[7].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[7].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
@@ -3216,21 +3479,24 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
                     // select middle node
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.shiftKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(1);
                     expect(treeObj.selectedNodes).toContain('02');
                     // select first node
-                    li[0].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(treeObj.selectedNodes.length).toBe(2);
                     expect(treeObj.selectedNodes).toContain('01');
                     expect(treeObj.selectedNodes).toContain('02');
                     // select next node
-                    li[3].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[3].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(li[2].classList.contains('e-active')).toBe(true);
@@ -3240,19 +3506,22 @@ describe('TreeView control', () => {
                     expect(treeObj.selectedNodes).toContain('02');
                     expect(treeObj.selectedNodes).toContain('03');
                     expect(treeObj.selectedNodes).toContain('04');
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
                     // expand first node
-                    li[0].querySelector('.e-icons').dispatchEvent(e);
+                    mouseEventArgs.shiftKey = false;
+                    mouseEventArgs.target = li[0].querySelector('.e-icons');
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         // collpase first node
-                        li[0].querySelector('.e-icons').dispatchEvent(e);
+                        mouseEventArgs.target = li[0].querySelector('.e-icons');
+                        treeObj.touchClickObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                            var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
                             // check invisible node
-                            newli[0].querySelector('.e-list-text').dispatchEvent(e);
+                            mouseEventArgs.shiftKey = true;
+                            mouseEventArgs.target = newli[0].querySelector('.e-list-text');
+                            treeObj.touchClickObj.tap(tapEvent);
                             expect(newli[0].classList.contains('e-active')).toBe(true);
                             expect(newli[1].classList.contains('e-active')).toBe(false);
                             expect(newli[2].classList.contains('e-active')).toBe(true);
@@ -3357,27 +3626,62 @@ describe('TreeView control', () => {
                 treeObj = new TreeView({ 
                     fields: { dataSource: localData1, id: "nodeId", parentID: 'nodePid', text: "nodeText", hasChildren: "hasChild", expanded: 'nodeExpanded1' },
                     nodeTemplate: '#template',
+                    allowEditing: true,
                 },'#tree1');
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-text-content');
-                    expect(li[0].querySelector('i')).not.toBe(null);
-                    expect(li[0].querySelector('b')).toBe(null);
-                    expect(li[1].querySelector('b')).not.toBe(null);
-                    expect(li[1].querySelector('i')).toBe(null);
-                    done();
+                    let txt: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-text-content');
+                    expect(txt[0].querySelector('i')).not.toBe(null);
+                    expect(txt[0].querySelector('b')).toBe(null);
+                    expect(txt[1].querySelector('b')).not.toBe(null);
+                    expect(txt[1].querySelector('i')).toBe(null);
+                    let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                    tapEvent.tapCount = 2;
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
+                    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                    setTimeout(function() {
+                        expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                        expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
+                        expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
+                        (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music node';
+                        (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                        expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                        expect((li[0].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Music node');
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                            (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                            (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                            expect((li[0].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Music');
+                            done();
+                        }, 450);
+                    }, 450);
                 }, 450);
             });
         });
         describe('property change testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
             let treeObj: any;
-            beforeEach(() => {
+            let mouseEventArgs: any;
+            let tapEvent: any;
+            beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
                 treeObj = new TreeView({ 
@@ -3452,7 +3756,7 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
                 expect(li[0].childElementCount).toBe(1);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(li[0].childElementCount).toBe(2);
                 expect(treeObj.element.querySelector('.e-list-text').innerHTML).toBe('Music');
                 expect(treeObj.element.querySelector('.e-list-item').getAttribute('data-uid')).toBe('01');
@@ -3461,7 +3765,7 @@ describe('TreeView control', () => {
                 let cli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect(cli[1].childElementCount).toBe(1);
                 mouseEventArgs.target = cli[1].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(cli[1].childElementCount).toBe(1);
                 expect(cli[1].querySelector('.e-icons')).toBe(null);
                 treeObj.fields = { id: 'subId', parentID: "subPid" };
@@ -3469,7 +3773,7 @@ describe('TreeView control', () => {
                 let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = newli[0].querySelector('.e-icons');
                 expect(newli[0].childElementCount).toBe(1);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(newli[0].childElementCount).toBe(2);
                 expect(treeObj.element.querySelector('.e-list-text').innerHTML).toBe('Music');
                 expect(treeObj.element.querySelector('.e-list-item').getAttribute('data-uid')).toBe('21');
@@ -3478,7 +3782,7 @@ describe('TreeView control', () => {
                 let dli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect(dli[1].childElementCount).toBe(1);
                 mouseEventArgs.target = dli[1].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(dli[1].childElementCount).toBe(1);
                 expect(cli[1].querySelector('.e-icons')).toBe(null);
             });
@@ -3486,7 +3790,7 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
                 expect(li[0].childElementCount).toBe(1);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(li[0].childElementCount).toBe(2);
                 expect(treeObj.element.querySelector('.e-list-text').innerHTML).toBe('Music');
                 expect(treeObj.element.querySelector('.e-list-item').getAttribute('data-uid')).toBe('01');
@@ -3495,7 +3799,7 @@ describe('TreeView control', () => {
                 let cli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect(cli[1].childElementCount).toBe(1);
                 mouseEventArgs.target = cli[1].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(cli[1].childElementCount).toBe(1);
                 expect(cli[1].querySelector('.e-icons')).toBe(null);
                 treeObj.fields = { hasChildren: 'subHasChild' };
@@ -3503,7 +3807,7 @@ describe('TreeView control', () => {
                 let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = newli[0].querySelector('.e-icons');
                 expect(newli[0].childElementCount).toBe(1);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(newli[0].childElementCount).toBe(1);
                 expect(newli[0].querySelector('.e-icons')).toBe(null);
                 expect(treeObj.element.querySelector('.e-list-text').innerHTML).toBe('Music');
@@ -3648,27 +3952,27 @@ describe('TreeView control', () => {
                 expect(treeObj.element.querySelector('.e-list-url').href.indexOf('http://ej2.syncfusion.com/demos/')).not.toBe(-1);
             });
             it('expandOn property testing', (done: Function) => {
-                treeObj.expandOn = 'click';
+                treeObj.expandOn = 'Click';
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
                 expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                 expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
-                treeObj.expandHandler(mouseEventArgs);
+                treeObj.touchExpandObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
                     expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(true);
                     expect(li[0].childElementCount).toBe(2);
                     expect(li[0].getAttribute('aria-expanded')).toBe('true');
-                    treeObj.expandHandler(mouseEventArgs);
+                    treeObj.touchExpandObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                         expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                         expect(li[0].getAttribute('aria-expanded')).toBe('false');
-                        treeObj.expandHandler(mouseEventArgs);
+                        treeObj.touchExpandObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             expect((li[0].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -3678,7 +3982,7 @@ describe('TreeView control', () => {
                             mouseEventArgs.target = newli[1].querySelector('.e-list-text');
                             expect(newli[1].querySelector('.e-icons')).not.toBe(null);
                             expect(newli[1].childElementCount).toBe(1);
-                            treeObj.expandHandler(mouseEventArgs);
+                            treeObj.touchExpandObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 expect(newli[1].querySelector('.e-icons')).toBe(null);
@@ -3763,19 +4067,19 @@ describe('TreeView control', () => {
                 treeObj.allowEditing = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.expandHandler(mouseEventArgs);
-                treeObj.editingHandler(mouseEventArgs);
+                tapEvent.tapCount = 2;
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchExpandObj.tap(tapEvent);
+                treeObj.touchEditObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
-                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
-                    expect(li[0].childElementCount).toBe(1);
+                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                    expect(li[0].childElementCount).toBe(2);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                     expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
@@ -3783,18 +4087,30 @@ describe('TreeView control', () => {
                     (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                     expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
-                    treeObj.allowEditing = false;
-                    treeObj.dataBind();
-                    treeObj.expandHandler(mouseEventArgs);
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
-                        expect(li[0].childElementCount).toBe(2);
+                        expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                        (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                        (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                        done();
+                        expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                        treeObj.allowEditing = false;
+                        treeObj.dataBind();
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                            expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                            expect(li[0].childElementCount).toBe(2);
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                            done();
+                        }, 450);
                     }, 450);
-                }, 100);
+                }, 450);
             });
             it('enableRtl property testing', () => {
                 expect(document.getElementById('tree1').classList.contains('e-rtl')).toEqual(false);
@@ -3843,8 +4159,9 @@ describe('TreeView control', () => {
                 expect(treeObj.selectedNodes).toContain('01');
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 expect(li[1].classList.contains('e-active')).toBe(true);
                 expect(treeObj.selectedNodes.length).toBe(2);
@@ -3897,14 +4214,24 @@ describe('TreeView control', () => {
             });
         });
         describe('mouse events testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             let ele: HTMLElement = createElement('div', { id: 'tree1' });
+            beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
+            });
             beforeAll(() => {
                 document.body.appendChild(ele);
                 treeObj = new TreeView({
@@ -3925,20 +4252,20 @@ describe('TreeView control', () => {
                 expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[3].childElementCount).toBe(1);
                 expect(treeObj.element.querySelectorAll('[aria-expanded="true"]').length).toBe(0);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
                     expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(true);
                     expect(li[3].childElementCount).toBe(2);
                     expect(li[3].getAttribute('aria-expanded')).toBe('true');
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                         expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                         expect(li[3].getAttribute('aria-expanded')).toBe('false');
-                        treeObj.clickHandler(mouseEventArgs);
+                        treeObj.touchClickObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             expect((li[3].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -3949,7 +4276,7 @@ describe('TreeView control', () => {
                             expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                             expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                             expect(newli[4].childElementCount).toBe(1);
-                            treeObj.clickHandler(mouseEventArgs);
+                            treeObj.touchClickObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -3957,7 +4284,7 @@ describe('TreeView control', () => {
                                 expect(newli[4].childElementCount).toBe(2);
                                 expect(li[3].getAttribute('aria-expanded')).toBe('true');
                                 expect(newli[4].getAttribute('aria-expanded')).toBe('true');
-                                treeObj.clickHandler(mouseEventArgs);
+                                treeObj.touchClickObj.tap(tapEvent);
                                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                                 setTimeout(function() {
                                     expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
@@ -3975,13 +4302,13 @@ describe('TreeView control', () => {
                 mouseEventArgs.target = li[1].querySelector('.e-text-content');
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(0);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(li[1].getAttribute('aria-selected')).toBe('true');
                 mouseEventArgs.target = li[0].querySelector('.e-text-content');
                 expect((li[0] as Element).classList.contains('e-active')).toBe(false);            
-                treeObj.clickHandler(mouseEventArgs);            
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
@@ -3992,12 +4319,12 @@ describe('TreeView control', () => {
                 let ul: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('ul');
                 mouseEventArgs.target = ul[0];
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(li[0].getAttribute('aria-selected')).toBe('true');
                 mouseEventArgs.target = ul[1];
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect((li[3] as Element).classList.contains('e-active')).toBe(false);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
@@ -4009,20 +4336,21 @@ describe('TreeView control', () => {
                 expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                 expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[12].childElementCount).toBe(1);
-                treeObj.expandHandler(mouseEventArgs);
+                tapEvent.tapCount = 2;
+                treeObj.touchExpandObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
                     expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(true);
                     expect(li[12].childElementCount).toBe(2);
                     expect(li[12].getAttribute('aria-expanded')).toBe('true');
-                    treeObj.expandHandler(mouseEventArgs);
+                    treeObj.touchExpandObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                         expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-collapsible')).toBe(false);
                         expect(li[12].getAttribute('aria-expanded')).toBe('false');
-                        treeObj.expandHandler(mouseEventArgs);
+                        treeObj.touchExpandObj.tap(tapEvent);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
                             expect((li[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -4032,14 +4360,14 @@ describe('TreeView control', () => {
                             mouseEventArgs.target = newli[13].querySelector('.e-list-text');
                             expect(newli[13].querySelector('.e-icons')).toBe(null);
                             expect(newli[13].childElementCount).toBe(1);
-                            treeObj.expandHandler(mouseEventArgs);
+                            treeObj.touchExpandObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 expect(newli[13].querySelector('.e-icons')).toBe(null);
                                 expect(newli[13].childElementCount).toBe(1);
                                 expect(newli[13].getAttribute('aria-expanded')).toBe(null);
                                 mouseEventArgs.target = newli[12].querySelector('.e-icons');
-                                treeObj.expandHandler(mouseEventArgs);
+                                treeObj.touchExpandObj.tap(tapEvent);
                                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                                 setTimeout(function() {
                                     expect((newli[12].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(false);
@@ -4093,7 +4421,7 @@ describe('TreeView control', () => {
                 expect(li[1].getAttribute('aria-selected')).toBe('true');
                 mouseEventArgs.target = li[0].querySelector('.e-fullrow');
                 expect((li[0] as Element).classList.contains('e-active')).toBe(false);            
-                treeObj.clickHandler(mouseEventArgs);            
+                treeObj.clickHandler(mouseEventArgs);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect((li[0] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
@@ -4336,14 +4664,14 @@ describe('TreeView control', () => {
                 expect(li[0].querySelector('.e-input')).not.toBe(null);
                 expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                 expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
-                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music value';
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
                 keyboardEventArgs.action = 'tab';
                 keyboardEventArgs.target = li[0].querySelector('.e-input');
                 treeObj.keyActionHandler(keyboardEventArgs);
                 (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                 expect(li[0].querySelector('.e-input')).toBe(null);
-                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music value');
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = false;
                 treeObj.dataBind();
             });
@@ -4368,12 +4696,8 @@ describe('TreeView control', () => {
             });
         });
         describe('events testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let keyboardEventArgs: any = {
                 preventDefault: (): void => {},
                 action: null
@@ -4385,6 +4709,18 @@ describe('TreeView control', () => {
                 i++;
             }
             beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 i = 0;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -4426,7 +4762,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
             });
             it('nodeExpanded event is triggered', (done: Function) => {
@@ -4437,7 +4773,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -4451,10 +4787,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(i).toEqual(1);
                     done();
                 }, 450);                
@@ -4467,10 +4803,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -4486,18 +4822,19 @@ describe('TreeView control', () => {
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 i = 0;
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 mouseEventArgs.target = li[7].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[7].classList.contains('e-active')).toBe(true);
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[7].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[7].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(2);
                 expect(li[7].classList.contains('e-active')).toBe(false);
             });
@@ -4509,18 +4846,19 @@ describe('TreeView control', () => {
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 i = 0;
                 mouseEventArgs.target = li[4].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[4].classList.contains('e-active')).toBe(true);
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[4].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[4].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(2);
                 expect(li[4].classList.contains('e-active')).toBe(false);
             });
@@ -4528,17 +4866,18 @@ describe('TreeView control', () => {
                 treeObj = new TreeView({
                     fields: { dataSource: localData1, id: 'nodeId', text: 'nodeText', parentID: 'nodePid', hasChildren: 'hasChild' },
                     nodeEditing: clickFn,
+                    allowEditing: true,
                     fullRowSelect: false,
                 },'#tree1');
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
+                tapEvent.tapCount = 2;
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.editingHandler(mouseEventArgs);
+                treeObj.touchEditObj.tap(tapEvent);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
@@ -4550,22 +4889,29 @@ describe('TreeView control', () => {
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
                 expect(i).toEqual(1);
+                treeObj.touchEditObj.tap(tapEvent);
+                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
             });
             it('nodeEdited event is triggered', () => {
                 treeObj = new TreeView({
                     fields: { dataSource: localData1, id: 'nodeId', text: 'nodeText', parentID: 'nodePid', hasChildren: 'hasChild' },
                     nodeEdited: clickFn,
+                    allowEditing: true,
                     fullRowSelect: false,
                 },'#tree1');
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
+                tapEvent.tapCount = 2;
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.editingHandler(mouseEventArgs);
+                treeObj.touchEditObj.tap(tapEvent);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
@@ -4577,6 +4923,12 @@ describe('TreeView control', () => {
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
                 expect(i).toEqual(1);
+                treeObj.touchEditObj.tap(tapEvent);
+                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
             });
             it('nodeClicked event is triggered', () => {
                 treeObj = new TreeView({
@@ -4585,8 +4937,8 @@ describe('TreeView control', () => {
                 },'#tree1');
                 expect(i).toEqual(0);
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(i).toEqual(1);
                 expect(li[0].classList.contains('e-active')).toBe(true);
             });
@@ -4644,8 +4996,22 @@ describe('TreeView control', () => {
             });
         });
         describe('methods testing', () => {
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             beforeEach(() => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
                 treeObj = new TreeView({ fields: { dataSource: localData3, id: 'nodeId', text: 'nodeText', parentID: 'nodePid', hasChildren: 'hasChild' } });
@@ -4663,28 +5029,28 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 let sItems: any = JSON.parse(treeObj.getPersistData());
                 expect(sItems.selectedNodes.length).toBe(0);
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 let seItems: any = JSON.parse(treeObj.getPersistData());
                 expect(seItems.selectedNodes.length).toBe(1);
                 expect(seItems.selectedNodes).toContain('01');
             });
-            it('replaceText', () => {
+            it('updateNode', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText(li[0], 'Rain');
+                treeObj.updateNode(li[0], 'Rain');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = true;
                 treeObj.dataBind();
-                treeObj.replaceText(li[0], 'Rain');
+                treeObj.updateNode(li[0], 'Rain');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Rain');
-                treeObj.replaceText('01', 'Music');
+                treeObj.updateNode('01', 'Music');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText('011', 'Music');
+                treeObj.updateNode('011', 'Music');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText('01', null);
+                treeObj.updateNode('01', null);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText(null, null);
+                treeObj.updateNode(null, null);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = false;
                 treeObj.dataBind();
@@ -4756,15 +5122,16 @@ describe('TreeView control', () => {
                 expect(newli[12].childElementCount).toBe(2);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                    newli[11].querySelector('.e-icons').dispatchEvent(e);
+                    mouseEventArgs.target = newli[11].querySelector('.e-icons');
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         treeObj.expandAll(null, 2, true);
                         expect(newli[12].childElementCount).toBe(2);
                         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                         setTimeout(function() {
-                            newli[11].querySelector('.e-icons').dispatchEvent(e);
+                            mouseEventArgs.target = newli[11].querySelector('.e-icons');
+                            treeObj.touchClickObj.tap(tapEvent);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
                                 treeObj.expandAll(null, 0, true);
@@ -4864,8 +5231,8 @@ describe('TreeView control', () => {
                             treeObj.collapseAll(null, 0, true);
                             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                             setTimeout(function() {
-                                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                                li[11].querySelector('.e-icons').dispatchEvent(e);
+                                mouseEventArgs.target = li[11].querySelector('.e-icons');
+                                treeObj.touchClickObj.tap(tapEvent);
                                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                                 setTimeout(function() {
                                     expect(li[12].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
@@ -4934,18 +5301,12 @@ describe('TreeView control', () => {
                 expect(li[8].getAttribute('aria-disabled')).toBe('true');
             });
             it('getNode', () => {
-                expect(treeObj.getNode(null)).toBe(null);
-                expect(treeObj.getNode(1)).toBe(null);
-                expect(treeObj.getNode('0')).toBe(null);
-                expect(treeObj.getNode('01')).not.toBe(null);
-            });
-            it('getNodeDetails', () => {
-                expect(treeObj.getNodeDetails(null).text).toBe('');
-                expect(treeObj.getNodeDetails(1).text).toBe('');
-                expect(treeObj.getNodeDetails('0').text).toBe('');
-                expect(treeObj.getNodeDetails('01').text).toBe('Music');
+                expect(treeObj.getNode(null).text).toBe('');
+                expect(treeObj.getNode(1).text).toBe('');
+                expect(treeObj.getNode('0').text).toBe('');
+                expect(treeObj.getNode('01').text).toBe('Music');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                expect(treeObj.getNodeDetails(li[1]).text).toBe('Videos');
+                expect(treeObj.getNode(li[1]).text).toBe('Videos');
             });
             it('moveNodes', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -4965,6 +5326,10 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 treeObj.selectedNodes = ['02'];
                 treeObj.dataBind();
+                expect(treeObj.liList.length).toBe(9);
+                treeObj.removeNodes();
+                expect(treeObj.liList.length).toBe(9);
+                treeObj.removeNodes(null);
                 expect(treeObj.liList.length).toBe(9);
                 treeObj.removeNodes('0');
                 expect(treeObj.liList.length).toBe(9);
@@ -5049,12 +5414,8 @@ describe('TreeView control', () => {
             });
         });
         describe('animation testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             let i: number = 0;
             let originalTimeout: any;
@@ -5062,6 +5423,18 @@ describe('TreeView control', () => {
                 i++;
             }
             beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 i = 0;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -5082,7 +5455,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -5096,10 +5469,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -5115,7 +5488,7 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -5130,10 +5503,10 @@ describe('TreeView control', () => {
                 },'#tree1');
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -5150,7 +5523,7 @@ describe('TreeView control', () => {
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(i).toEqual(1);
@@ -5166,10 +5539,10 @@ describe('TreeView control', () => {
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(i).toEqual(1);
@@ -5180,7 +5553,21 @@ describe('TreeView control', () => {
         });
         describe('Drag and drop functionality testing', () => {
             let treeObj: any;
+            let mouseEventArgs: any;
+            let tapEvent: any;
             beforeEach((done: Function): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 treeObj = undefined;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
@@ -5471,9 +5858,11 @@ describe('TreeView control', () => {
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 // dragging non active element
                 let mousedown: any = getEventObject('MouseEvents', 'mousedown', treeObj.element, li[2].querySelector('.e-list-text'), 15, 10);
                 EventHandler.trigger(treeObj.element, 'mousedown', mousedown);
@@ -5490,7 +5879,8 @@ describe('TreeView control', () => {
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect(li[1].getAttribute('aria-expanded')).toBe('true');
-                    li[2].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[2].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     treeObj.enableRtl = true;
                     treeObj.dataBind();
                     // dragging active element
@@ -5561,6 +5951,12 @@ describe('TreeView control', () => {
                     stopImmediatePropagation: (): void => {},
                     target: null,
                     type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
                 };
                 let treeObj: any;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -5608,7 +6004,7 @@ describe('TreeView control', () => {
                     mouseEventArgs.target = newli[1].querySelector('.e-icons');
                     expect(newli[1].childElementCount).toBe(1);
                     treeObj.preventContextMenu(mouseEventArgs);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     this.request = jasmine.Ajax.requests.mostRecent();
                     this.request.respondWith({
                         status: 200,
@@ -5620,7 +6016,7 @@ describe('TreeView control', () => {
                         expect(newli[1].querySelector('.e-icons')).toBe(null);                
                         mouseEventArgs.target = newli[0].querySelector('.e-icons');
                         expect(newli[0].childElementCount).toBe(1);
-                        treeObj.clickHandler(mouseEventArgs);
+                        treeObj.touchClickObj.tap(tapEvent);
                         expect(newli[0].querySelector('.e-icons').classList.contains('e-icons-spinner')).toBe(true);
                         this.request = jasmine.Ajax.requests.mostRecent();
                         this.request.respondWith({
@@ -5644,6 +6040,12 @@ describe('TreeView control', () => {
                     stopImmediatePropagation: (): void => {},
                     target: null,
                     type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
                 };
                 let treeObj: any;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -5693,7 +6095,7 @@ describe('TreeView control', () => {
                     let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                     mouseEventArgs.target = newli[1].querySelector('.e-icons');
                     expect(newli[1].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     this.request = jasmine.Ajax.requests.mostRecent();
                     this.request.respondWith({
                         status: 200,
@@ -5705,7 +6107,7 @@ describe('TreeView control', () => {
                         expect(newli[1].querySelector('.e-icons')).toBe(null);                
                         mouseEventArgs.target = newli[0].querySelector('.e-icons');
                         expect(newli[0].childElementCount).toBe(1);
-                        treeObj.clickHandler(mouseEventArgs);
+                        treeObj.touchClickObj.tap(tapEvent);
                         this.request = jasmine.Ajax.requests.mostRecent();
                         this.request.respondWith({
                             status: 200,
@@ -5764,6 +6166,12 @@ describe('TreeView control', () => {
                     stopImmediatePropagation: (): void => {},
                     target: null,
                     type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
                 };
                 let treeObj: any;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -5796,19 +6204,24 @@ describe('TreeView control', () => {
                 });
                 it('functionality testing', (done: Function) => {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                    mouseEventArgs.type = 'dblclick';
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                     expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                     expect(li[0].childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                    treeObj.expandHandler(mouseEventArgs);
-                    treeObj.editingHandler(mouseEventArgs);
+                    tapEvent.tapCount = 2;
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
+                    this.request = jasmine.Ajax.requests.mostRecent();
+                    this.request.respondWith({
+                        status: 200,
+                        responseText: JSON.stringify({d: remoteData2_1, __count: 2})
+                    });
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
-                        expect(li[0].childElementCount).toBe(1);
+                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                        expect(li[0].childElementCount).toBe(2);
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                         expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                         expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
@@ -5816,8 +6229,19 @@ describe('TreeView control', () => {
                         (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                         expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
-                        done();
-                    }, 100);
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                            (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                            (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                            expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                            done();
+                        }, 450);
+                    }, 450);
                 });
             });
             describe('enableRtl property testing', () => {
@@ -5936,6 +6360,18 @@ describe('TreeView control', () => {
                 }, 100);
             });
             describe('allowMultiSelection property testing', () => {
+                let mouseEventArgs: any = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 let treeObj: any;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
@@ -5968,18 +6404,23 @@ describe('TreeView control', () => {
                     let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.ctrlKey = true;
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[3].classList.contains('e-active')).toBe(true);
                     expect(li[1].classList.contains('e-active')).toBe(true);
-                    li[3].querySelector('.e-list-text').dispatchEvent(e);
-                    li[1].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.target = li[3].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
+                    mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(true);
                     expect(li[1].classList.contains('e-active')).toBe(false);
                     expect(li[3].classList.contains('e-active')).toBe(false);
-                    var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, shiftKey: true });
-                    li[3].querySelector('.e-list-text').dispatchEvent(e);
+                    mouseEventArgs.ctrlKey = false;
+                    mouseEventArgs.shiftKey = true;
+                    mouseEventArgs.target = li[3].querySelector('.e-list-text');
+                    treeObj.touchClickObj.tap(tapEvent);
                     expect(li[0].classList.contains('e-active')).toBe(false);
                     expect(li[1].classList.contains('e-active')).toBe(true);
                     expect(li[2].classList.contains('e-active')).toBe(true);
@@ -6070,6 +6511,18 @@ describe('TreeView control', () => {
                 }, 4450);
             });
             describe('template support testing with script', () => {
+                let mouseEventArgs: any = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 let treeObj: any;
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
@@ -6081,9 +6534,11 @@ describe('TreeView control', () => {
                     document.body.appendChild(template);  
                     treeObj = new TreeView({ 
                         fields: { dataSource: dataManager1, id: "nodeId", parentID: 'nodePid', text: "nodeText", hasChildren: "hasChild", 
-                            tooltip: 'nodeTooltip', selected: 'nodeSelected' 
+                            tooltip: 'nodeTooltip', selected: 'nodeSelected',
+                            child: { dataSource: dataManager1, id: "nodeId", parentID: 'nodePid', text: "nodeText", }
                         },
                         nodeTemplate: '#template',
+                        allowEditing: true,
                         dataBound:() => {
                             done();
                         },
@@ -6102,27 +6557,86 @@ describe('TreeView control', () => {
                     jasmine.Ajax.uninstall();
                 });
                 it('functionality testing', (done: Function) => {
-                    let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-text-content');
-                    expect(li[0].querySelector('i')).not.toBe(null);
-                    expect(li[0].querySelector('b')).toBe(null);
-                    expect(li[1].querySelector('b')).not.toBe(null);
-                    expect(li[1].querySelector('i')).toBe(null);
-                    done();
+                    let txt: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-text-content');
+                    expect(txt[0].querySelector('i')).not.toBe(null);
+                    expect(txt[0].querySelector('b')).toBe(null);
+                    expect(txt[1].querySelector('b')).not.toBe(null);
+                    expect(txt[1].querySelector('i')).toBe(null);
+                    let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                    tapEvent.tapCount = 2;
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
+                    this.request = jasmine.Ajax.requests.mostRecent();
+                    this.request.respondWith({
+                        status: 200,
+                        responseText: JSON.stringify({d: remoteData2, __count: 2})
+                    });
+                    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                    setTimeout(function() {
+                        expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                        expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
+                        expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
+                        (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music node';
+                        (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                        expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                        expect((li[0].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Music node');
+                        let nli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                        mouseEventArgs.target = nli[2].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        treeObj.touchEditObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect((nli[2].querySelector('.e-input') as HTMLInputElement).value).toBe('Downloads');
+                            (nli[2].querySelector('.e-input') as HTMLInputElement).value = 'Downloads1';
+                            (nli[2].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(nli[2].querySelector('.e-list-text').childElementCount).toBe(1);
+                            expect((nli[2].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Downloads1');
+                            mouseEventArgs.target = nli[2].querySelector('.e-list-text');
+                            treeObj.touchExpandObj.tap(tapEvent);
+                            treeObj.touchEditObj.tap(tapEvent);
+                            expect((nli[2].querySelector('.e-input') as HTMLInputElement).value).toBe('Downloads1');
+                            (nli[2].querySelector('.e-input') as HTMLInputElement).value = 'Downloads';
+                            (nli[2].querySelector('.e-input') as HTMLInputElement).blur();
+                            expect(nli[2].querySelector('.e-list-text').childElementCount).toBe(1);
+                            expect((nli[2].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Downloads');
+                            mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                            treeObj.touchExpandObj.tap(tapEvent);
+                            treeObj.touchEditObj.tap(tapEvent);
+                            jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                            setTimeout(function() {
+                                expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                                (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                                (li[0].querySelector('.e-input') as HTMLInputElement).blur();
+                                expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
+                                expect((li[0].querySelector('.e-list-text') as HTMLElement).textContent).toBe('Music');
+                                done();
+                            }, 450);
+                        }, 450);
+                    }, 450);
                 }, 4450);
             });
         });
         describe('property change testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
             let dataManager2: DataManager = new DataManager({ url: '/TreeView/remoteData2' });
             let originalTimeout: any;
             beforeEach((done: Function) => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 jasmine.Ajax.install();
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
@@ -6166,7 +6680,7 @@ describe('TreeView control', () => {
                 this.request = jasmine.Ajax.requests.mostRecent();
                 this.request.respondWith({
                     status: 200,
-                    responseText: JSON.stringify({d: remoteData1, __count: 2})
+                    responseText: JSON.stringify({d: remoteData1_1, __count: 2})
                 });
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
@@ -6499,19 +7013,24 @@ describe('TreeView control', () => {
                 treeObj.allowEditing = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
                 expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
                 expect(li[0].childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.expandHandler(mouseEventArgs);
-                treeObj.editingHandler(mouseEventArgs);
+                tapEvent.tapCount = 2;
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchExpandObj.tap(tapEvent);
+                treeObj.touchEditObj.tap(tapEvent);
+                this.request = jasmine.Ajax.requests.mostRecent();
+                this.request.respondWith({
+                    status: 200,
+                    responseText: JSON.stringify({d: remoteData2_1, __count: 2})
+                });
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
-                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(true);
-                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(false);
-                    expect(li[0].childElementCount).toBe(1);
+                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                    expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                    expect(li[0].childElementCount).toBe(2);
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                     expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
                     expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music');
@@ -6519,23 +7038,30 @@ describe('TreeView control', () => {
                     (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                     expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
                     expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music node');
-                    treeObj.allowEditing = false;
-                    treeObj.dataBind();
-                    treeObj.expandHandler(mouseEventArgs);
-                    this.request = jasmine.Ajax.requests.mostRecent();
-                    this.request.respondWith({
-                        status: 200,
-                        responseText: JSON.stringify({d: remoteData2_1, __count: 2})
-                    });
+                    mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                    treeObj.touchExpandObj.tap(tapEvent);
+                    treeObj.touchEditObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
-                        expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
-                        expect(li[0].childElementCount).toBe(2);
+                        expect((li[0].querySelector('.e-input') as HTMLInputElement).value).toBe('Music node');
+                        (li[0].querySelector('.e-input') as HTMLInputElement).value = 'Music';
+                        (li[0].querySelector('.e-input') as HTMLInputElement).blur();
                         expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                        done();
+                        expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
+                        treeObj.allowEditing = false;
+                        treeObj.dataBind();
+                        mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                        treeObj.touchExpandObj.tap(tapEvent);
+                        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                        setTimeout(function() {
+                            expect(li[0].querySelector('.e-icons').classList.contains('e-icon-expandable')).toBe(false);
+                            expect(li[0].querySelector('.e-icons').classList.contains('e-icon-collapsible')).toBe(true);
+                            expect(li[0].childElementCount).toBe(2);
+                            expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
+                            done();
+                        }, 450);
                     }, 450);
-                }, 100);
+                }, 500);
             });
             it('enableRtl property testing', () => {
                 expect(document.getElementById('tree1').classList.contains('e-rtl')).toEqual(false);
@@ -6584,8 +7110,9 @@ describe('TreeView control', () => {
                 expect(treeObj.selectedNodes).toContain('01');
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 expect(li[1].classList.contains('e-active')).toBe(true);
                 expect(treeObj.selectedNodes.length).toBe(2);
@@ -6662,12 +7189,8 @@ describe('TreeView control', () => {
             });
         });
         describe('events testing', () => {
-            let mouseEventArgs: any = {
-                preventDefault: (): void => {},
-                stopImmediatePropagation: (): void => {},
-                target: null,
-                type: null,
-            };
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let keyboardEventArgs: any = {
                 preventDefault: (): void => {},
                 action: null
@@ -6693,6 +7216,20 @@ describe('TreeView control', () => {
             let treeObj: any;
             let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
             let originalTimeout: any;
+            beforeEach((): void => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
+            });
             beforeAll((done: Function) => {
                 jasmine.Ajax.install();
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
@@ -6703,6 +7240,7 @@ describe('TreeView control', () => {
                     },
                     animation: { expand: { duration: 0 }, collapse: { duration: 0 } },
                     fullRowSelect: false,
+                    allowEditing: true,
                     allowMultiSelection: true,
                     allowDragAndDrop: true,
                     dataBound: dataBoundFunction,
@@ -6753,7 +7291,7 @@ describe('TreeView control', () => {
             it('nodeExpanding and nodeExpanded events are triggered', (done: Function) => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(expandingFunction).toHaveBeenCalled();
                 this.request = jasmine.Ajax.requests.mostRecent();
                 this.request.respondWith({
@@ -6769,7 +7307,7 @@ describe('TreeView control', () => {
             it('nodeCollapsing and nodeCollapsed events are triggered', (done: Function) => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-icons');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(collapsingFunction).toHaveBeenCalled();
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
                 setTimeout(function() {
@@ -6781,36 +7319,39 @@ describe('TreeView control', () => {
                 expect(selectingFunction).not.toHaveBeenCalled();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(selectingFunction).toHaveBeenCalled();
                 expect(li[0].classList.contains('e-active')).toBe(true);
                 treeObj.allowMultiSelection = true;
                 treeObj.dataBind();
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(selectingFunction).toHaveBeenCalled();
                 expect(li[0].classList.contains('e-active')).toBe(false);
             });
             it('nodeSelected event is triggered', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[1].querySelector('.e-list-text');
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(selectedFunction).toHaveBeenCalled();
                 expect(li[1].classList.contains('e-active')).toBe(true);
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, ctrlKey: true });
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.ctrlKey = true;
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(selectedFunction).toHaveBeenCalled();
                 expect(li[1].classList.contains('e-active')).toBe(false);
                 treeObj.allowMultiSelection = false;
                 treeObj.dataBind();
-                li[1].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[1].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
             });
             it('nodeEditing and nodeEdited events are triggered', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 mouseEventArgs.target = li[0].querySelector('.e-list-text');
-                mouseEventArgs.type = 'dblclick';
+                tapEvent.tapCount = 2;
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(0);
-                treeObj.editingHandler(mouseEventArgs);
+                treeObj.touchEditObj.tap(tapEvent);
                 expect(editingFunction).toHaveBeenCalled();
                 expect(li[0].querySelector('.e-list-text').childElementCount).toBe(1);
                 expect(li[0].querySelector('.e-input').nodeName).toBe('INPUT');
@@ -6823,8 +7364,8 @@ describe('TreeView control', () => {
             });
             it('nodeClicked event is triggered', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 expect(nodeClickedFunction).toHaveBeenCalled();
                 expect(li[0].classList.contains('e-active')).toBe(true);
             });
@@ -6864,10 +7405,24 @@ describe('TreeView control', () => {
             });
         });
         describe('methods testing', () => {
+            let mouseEventArgs: any;
+            let tapEvent: any;
             let treeObj: any;
             let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
             let originalTimeout: any;
             beforeEach((done: Function) => {
+                mouseEventArgs = {
+                    preventDefault: (): void => {},
+                    stopImmediatePropagation: (): void => {},
+                    target: null,
+                    type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                tapEvent = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
+                };
                 jasmine.Ajax.install();
                 let ele: HTMLElement = createElement('div', { id: 'tree1' });
                 document.body.appendChild(ele);
@@ -6900,28 +7455,28 @@ describe('TreeView control', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 let sItems: any = JSON.parse(treeObj.getPersistData());
                 expect(sItems.selectedNodes.length).toBe(0);
-                var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-                li[0].querySelector('.e-list-text').dispatchEvent(e);
+                mouseEventArgs.target = li[0].querySelector('.e-list-text');
+                treeObj.touchClickObj.tap(tapEvent);
                 let seItems: any = JSON.parse(treeObj.getPersistData());
                 expect(seItems.selectedNodes.length).toBe(1);
                 expect(seItems.selectedNodes).toContain('01');
             });
-            it('replaceText', () => {
+            it('updateNode', () => {
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText(li[0], 'Rain');
+                treeObj.updateNode(li[0], 'Rain');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = true;
                 treeObj.dataBind();
-                treeObj.replaceText(li[0], 'Rain');
+                treeObj.updateNode(li[0], 'Rain');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Rain');
-                treeObj.replaceText('01', 'Music');
+                treeObj.updateNode('01', 'Music');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText('011', 'Music');
+                treeObj.updateNode('011', 'Music');
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText('01', null);
+                treeObj.updateNode('01', null);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
-                treeObj.replaceText(null, null);
+                treeObj.updateNode(null, null);
                 expect((li[0].querySelector('.e-list-text') as HTMLElement).childNodes[0].nodeValue).toBe('Music');
                 treeObj.allowEditing = false;
                 treeObj.dataBind();
@@ -6991,6 +7546,12 @@ describe('TreeView control', () => {
                     stopImmediatePropagation: (): void => {},
                     target: null,
                     type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
                 };
                 let treeObj: any;
                 let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
@@ -7026,12 +7587,7 @@ describe('TreeView control', () => {
                     let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                     mouseEventArgs.target = newli[0].querySelector('.e-icons');
                     expect(newli[0].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
-                    this.request = jasmine.Ajax.requests.mostRecent();
-                    this.request.respondWith({
-                        status: 200,
-                        responseText: JSON.stringify({d: [], __count: 0})
-                    });
+                    treeObj.touchClickObj.tap(tapEvent);
                     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                     setTimeout(function() {
                         expect(newli[0].childElementCount).toBe(1);
@@ -7046,6 +7602,12 @@ describe('TreeView control', () => {
                     stopImmediatePropagation: (): void => {},
                     target: null,
                     type: null,
+                    shiftKey: false,
+                    ctrlKey: false
+                };
+                let tapEvent: any = {
+                    originalEvent: mouseEventArgs,
+                    tapCount: 1
                 };
                 let treeObj: any;
                 let dataManager1: DataManager = new DataManager({ url: '/TreeView/remoteData' });
@@ -7081,7 +7643,7 @@ describe('TreeView control', () => {
                     let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
                     mouseEventArgs.target = newli[0].querySelector('.e-icons');
                     expect(newli[0].childElementCount).toBe(1);
-                    treeObj.clickHandler(mouseEventArgs);
+                    treeObj.touchClickObj.tap(tapEvent);
                     this.request = jasmine.Ajax.requests.mostRecent();
                     this.request.respondWith({
                         status: 200,
@@ -7334,16 +7896,24 @@ describe('TreeView control', () => {
                 expect(document.body.style.cursor).toBe('not-allowed');
             });
         });
-    });    
+    });
     describe('Worst case testing', () => {
         let treeObj: any;
-        let mouseEventArgs: any = {
-            preventDefault: (): void => {},
-            stopImmediatePropagation: (): void => {},
-            target: null,
-            type: null,
-        };
+        let mouseEventArgs: any;
+        let tapEvent: any;
         beforeEach((): void => {
+            mouseEventArgs = {
+                preventDefault: (): void => {},
+                stopImmediatePropagation: (): void => {},
+                target: null,
+                type: null,
+                shiftKey: false,
+                ctrlKey: false
+            };
+            tapEvent = {
+                originalEvent: mouseEventArgs,
+                tapCount: 1
+            };
             treeObj = undefined;
             let ele: HTMLElement = createElement('div', { id: 'tree1' });
             document.body.appendChild(ele);
@@ -7359,6 +7929,18 @@ describe('TreeView control', () => {
                 fullRowSelect: false,
             },'#tree1');
             let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+            treeObj.allowMultiSelection = true;
+            treeObj.dataBind();
+            var e = new MouseEvent("mousedown", { view: window, bubbles: true, cancelable: true, shiftKey: true, ctrlKey: true });
+            li[0].querySelector('.e-list-text').dispatchEvent(e);
+            mouseEventArgs.shiftKey = true;
+            mouseEventArgs.target = li[0].querySelector('.e-list-text');
+            treeObj.touchClickObj.tap(tapEvent);
+            mouseEventArgs.target = li[2].querySelector('.e-list-text');
+            treeObj.touchClickObj.tap(tapEvent);
+            expect(treeObj.selectedNodes.length).toBe(3);
+            treeObj.allowMultiSelection = false;
+            treeObj.dataBind();
             expect(li[5].querySelector('.e-icons')).toBe(null);
             expect(li[5].childElementCount).toBe(1);
             expect(li[6].querySelector('.e-icons')).toBe(null);
@@ -7366,13 +7948,13 @@ describe('TreeView control', () => {
             mouseEventArgs.target = li[7].querySelector('.e-icons');
             expect((li[7].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
             expect(li[7].childElementCount).toBe(1);
-            treeObj.clickHandler(mouseEventArgs);
+            treeObj.touchClickObj.tap(tapEvent);
             expect(li[7].querySelector('.e-icons')).toBe(null);
             expect(li[7].childElementCount).toBe(1);
             mouseEventArgs.target = li[4].querySelector('.e-icons');
             expect(li[4].childElementCount).toBe(1);
-            treeObj.clickHandler(mouseEventArgs);
-            treeObj.clickHandler(mouseEventArgs);
+            treeObj.touchClickObj.tap(tapEvent);
+            treeObj.touchClickObj.tap(tapEvent);
             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
             setTimeout(function() {
                 let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -7380,8 +7962,8 @@ describe('TreeView control', () => {
                 expect(newli[5].classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(newli[5].getAttribute('aria-selected')).toBe('true');
-                treeObj.clickHandler(mouseEventArgs);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
@@ -7398,25 +7980,25 @@ describe('TreeView control', () => {
             mouseEventArgs.target = li[5].querySelector('.e-icons');
             expect((li[5].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
             expect(li[5].childElementCount).toBe(1);
-            treeObj.clickHandler(mouseEventArgs);
+            treeObj.touchClickObj.tap(tapEvent);
             expect(li[5].querySelector('.e-icons')).toBe(null);
             expect(li[5].childElementCount).toBe(1);
             mouseEventArgs.target = li[6].querySelector('.e-icons');
             expect((li[6].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
             expect(li[6].childElementCount).toBe(1);
-            treeObj.clickHandler(mouseEventArgs);
+            treeObj.touchClickObj.tap(tapEvent);
             expect(li[6].querySelector('.e-icons')).toBe(null);
             expect(li[6].childElementCount).toBe(1);
             mouseEventArgs.target = li[7].querySelector('.e-icons');
             expect((li[7].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
             expect(li[7].childElementCount).toBe(1);
-            treeObj.clickHandler(mouseEventArgs);
+            treeObj.touchClickObj.tap(tapEvent);
             expect(li[7].querySelector('.e-icons')).toBe(null);
             expect(li[7].childElementCount).toBe(1);
             mouseEventArgs.target = li[4].querySelector('.e-icons');
             expect(li[4].childElementCount).toBe(1);
-            treeObj.clickHandler(mouseEventArgs);
-            treeObj.clickHandler(mouseEventArgs);
+            treeObj.touchClickObj.tap(tapEvent);
+            treeObj.touchClickObj.tap(tapEvent);
             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
             setTimeout(function() {
                 let newli: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
@@ -7424,14 +8006,38 @@ describe('TreeView control', () => {
                 expect(newli[5].classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(newli[5].getAttribute('aria-selected')).toBe('true');
-                treeObj.clickHandler(mouseEventArgs);
-                treeObj.clickHandler(mouseEventArgs);
+                treeObj.touchClickObj.tap(tapEvent);
+                treeObj.touchClickObj.tap(tapEvent);
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
                 setTimeout(function() {
                     expect((newli[4].querySelector('.e-icons') as Element).classList.contains('e-icon-expandable')).toBe(true);
                     done();
                 }, 450);
             }, 450);
+        });
+        it('with bigger class', (done: Function) => {
+            document.body.classList.add('e-bigger');
+            treeObj = new TreeView({
+                fields: { dataSource: hierarchicalData3, id: "nodeId", text: "nodeText", tooltip: "nodeText", child: "nodeChild", imageUrl: "image", iconCss: "icons", htmlAttributes: 'attr', selected: 'nodeSelected' },
+                fullRowSelect: false,
+                showCheckBox: true,
+            },'#tree1');
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+            setTimeout(function() {
+                expect(treeObj.element.querySelector('.e-checkbox-wrapper').classList.contains('e-small')).toBe(true);
+                treeObj.showCheckBox = false;
+                treeObj.dataBind();
+                treeObj.showCheckBox = true;
+                treeObj.dataBind();
+                expect(treeObj.element.querySelector('.e-checkbox-wrapper').classList.contains('e-small')).toBe(true);
+                document.body.classList.remove('e-bigger');
+                treeObj.showCheckBox = false;
+                treeObj.dataBind();
+                treeObj.showCheckBox = true;
+                treeObj.dataBind();
+                expect(treeObj.element.querySelector('.e-checkbox-wrapper').classList.contains('e-small')).toBe(false);
+                done();
+            }, 100);
         });
     });
     describe('IOS node editing testing', () => {
@@ -7444,6 +8050,7 @@ describe('TreeView control', () => {
         };
         let tapEvent: any = {
             originalEvent: mouseEventArgs,
+            tapCount: 1
         };
         let iosPhoneUa: string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3';
         beforeEach(() => {
@@ -7469,14 +8076,19 @@ describe('TreeView control', () => {
             expect(treeObj.touchExpandObj.isDestroyed).toBe(false);
             let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
             mouseEventArgs.target = li[0].querySelector('.e-list-text');
-            treeObj.touchEditObj.doubleTap(tapEvent);
+            treeObj.touchEditObj.tap(tapEvent);
+            tapEvent.tapCount = 2;
+            treeObj.touchEditObj.tap(tapEvent);
             treeObj.allowEditing = false;
             treeObj.dataBind();
+            tapEvent.tapCount = 1;
             treeObj.touchClickObj.tap(tapEvent);
             treeObj.touchExpandObj.tap(tapEvent);
-            treeObj.expandOn = 'dblclick';
+            treeObj.expandOn = 'DblClick';
             treeObj.dataBind();
-            treeObj.touchExpandObj.doubleTap(tapEvent);
+            treeObj.touchExpandObj.tap(tapEvent);
+            tapEvent.tapCount = 2;
+            treeObj.touchExpandObj.tap(tapEvent);
             expect(treeObj.touchEditObj.isDestroyed).toBe(true);
             treeObj.destroy();
             expect(treeObj.touchClickObj.isDestroyed).toBe(true);
@@ -7484,10 +8096,24 @@ describe('TreeView control', () => {
         });
     });
     describe('touch action testing', () => {
+        let mouseEventArgs: any;
+        let tapEvent: any;
         let treeObj: any;
         let androidPhoneUa: string = 'Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JWR66Y) ' +
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.92 Safari/537.36';
         beforeEach(() => {
+            mouseEventArgs = {
+                preventDefault: (): void => {},
+                stopImmediatePropagation: (): void => {},
+                target: null,
+                type: null,
+                shiftKey: false,
+                ctrlKey: false
+            };
+            tapEvent = {
+                originalEvent: mouseEventArgs,
+                tapCount: 1
+            };
             Browser.userAgent = androidPhoneUa;
             let ele: HTMLElement = createElement('div', { id: 'tree1' });
             document.body.appendChild(ele);
@@ -7504,36 +8130,6 @@ describe('TreeView control', () => {
                 treeObj.destroy();
             document.body.innerHTML = '';
         });
-        it('popup display testing', () => {
-            expect(treeObj.element.querySelector('.e-popup')).not.toBe(null);
-            treeObj.allowMultiSelection = false;
-            treeObj.dataBind();
-            expect(treeObj.element.querySelector('.e-popup')).toBe(null);
-        });
-        it('multi selection testing', () => {
-            let popup: any = treeObj.element.querySelector('.e-popup');
-            expect(popup.style.display).toBe('none');
-            let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-            var e = new MouseEvent("click", { view: window, bubbles: true, cancelable: true, });
-            li[0].querySelector('.e-list-text').dispatchEvent(e);
-            expect(li[0].classList.contains('e-active')).toBe(true);
-            expect(popup.style.display).toBe('');
-            popup.querySelector('.e-content').dispatchEvent(e);
-            expect(popup.classList.contains('e-select')).toBe(true);
-            li[1].querySelector('.e-fullrow').dispatchEvent(e);
-            expect(popup.style.display).toBe('');
-            expect(li[0].classList.contains('e-active')).toBe(true);
-            expect(li[1].classList.contains('e-active')).toBe(true);
-            popup.querySelector('.e-content').dispatchEvent(e);
-            expect(popup.classList.contains('e-select')).toBe(false);
-            expect(popup.style.display).toBe('none');
-            li[2].querySelector('.e-fullrow').dispatchEvent(e);
-            expect(popup.style.display).toBe('');
-            expect(li[0].classList.contains('e-active')).toBe(false);
-            expect(li[1].classList.contains('e-active')).toBe(false);
-            expect(li[2].classList.contains('e-active')).toBe(true);
-        });
-        
         it('focus in testing', () => {
             let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
             treeObj.mouseDownStatus=true;
@@ -7541,10 +8137,8 @@ describe('TreeView control', () => {
             expect(li[0].classList.contains('e-hover')).toBe(false);
             expect(li[0].classList.contains('e-node-focus')).toBe(true);
             Browser.userAgent = navigator.userAgent;
-            
         });
     });
-
     describe('shift down and up key selection', () => {
         let treeObj: any;
         let activeEle: Element[];
