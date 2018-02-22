@@ -2,6 +2,66 @@
 
 ## [Unreleased]
 
+### Common
+
+#### Breaking Changes
+
+- Changed the Angular component selector, component name prefix with `ejs` e.g: `ejs-tab`.
+
+#### New Features
+
+- High contrast theme support.
+
+### Sidebar
+
+The Sidebar is an expandable and collapsible component that typically acts as a side container to place primary or secondary content alongside the main content.
+
+- **Target** - The Sidebar can be initialized in any HTML element other than the body element.
+
+- **Types** – Supports Push, Over, Slide and Auto to expand or collapse the Sidebar.
+
+- **Position** – Allows to position the Sidebar in Left or Right direction.
+
+- **Auto close** - Allows to set the sidebar in an expanded or collapsed state only in certain resolutions.
+
+- **Dock** - By default, supports display of short notifications about the content on docked mode.
+
+- **Backdrop** – Specifies the whether to apply overlay options to main content when the Sidebar is in open state.
+
+### Tab
+
+#### Breaking changes
+
+- Locale key changed from close to `closeButtonTitle`.
+
+### Toolbar
+
+#### Breaking changes
+
+- Pascal casing change to `align` property values (`Left`, `Center`, `Right`).
+
+## 15.4.30-preview (2018-02-14)
+
+### TreeView
+
+#### New Features
+
+- Added “getNode” method in TreeView to get the node's data based on given node element or it's ID.
+
+- Added “beginEdit” method in TreeView, to initiate the editing mode of the TreeView node through code.
+
+#### Breaking Changes
+
+- In TreeView, “replaceText” method name has been modified as “updateNode”.
+
+## 15.4.27-preview (2018-01-30)
+
+### Tab
+
+#### Bug Fixes
+
+- Separate item change for active content issue with Tab fixed.
+
 ## 15.4.26-preview (2018-01-23)
 
 ### ContextMenu
