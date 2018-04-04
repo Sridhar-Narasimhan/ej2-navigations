@@ -626,6 +626,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 popObj.position = { X: 'right', Y: 'top' };
             }
             popObj.dataBind();
+            popObj.refreshPosition();
             popObj.element.style.top = this.element.offsetHeight + 'px';
             popupNav.classList.add(CLS_TBARNAVACT);
             popObj.show({ name: 'SlideDown', duration: 100 });
@@ -1012,7 +1013,7 @@ export class Toolbar extends Component<HTMLElement> implements INotifyPropertyCh
                 btnText.style.display = 'block';
             }
             btn.style.minWidth = '0%';
-            elWidth = el.offsetWidth;
+            elWidth = parseFloat(el.style.minWidth);
             btn.style.minWidth = '';
             if (!isNOU(btnText)) {
                 btnText.style.display = '';

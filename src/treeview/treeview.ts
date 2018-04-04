@@ -1308,7 +1308,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             } else {
                 this.removeHover();
                 this.setFocusElement(li);
-                if (this.showCheckBox) {
+                if (this.showCheckBox && !li.classList.contains('e-disable')) {
                     let checkWrapper: HTMLElement = closest(target, '.' + CHECKBOXWRAP) as HTMLElement;
                     if (!isNOU(checkWrapper)) {
                         let checkElement: Element = select('.' + CHECKBOXFRAME, checkWrapper);
@@ -1611,10 +1611,12 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     }
 
     private toggleSelect(li: Element, e: MouseEvent | KeyboardEventArgs, multiSelect?: boolean): void {
-        if (this.allowMultiSelection && ((e && e.ctrlKey) || multiSelect) && this.isActive(li)) {
-            this.unselectNode(li, e);
-        } else {
-            this.selectNode(li, e, multiSelect);
+        if (!li.classList.contains('e-disable')) {
+            if (this.allowMultiSelection && ((e && e.ctrlKey) || multiSelect) && this.isActive(li)) {
+                this.unselectNode(li, e);
+            } else {
+                this.selectNode(li, e, multiSelect);
+            }
         }
     }
 
@@ -1979,13 +1981,25 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         let nextNode: Element = isTowards ? this.getNextNode(li) : this.getPrevNode(li);
         this.setFocus(li, nextNode);
         this.navigateToFocus(!isTowards);
+        if (nextNode.classList.contains('e-disable')) {
+            this.focusNextNode(nextNode, isTowards);
+        }
     }
 
     private getNextNode(li: Element): Element {
         let index: number = this.liList.indexOf(<HTMLElement>li);
         let nextNode: Element;
+        let i: number;
         do {
             index++;
+            if (index === this.liList.length && li.classList.contains('e-disable')) {
+                for (i = index - 1; i > 0; i--) {
+                    if (!this.liList[i].classList.contains('e-disable')) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
             nextNode = this.liList[index];
             if (isNOU(nextNode)) {
                 return li;
@@ -1998,8 +2012,17 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     private getPrevNode(li: Element): Element {
         let index: number = this.liList.indexOf(<HTMLElement>li);
         let prevNode: Element;
+        let i: number;
         do {
             index--;
+            if (index < 0 && li.classList.contains('e-disable')) {
+                for (i = 1; i < this.liList.length; i++) {
+                    if (!this.liList[i].classList.contains('e-disable')) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
             prevNode = this.liList[index];
             if (isNOU(prevNode)) {
                 return li;
@@ -2065,7 +2088,9 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             this.removeHover();
             return;
         } else {
-            this.setHover(currentLi);
+            if (currentLi && !currentLi.classList.contains('e-disable')) {
+                this.setHover(currentLi);
+            }
         }
     }
 

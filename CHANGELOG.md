@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## 16.1.32 (2018-03-29)
+
+### TreeView
+
+#### Bug Fixes
+
+- Prevented the checkbox interactions while the corresponding node was in disabled state.
+
+## 16.1.28-preview (2018-03-09)
+
+### Toolbar
+
+#### Bug fix
+
+- Toolbar border hidden issue with grid in IE11 browser is fixed.
+
 ## 16.1.24 (2018-02-22)
 
 ### Common

@@ -8207,4 +8207,44 @@ describe('TreeView control', () => {
             expect(activeEle.length === 1).toBe(true);
         });
     });
+	describe('Disabled node key functions', function () {
+            let treeObj: any;
+        let activeEle: Element[];
+        let keyboardEventArgs: any = {
+            preventDefault: (): void => {},
+            action: null,
+            target: null,
+            shiftKey:true,
+            stopImmediatePropagation: (): void => {},
+        };
+        beforeEach(() => {
+            let ele: HTMLElement = createElement('div', { id: 'tree1' });
+            document.body.appendChild(ele);
+            treeObj = new TreeView({ 
+                fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child: "nodeChild", },
+                allowMultiSelection: true,
+                selectedNodes: ['01']
+            });
+            treeObj.appendTo(ele);
+        });
+        afterEach(() => {
+            if (treeObj)
+                treeObj.destroy();
+            document.body.innerHTML = '';
+        });
+        it('Disabled Nodes', () => {
+            let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+            treeObj.disableNodes([li[0], li[1], '03', '099', '07']);
+				expect(li[0].classList.contains('e-disable')).toBe(true);
+				expect(li[0].getAttribute('aria-disabled')).toBe('true');
+                keyboardEventArgs.action = 'moveUp';
+                treeObj.keyActionHandler(keyboardEventArgs);
+				expect(li[0].classList.contains('e-disable')).toBe(true);
+				expect(li[0].getAttribute('aria-disabled')).toBe('true');
+                keyboardEventArgs.action = 'moveDown';
+				expect(li[0].classList.contains('e-disable')).toBe(true);
+				expect(li[0].getAttribute('aria-disabled')).toBe('true');
+				treeObj.focusNextNode(li[0], true);
+				});
+		});
 });

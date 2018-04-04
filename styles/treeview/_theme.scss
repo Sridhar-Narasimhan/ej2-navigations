@@ -1,4 +1,4 @@
-﻿// sass-lint:disable no-vendor-prefixes
+// sass-lint:disable no-vendor-prefixes
 @mixin sibling-theme($left, $right) {
   @if $treeview-skin-name == 'material' {
     background: $treeview-drag-line-bg;

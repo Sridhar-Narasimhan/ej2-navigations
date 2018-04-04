@@ -1149,6 +1149,44 @@ describe('Toolbar Control', () => {
             expect(nav_icon.classList.contains('e-popup-down-icon')).toEqual(true);
             expect(isVisible(element.querySelector('.e-popup'))).toEqual(false);
         });
+        it('Overflow property popup control testing popup position testing in dynamic open', () => {
+            let element: HTMLElement = document.getElementById('ej2Toolbar');
+            toolbar = new Toolbar({
+                width: 30,
+                overflowMode: 'Popup',
+                items: [
+                    { type: 'Button', text: 'Underline', overflow: 'Hide', tooltipText: 'Bold' },
+                    { type: 'Button', text: 'Bold', overflow: 'Show', tooltipText: 'Bold' },
+                    { type: 'Button', text: 'Italic', overflow: 'Show', tooltipText: 'Bold' }
+                ],
+            }); toolbar.appendTo('#ej2Toolbar');
+            let pop_Nav: HTMLElement = document.getElementById(element.id + '_nav');
+            let nav_icon: HTMLElement = pop_Nav.firstChild as HTMLElement;
+            let tool: any = toolbar;
+            let popEle: HTMLElement =  <HTMLElement>element.querySelector('.e-popup');
+            pop_Nav.click();
+            tool.popObj.show();
+            expect(isVisible(popEle)).toEqual(true);
+            let initialPos: string = popEle.style.left;
+            document.getElementById(element.id + '_nav').click();
+            tool.popObj.hide();
+            expect(isVisible(popEle)).toEqual(false);
+            element.style.width = '60px';
+            toolbar.refreshOverflow();
+            pop_Nav.click();
+            tool.popObj.show();
+            expect(isVisible(popEle)).toEqual(true);
+            expect(initialPos !==  popEle.style.left).toEqual(true);
+            document.getElementById(element.id + '_nav').click();
+            tool.popObj.hide();
+            expect(isVisible(popEle)).toEqual(false);
+            element.style.width = '30px';
+            toolbar.refreshOverflow();
+            pop_Nav.click();
+            tool.popObj.show();
+            expect(isVisible(popEle)).toEqual(true);
+            expect(initialPos ===  popEle.style.left).toEqual(true);
+        });
         it('Overflow property popup control testing popup priority wise alignment testing', () => {
             let element: HTMLElement = document.getElementById('ej2Toolbar');
             toolbar = new Toolbar({

@@ -1,4 +1,4 @@
-﻿@include export-module('toolbar-theme') {
+@include export-module('toolbar-theme') {
   /*! toolbar theme */
   // sass-lint:disable no-vendor-prefixes
   #{&}.e-toolbar {
@@ -20,6 +20,12 @@
 
         .e-tbar-btn-text {
           color: $tbar-default-font;
+        }
+
+        @if $skin-name == 'highcontrast' or $skin-name == 'fabric' {
+          .e-btn:focus {
+            outline: none;
+          }
         }
       }
     }

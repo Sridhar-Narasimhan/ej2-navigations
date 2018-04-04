@@ -2103,7 +2103,6 @@ describe('Tab Control', () => {
             tab.appendTo('#ej2Tab');
             let element: HTMLElement = document.getElementById('ej2Tab');
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-disable')).toEqual(false);
-            expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);        
             expect(element.querySelectorAll('.e-toolbar-item').item(0).classList.contains('e-overlay')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-disable')).toEqual(false);
             expect(element.querySelectorAll('.e-toolbar-item').item(1).classList.contains('e-overlay')).toEqual(false);
