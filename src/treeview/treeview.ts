@@ -2147,7 +2147,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
     private reRenderNodes(): void {
         this.element.innerHTML = '';
         this.setTouchClass();
-        this.setProperties({ selectedNodes: [] }, true);
+        this.setProperties({ selectedNodes: [], checkedNodes: [] }, true);
         this.isLoaded = false;
         this.setDataBinding();
     }
@@ -2330,7 +2330,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                     let icon: HTMLElement = createElement('div', { className: ICON + ' ' + EXPANDABLE });
                     cloneEle.insertBefore(icon, cloneEle.children[0]);
                 }
-                let cssClass: string =  DRAGITEM + ' ' + ROOT + ' ' + (this.enableRtl ? RTL : '');
+                let cssClass: string =  DRAGITEM + ' ' + ROOT + ' ' + this.cssClass + ' ' + (this.enableRtl ? RTL : '');
                 virtualEle = createElement('div', { className: cssClass });
                 virtualEle.appendChild(cloneEle);
                 let nLen: number = this.selectedNodes.length;
@@ -2369,7 +2369,9 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                 let eventArgs: DragAndDropEventArgs = this.getDragEvent(e.event, this, dropTarget, <HTMLElement>dropTarget);
                 this.trigger('nodeDragStop', eventArgs);
                 if (eventArgs.cancel) {
-                    detach(e.helper);
+                    if (e.helper.parentNode) {
+                        detach(e.helper);
+                    }
                     document.body.style.cursor = '';
                 }
                 this.dragStartAction = false;
@@ -2405,12 +2407,12 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             let dropLi: Element = closest(e.target, '.' + LISTITEM);
             if (!dropRoot.classList.contains(ROOT) || (dropWrap &&
                 (!dropLi.isSameNode(this.dragLi) && !this.isDescendant(this.dragLi, dropLi)))) {
-                    if (e && (e.event.offsetY < 7)) {
+                    if (dropLi && e && (e.event.offsetY < 7)) {
                         addClass([icon], DROPNEXT);
                         let virEle: Element = createElement('div', { className: SIBLING });
                         let index: number = this.fullRowSelect ? (1) : (0);
                         dropLi.insertBefore(virEle, dropLi.children[index]);
-                    } else if (e && (e.target.offsetHeight > 0 && e.event.offsetY > (e.target.offsetHeight - 10))) {
+                    } else if (dropLi && e && (e.target.offsetHeight > 0 && e.event.offsetY > (e.target.offsetHeight - 10))) {
                         addClass([icon], DROPNEXT);
                         let virEle: Element = createElement('div', { className: SIBLING });
                         let index: number = this.fullRowSelect ? (2) : (1);

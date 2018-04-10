@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## 16.1.34 (2018-04-10)
+
+### TreeView
+
+#### bug Fixes
+
+- Issue in TreeView while ‘cancel' the ‘nodeDragDrop’ event is fixed.
+
+- Issue in TreeView drag and drop function, while adding ‘e-droppable’ class in the target element is fixed.
+
 ## 16.1.32 (2018-03-29)
 
 ### TreeView

@@ -330,6 +330,20 @@ describe('TreeView control', () => {
                     done();
                 }, 100);
             });
+            it('enableRtl with customcss class testing', (done: Function) => {
+                treeObj = new TreeView({ 
+                    fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child: "nodeChild",
+                        iconCss: 'nodeIcon', imageUrl: 'nodeImage', tooltip: 'nodeTooltip', htmlAttributes: 'nodeHtmlAttr', selected: 'nodeSelected' },
+                    enableRtl: true,
+					cssClass: "e-style"
+                },'#tree1');
+                jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+                setTimeout(function() {
+                    expect(treeObj.element.classList.contains('e-rtl')).toBe(true);
+					expect(treeObj.element.classList.contains('e-style')).toBe(true);
+                    done();
+                }, 100);
+            });
             it('showCheckBox property testing', (done: Function) => {
                 treeObj = new TreeView({ 
                     fields: { dataSource: hierarchicalData1, id: "nodeId", text: "nodeText", child: "nodeChild",
@@ -3286,6 +3300,18 @@ describe('TreeView control', () => {
                 setTimeout(function() {
                     let checkEle: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('.e-check');
                     expect(checkEle.length).toBeGreaterThan(1);
+                    done();
+                }, 100);
+            });
+            it(' checkedNodes setModel property testing ', (done) => {
+                treeObj = new TreeView({ 
+                    fields: { dataSource: hierarchicalData1 , id: "nodeId", text: "nodeText", child: "nodeChild", isChecked:"nodeChecked" },
+                    showCheckBox: true
+                },'#tree1');
+                treeObj.checkedNodes= ['01', '03'];
+				jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+				setTimeout(function() {
+                    expect(treeObj.checkedNodes.length).toBe(2);
                     done();
                 }, 100);
             });
@@ -7842,6 +7868,26 @@ describe('TreeView control', () => {
                 EventHandler.trigger(<any>(document), 'mousemove', mousemove);
                 expect(document.querySelector('.e-no-drop')).not.toBe(null);
                 let mouseup: any = getEventObject('MouseEvents', 'mouseup', treeObj.element, document.getElementById('nontree'));
+                mouseup.type = 'mouseup';
+                EventHandler.trigger(<any>(document), 'mouseup', mouseup);
+                expect(li[0].childElementCount).toBe(2);
+                expect(li[0].children[1].childElementCount).toBe(2);
+                expect(document.querySelector('.e-no-drop')).toBe(null);
+            });
+            it('testing with target as a container', () => {
+                let ele: HTMLElement = createElement('div', { id: 'container' });
+                ele.className += " e-droppable";
+                document.body.appendChild(ele);
+                let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
+                let mousedown: any = getEventObject('MouseEvents', 'mousedown', treeObj.element, li[2].querySelector('.e-text-content'), 15, 10);
+                EventHandler.trigger(treeObj.element, 'mousedown', mousedown);
+                let mousemove: any = getEventObject('MouseEvents', 'mousemove', treeObj.element, li[2].querySelector('.e-text-content'), 15, 70);
+                EventHandler.trigger(<any>(document), 'mousemove', mousemove);
+                mousemove.srcElement = mousemove.target = mousemove.toElement = document.getElementById('container');
+                mousemove = setMouseCordinates(mousemove, 15, 75);
+                EventHandler.trigger(<any>(document), 'mousemove', mousemove);
+                expect(document.querySelector('.e-drop-in')).not.toBe(null);
+                let mouseup: any = getEventObject('MouseEvents', 'mouseup', treeObj.element, document.getElementById('container'));
                 mouseup.type = 'mouseup';
                 EventHandler.trigger(<any>(document), 'mouseup', mouseup);
                 expect(li[0].childElementCount).toBe(2);
