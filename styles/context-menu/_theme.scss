@@ -1,6 +1,6 @@
 @include export-module('contextmenu-theme') {
   /*! contextmenu theme */
-  #{&}.e-contextmenu-wrapper {
+  .e-contextmenu-wrapper {
     @at-root {
       & ul {
         background-color: $ul-bgcolor;

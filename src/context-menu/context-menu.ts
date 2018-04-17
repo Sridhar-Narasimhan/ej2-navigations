@@ -4,7 +4,7 @@ import { attributes, Animation, AnimationOptions, TouchEventArgs, MouseEventArgs
 import { Browser, Collection, setValue, getValue, getUniqueID, getInstance } from '@syncfusion/ej2-base';
 import { select, selectAll, closest, createElement, detach, append, rippleEffect, isVisible, remove } from '@syncfusion/ej2-base';
 import { ListBase, ListBaseOptions } from '@syncfusion/ej2-lists';
-import { calculatePosition, OffsetPosition, isCollide, fit, getScrollableParent } from '@syncfusion/ej2-popups';
+import { calculatePosition, OffsetPosition, isCollide, fit, getScrollableParent, getZindexPartial } from '@syncfusion/ej2-popups';
 import { ContextMenuModel, MenuItemModel } from './context-menu-model';
 
 const DOWNARROW: string = 'downarrow';
@@ -254,7 +254,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         }
         attributes(this.element, <{ [key: string]: string }>{ 'role': 'menu', 'tabindex': '0' });
         wrapper.appendChild(this.element);
-        this.element.style.zIndex = this.getZIndex();
+        this.element.style.zIndex = getZindexPartial(this.element).toString();
     }
 
     private renderItems(): void {
@@ -435,9 +435,9 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         this.closeMenu(null, e);
         if (this.canOpen(e.target as Element)) {
             if (e.changedTouches) {
-                this.openMenu(null, null, e.changedTouches[0].clientY + 1, e.changedTouches[0].clientX + 1, e);
+                this.openMenu(null, null, e.changedTouches[0].pageY + 1, e.changedTouches[0].pageX + 1, e);
             } else {
-                this.openMenu(null, null, e.clientY + 1, e.clientX + 1, e);
+                this.openMenu(null, null, e.pageY + 1, e.pageX + 1, e);
             }
         }
     }
@@ -521,7 +521,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         } else {
             ul = this.element;
         }
-        navIdx = this.getIndex(li ? li.textContent : null);
+        navIdx = this.getIndex(li ? this.getTextContent(li) : null);
         let items: MenuItemModel[] = li ? item.items : this.items;
         let eventArgs: BeforeOpenCloseMenuEventArgs = { element: ul, items: items, parentItem: item, event: e, cancel: false };
         this.trigger('beforeOpen', eventArgs);
@@ -543,7 +543,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             }
             if (collide.indexOf('bottom') > -1) {
                 let offset: OffsetPosition = fit(ul, null, { X: false, Y: true }, { top: top, left: left });
-                top = offset.top;
+                top = offset.top - 20;
             }
             collide = isCollide(ul, null, left, top);
             if (collide.indexOf('left') > -1) {
@@ -659,6 +659,17 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         return closest(this.element, '.' + WRAPPER);
     }
 
+    private getTextContent(li: Element): string {
+        let node: Node;
+        for (let i: number = 0; i < li.childNodes.length; i++) {
+            node = li.childNodes[i];
+            if (node.nodeType === 3 || (node.nodeType === 1 && (node as HTMLElement).classList.contains('e-menu-url'))) {
+                return node.textContent;
+            }
+        }
+        return '';
+    }
+
     private clickHandler(e: MouseEvent): void {
         if (this.isTapHold) {
             this.isTapHold = false;
@@ -670,7 +681,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             let isInstLI: boolean = cli && cliWrapper && wrapper.firstElementChild.id === cliWrapper.firstElementChild.id;
             if (isInstLI && e.type === 'click' && !cli.classList.contains(HEADER)) {
                 this.setLISelected(cli);
-                let navIdx: number[] = this.getIndex(cli.textContent);
+                let navIdx: number[] = this.getIndex(this.getTextContent(cli));
                 let item: MenuItemModel = this.getItem(navIdx);
                 let eventArgs: MenuEventArgs = { element: cli as HTMLElement, item: item };
                 this.trigger('select', eventArgs);
@@ -817,21 +828,21 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                     this.wireEvents();
                     break;
                 case 'items':
-                let idx: number;
-                let navIdx: number[];
-                let item: MenuItemModel[];
-                let keys: string[] = Object.keys(newProp.items);
-                for (let i: number = 0; i < keys.length; i++) {
-                    navIdx = this.getChangedItemIndex(newProp, [], Number(keys[i]));
-                    if (navIdx.length <= this.getWrapper().children.length) {
-                        idx = navIdx.pop();
-                        item = this.getItems(navIdx);
-                        this.insertAfter([item[idx]], item[idx].text);
-                        this.removeItem(item, navIdx, idx);
+                    let idx: number;
+                    let navIdx: number[];
+                    let item: MenuItemModel[];
+                    let keys: string[] = Object.keys(newProp.items);
+                    for (let i: number = 0; i < keys.length; i++) {
+                        navIdx = this.getChangedItemIndex(newProp, [], Number(keys[i]));
+                        if (navIdx.length <= this.getWrapper().children.length) {
+                            idx = navIdx.pop();
+                            item = this.getItems(navIdx);
+                            this.insertAfter([item[idx]], item[idx].text);
+                            this.removeItem(item, navIdx, idx);
+                        }
+                        navIdx.length = 0;
                     }
-                    navIdx.length = 0;
-                }
-                break;
+                    break;
             }
         }
     }
@@ -1128,22 +1139,6 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
                 uls[navIdx.length].insertBefore(li, uls[navIdx.length].children[idx]);
             }
         }
-    }
-
-    private getZIndex(): string {
-        let index: string;
-        let position: string;
-        let props: CSSStyleDeclaration;
-        let zIndex: string[] = ['999'];
-        for (let i: number = 0, len: number = document.body.children.length; i < len; i++) {
-            props = document.defaultView.getComputedStyle(document.body.children[i]);
-            index = props.getPropertyValue('z-index');
-            position = props.getPropertyValue('position');
-            if (index !== 'auto' && position !== 'static') {
-                zIndex.push(index);
-            }
-        }
-        return (Math.max.apply(Math, zIndex) + 1).toString();
     }
 
     /**

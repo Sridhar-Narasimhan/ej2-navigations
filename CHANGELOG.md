@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## 16.1.35 (2018-04-17)
+
+### ContextMenu
+
+#### Bug Fixes
+
+- Context menu positioning after page scroll issue fixed.
+
+### TreeView
+
+#### Bug Fixes
+
+- Provided option to prevent expand/collapse node while double clicking the tree node.
+
 ## 16.1.34 (2018-04-10)
 
 ### TreeView

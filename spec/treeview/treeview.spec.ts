@@ -84,7 +84,8 @@ describe('TreeView control', () => {
                     target: null,
                     type: null,
                     shiftKey: false,
-                    ctrlKey: false
+                    ctrlKey: false,
+					originalEvent:{ target: null}
                 };
                 tapEvent = {
                     originalEvent: mouseEventArgs,
@@ -1239,7 +1240,8 @@ describe('TreeView control', () => {
                     target: null,
                     type: null,
                     shiftKey: false,
-                    ctrlKey: false
+                    ctrlKey: false,
+					originalEvent: { target: null }
                 };
                 tapEvent = {
                     originalEvent: mouseEventArgs,
@@ -1426,14 +1428,14 @@ describe('TreeView control', () => {
                 treeObj.fullRowSelect = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                mouseEventArgs.target = li[1].querySelector('.e-fullrow');
+                mouseEventArgs.originalEvent.target = li[1].querySelector('.e-fullrow');
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 treeObj.clickHandler(mouseEventArgs);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(li[1].getAttribute('aria-selected')).toBe('true');
-                mouseEventArgs.target = li[0].querySelector('.e-fullrow');
+                mouseEventArgs.originalEvent.target = li[0].querySelector('.e-fullrow');
                 expect((li[0] as Element).classList.contains('e-active')).toBe(false);            
                 treeObj.clickHandler(mouseEventArgs);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
@@ -3021,7 +3023,8 @@ describe('TreeView control', () => {
                     target: null,
                     type: null,
                     shiftKey: false,
-                    ctrlKey: false
+                    ctrlKey: false,
+					originalEvent:{target:null}
                 };
                 tapEvent = {
                     originalEvent: mouseEventArgs,
@@ -4251,7 +4254,8 @@ describe('TreeView control', () => {
                     target: null,
                     type: null,
                     shiftKey: false,
-                    ctrlKey: false
+                    ctrlKey: false,
+					originalEvent: { target: null }
                 };
                 tapEvent = {
                     originalEvent: mouseEventArgs,
@@ -4438,14 +4442,14 @@ describe('TreeView control', () => {
                 treeObj.fullRowSelect = true;
                 treeObj.dataBind();
                 let li: Element[] = <Element[] & NodeListOf<Element>>treeObj.element.querySelectorAll('li');
-                mouseEventArgs.target = li[1].querySelector('.e-fullrow');
+                mouseEventArgs.originalEvent.target = li[1].querySelector('.e-fullrow');
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 treeObj.clickHandler(mouseEventArgs);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(true);
                 expect(treeObj.element.querySelectorAll('[aria-selected]').length).toBe(1);
                 expect(li[1].getAttribute('aria-selected')).toBe('true');
-                mouseEventArgs.target = li[0].querySelector('.e-fullrow');
+                mouseEventArgs.originalEvent.target = li[0].querySelector('.e-fullrow');
                 expect((li[0] as Element).classList.contains('e-active')).toBe(false);            
                 treeObj.clickHandler(mouseEventArgs);
                 expect((li[1] as Element).classList.contains('e-active')).toBe(false);

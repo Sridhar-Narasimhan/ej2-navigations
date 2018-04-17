@@ -94,6 +94,8 @@ export interface NodeExpandEventArgs {
      * Return the expanded/collapsed node as JSON object from data source.
      */
     nodeData: { [key: string]: Object };
+
+    event: MouseEvent | KeyboardEventArgs | TapEventArgs;
 }
 
 export interface NodeSelectEventArgs {
@@ -1295,8 +1297,8 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         }
     }
 
-    private clickHandler(e: MouseEvent): void {
-        let target: Element = <Element>e.target;
+    private clickHandler(event: TapEventArgs): void {
+        let target: Element = <Element>event.originalEvent.target;
         EventHandler.remove(this.element, 'contextmenu', this.preventContextMenu);
         if (!target || this.dragStartAction) {
             return;
@@ -1312,21 +1314,21 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
                     let checkWrapper: HTMLElement = closest(target, '.' + CHECKBOXWRAP) as HTMLElement;
                     if (!isNOU(checkWrapper)) {
                         let checkElement: Element = select('.' + CHECKBOXFRAME, checkWrapper);
-                        this.validateCheckNode(checkWrapper, checkElement.classList.contains(CHECK), li, e);
-                        this.triggerClickEvent(e, li);
+                        this.validateCheckNode(checkWrapper, checkElement.classList.contains(CHECK), li, event.originalEvent);
+                        this.triggerClickEvent(event.originalEvent, li);
                         return;
                     }
                 }
                 if (classList.contains(EXPANDABLE)) {
-                    this.expandAction(li, target, e);
+                    this.expandAction(li, target, event);
                 } else if (classList.contains(COLLAPSIBLE)) {
-                    this.collapseNode(li, target, e);
+                    this.collapseNode(li, target, event);
                 } else {
                     if (!classList.contains(PARENTITEM) && !classList.contains(LISTITEM)) {
-                        this.toggleSelect(li, e, false);
+                        this.toggleSelect(li, event.originalEvent, false);
                     }
                 }
-                this.triggerClickEvent(e, li);
+                this.triggerClickEvent(event.originalEvent, li);
             }
         }
     }
@@ -1407,7 +1409,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         }
     }
 
-    private collapseNode(currLi: Element, icon: Element, e: MouseEvent | KeyboardEventArgs): void {
+    private collapseNode(currLi: Element, icon: Element, e: MouseEvent | KeyboardEventArgs | TapEventArgs): void {
         if (icon.classList.contains(PROCESS)) {
             return;
         } else {
@@ -1418,8 +1420,11 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             colArgs = this.getExpandEvent(currLi, e);
             this.trigger('nodeCollapsing', colArgs);
             if (colArgs.cancel) {
+                removeClass([icon], PROCESS);
                 return;
+
             }
+
         }
         removeClass([icon], COLLAPSIBLE);
         addClass([icon], EXPANDABLE);
@@ -1738,8 +1743,8 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         this.expandOnType = (this.expandOn === 'Auto') ? (Browser.isDevice ? 'Click' : 'DblClick') : this.expandOn;
     }
 
-    private expandHandler(e: MouseEvent): void {
-        let target: Element = <Element>e.target;
+    private expandHandler(e: TapEventArgs): void {
+        let target: Element = <Element>e.originalEvent.target;
         if (!target || target.classList.contains(INPUT) || target.classList.contains(ROOT) ||
             target.classList.contains(PARENTITEM) || target.classList.contains(LISTITEM) ||
             target.classList.contains(ICON) || this.showCheckBox && closest(target, '.' + CHECKBOXWRAP)) {
@@ -1749,7 +1754,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         }
     }
 
-    private expandCollapseAction(currLi: Element, e: MouseEvent): void {
+    private expandCollapseAction(currLi: Element, e: TapEventArgs): void {
         let icon: Element = select('div.' + ICON, currLi);
         if (!icon || icon.classList.contains(PROCESS)) {
             return;
@@ -1763,7 +1768,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         }
     }
 
-    private expandAction(currLi: Element, icon: Element, e: MouseEvent | KeyboardEventArgs, expandChild?: boolean): void {
+    private expandAction(currLi: Element, icon: Element, e: MouseEvent | KeyboardEventArgs |TapEventArgs, expandChild?: boolean): void {
         if (icon.classList.contains(PROCESS)) {
             return;
         } else {
@@ -1773,8 +1778,11 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             this.expandArgs = this.getExpandEvent(currLi, e);
             this.trigger('nodeExpanding', this.expandArgs);
             if (this.expandArgs.cancel) {
+                removeClass([icon], PROCESS);
                 return;
+
             }
+
         }
         let ul: Element = select('.' + PARENTITEM, currLi);
         if (ul && ul.nodeName === 'UL') {
@@ -2139,9 +2147,9 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         return select('.' + LISTTEXT, currLi).textContent;
     }
 
-    private getExpandEvent(currLi: Element, e: MouseEvent | KeyboardEventArgs): NodeExpandEventArgs {
+    private getExpandEvent(currLi: Element, e: MouseEvent | KeyboardEventArgs | TapEventArgs ): NodeExpandEventArgs {
         let nodeData: { [key: string]: Object } = this.getNodeData(currLi);
-        return { cancel: false, isInteracted: isNOU(e) ? false : true, node: currLi as HTMLLIElement, nodeData: nodeData };
+        return { cancel: false, isInteracted: isNOU(e) ? false : true, node: currLi as HTMLLIElement, nodeData: nodeData , event: e };
     }
 
     private reRenderNodes(): void {
@@ -2800,7 +2808,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             let proxy: TreeView = this;
             this.touchClickObj = new Touch(this.element, {
                 tap: (e: TapEventArgs) => {
-                    proxy.clickHandler(e.originalEvent);
+                    proxy.clickHandler(e);
                 }
             });
         } else {
@@ -2816,7 +2824,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             this.touchExpandObj = new Touch(this.element, {
                 tap: (e: TapEventArgs) => {
                     if (this.expandOnType === 'Click' || (this.expandOnType === 'DblClick' && e.tapCount === 2)) {
-                        proxy.expandHandler(e.originalEvent);
+                        proxy.expandHandler(e);
                     }
                 }
             });
