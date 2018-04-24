@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## 16.1.37 (2018-04-24)
+
+### ContextMenu
+
+#### Bug Fixes
+
+- Items undefined issue fixed in select event.
+
+### TreeView
+
+#### bug Fixes
+
+- Issue in triggering `nodeExpanded` event while expanding all the nodes is fixed.
+
 ## 16.1.35 (2018-04-17)
 
 ### ContextMenu

@@ -1405,6 +1405,7 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
         currLi.setAttribute('aria-expanded', 'true');
         removeClass([currLi], NODECOLLAPSED);
         if (this.isLoaded && this.expandArgs) {
+            this.expandArgs = this.getExpandEvent(currLi, null);
             this.trigger('nodeExpanded', this.expandArgs);
         }
     }
@@ -1610,6 +1611,8 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
             for (let i: number = 0, len: number = cIcons.length; i < len; i++) {
                 let icon: Element = cIcons[i];
                 let curLi: Element = closest(icon, '.' + LISTITEM);
+                this.expandArgs = this.getExpandEvent(curLi, null);
+                this.trigger('nodeExpanding', this.expandArgs);
                 this.renderChildNodes(curLi, expandChild);
             }
         }

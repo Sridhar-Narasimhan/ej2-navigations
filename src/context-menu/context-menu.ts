@@ -521,7 +521,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         } else {
             ul = this.element;
         }
-        navIdx = this.getIndex(li ? this.getTextContent(li) : null);
+        navIdx = this.getIndex(li ? li.textContent : null);
         let items: MenuItemModel[] = li ? item.items : this.items;
         let eventArgs: BeforeOpenCloseMenuEventArgs = { element: ul, items: items, parentItem: item, event: e, cancel: false };
         this.trigger('beforeOpen', eventArgs);
@@ -659,17 +659,6 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
         return closest(this.element, '.' + WRAPPER);
     }
 
-    private getTextContent(li: Element): string {
-        let node: Node;
-        for (let i: number = 0; i < li.childNodes.length; i++) {
-            node = li.childNodes[i];
-            if (node.nodeType === 3 || (node.nodeType === 1 && (node as HTMLElement).classList.contains('e-menu-url'))) {
-                return node.textContent;
-            }
-        }
-        return '';
-    }
-
     private clickHandler(e: MouseEvent): void {
         if (this.isTapHold) {
             this.isTapHold = false;
@@ -681,7 +670,7 @@ export class ContextMenu extends Component<HTMLUListElement> implements INotifyP
             let isInstLI: boolean = cli && cliWrapper && wrapper.firstElementChild.id === cliWrapper.firstElementChild.id;
             if (isInstLI && e.type === 'click' && !cli.classList.contains(HEADER)) {
                 this.setLISelected(cli);
-                let navIdx: number[] = this.getIndex(this.getTextContent(cli));
+                let navIdx: number[] = this.getIndex(cli.textContent);
                 let item: MenuItemModel = this.getItem(navIdx);
                 let eventArgs: MenuEventArgs = { element: cli as HTMLElement, item: item };
                 this.trigger('select', eventArgs);
