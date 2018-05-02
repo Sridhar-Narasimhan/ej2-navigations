@@ -740,7 +740,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
             ele.appendChild(tempEle);
         }
     }
-    private getContent(ele: HTEle, index: number, callType: string): void {
+    private getContent(ele: HTEle, index: number): void {
         let eleStr: Str;
         let cnt: string | HTMLElement = this.items[Number(index)].content;
         if (typeof cnt === 'string' || isNOU((<HTEle>cnt).innerHTML)) {
@@ -748,12 +748,8 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                 if (document.querySelectorAll(<string>cnt).length) {
                     let eleVal: HTEle = <HTEle> document.querySelector(<string>cnt);
                     eleStr = eleVal.outerHTML.trim();
-                    if (callType === 'clone') {
-                        ele.appendChild(eleVal.cloneNode(true));
-                    } else {
-                        ele.appendChild(eleVal);
-                        eleVal.style.display = '';
-                    }
+                    ele.appendChild(eleVal.cloneNode(true));
+                    (<HTEle>ele.querySelector(<string>cnt)).style.display = 'block';
                 } else {
                     this.templateCompile(ele, <Str>cnt);
                 }
@@ -761,7 +757,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                 this.templateCompile(ele, <Str>cnt);
             }
         } else {
-            ele.innerHTML = (<HTMLElement> cnt).outerHTML;
+            ele.appendChild(cnt);
         }
         if (!isNOU(eleStr)) {
             this.templateEle.push(cnt.toString());
@@ -827,12 +823,12 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                 }
                 let ele: HTEle = <HTEle> this.cntEle.children.item(0);
                 for (let i: number = 0; i < this.items.length; i++) {
-                    this.getContent(ele, i, 'clone');
+                    this.getContent(ele, i);
                     this.maxHeight = Math.max(this.maxHeight, this.getHeight(ele));
                     ele.innerHTML = '';
                 }
                 this.templateEle = [];
-                this.getContent(ele, 0, 'render');
+                this.getContent(ele, 0);
                 ele.classList.remove(CLS_ACTIVE);
             }
             setStyle(this.cntEle, { 'height': this.maxHeight + 'px' });
@@ -900,7 +896,7 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                     attrs: { role: 'tabpanel', 'aria-labelledby': CLS_ITEM + '_' + this.extIndex(id) }
                 }));
                 let eleTrg: HTEle = this.getTrgContent(this.cntEle, this.extIndex(id));
-                this.getContent(eleTrg, Number(this.extIndex(id)), 'render');
+                this.getContent(eleTrg, Number(this.extIndex(id)));
             } else {
                 item.classList.add(CLS_ACTIVE);
             }
@@ -1261,10 +1257,14 @@ export class Tab extends Component<HTMLElement> implements INotifyPropertyChange
                                 this.addTab(arr, index);
                                 this.isReplace = false;
                             }
-                            if (property === 'content') {
-                                if (!isNOU(cntItem)) {
-                                    (cntItem.classList.contains('e-active') ? (cntItem.innerHTML = <Str>newVal) : cntItem.remove());
-                                }
+                            if (property === 'content' && !isNOU(cntItem)) {
+                                let strVal: Boolean = typeof newVal === 'string' || isNOU((<HTEle>newVal).innerHTML);
+                                if (strVal && ((<Str>newVal)[0] === '.' || (<Str>newVal)[0] === '#') && (<Str>newVal).length) {
+                                    let eleVal: HTEle = <HTEle>document.querySelector(<Str>newVal);
+                                    let eleStr: Str = eleVal.outerHTML.trim();
+                                    cntItem.appendChild(eleVal.cloneNode(true));
+                                    (<HTEle>cntItem.querySelector(<Str>newVal)).style.display = 'block';
+                                } else { cntItem.innerHTML = <Str>newVal; }
                             }
                             if (property === 'cssClass') {
                                 if (!isNOU(hdrItem)) {

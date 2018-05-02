@@ -1042,6 +1042,11 @@ export class TreeView extends Component<HTMLElement> implements INotifyPropertyC
 
     private getDataType(ds: { [key: string]: Object }[], mapper: FieldsSettingsModel): number {
         if (this.fields.dataSource instanceof DataManager) {
+            for (let i: number = 0; i < ds.length; i++) {
+                if ((typeof mapper.child === 'string') && isNOU(getValue(mapper.child, ds[i]))) {
+                    return 1;
+                }
+            }
             return 2;
         }
         for (let i: number = 0, len: number = ds.length; i < len; i++) {

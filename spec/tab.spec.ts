@@ -7006,7 +7006,11 @@ describe('Tab Control', () => {
         beforeEach((): void => {
             tab = undefined;
             let ele: HTMLElement = createElement('div', { id: 'ej2Tab' });
+            let test1: HTMLElement = createElement('div', { id: 'test1' });
+            let test2: HTMLElement = createElement('div', { id: 'test2' });
             document.body.appendChild(ele);
+            document.body.appendChild(test1);
+            document.body.appendChild(test2);
         });
         afterEach((): void => {
             if (tab) {
@@ -7067,11 +7071,11 @@ describe('Tab Control', () => {
              });
             tab.appendTo('#ej2Tab');
             expect(tab.items[0].content).toEqual('Content1');
-            expect(tab.element.querySelector('#e-content_0').innerText).toEqual('Content1');
+            expect(tab.element.querySelector('#e-content_0').innerText.trim()).toEqual('Content1');
             tab.items[0].content = 'New Content 1';
             tab.dataBind();
             expect(tab.items[0].content).toEqual('New Content 1');
-            expect(tab.element.querySelector('#e-content_0').innerText).toEqual('New Content 1');
+            expect(tab.element.querySelector('#e-content_0').innerText.trim()).toEqual('New Content 1');
             expect(tab.items[1].content).toEqual('Content2');
             expect(tab.element.querySelector('#e-content_1')).toEqual(null);
             tab.items[1].content = 'New Content 2';
@@ -7079,16 +7083,16 @@ describe('Tab Control', () => {
             expect(tab.items[1].content).toEqual('New Content 2');
             tab.select(1);
             expect(tab.element.querySelector('#e-content_1')).not.toEqual(null);
-            expect(tab.element.querySelector('#e-content_1').innerText).toEqual('New Content 2');
+            expect(tab.element.querySelector('#e-content_1').innerText.trim()).toEqual('New Content 2');
             tab.element.querySelector('#e-content_0').classList.remove('e-active');
             tab.items[0].content = 'New Content 11';
             tab.dataBind();
             expect(tab.items[0].content).toEqual('New Content 11');
             expect(tab.element.querySelector('#e-content_1')).not.toEqual(null);
-            expect(tab.element.querySelector('#e-content_1').innerText).toEqual('New Content 2');
+            expect(tab.element.querySelector('#e-content_1').innerText.trim()).toEqual('New Content 2');
             tab.select(0);
             expect(tab.element.querySelector('#e-content_0')).not.toEqual(null);
-            expect(tab.element.querySelector('#e-content_0').innerText).toEqual('New Content 11');
+            expect(tab.element.querySelector('#e-content_0').innerText.trim()).toEqual('New Content 11');
         });
         it('Items - cssClass property change testing', () => {
             tab = new Tab({
@@ -7195,6 +7199,25 @@ describe('Tab Control', () => {
             tab.dataBind();
             expect(tab.items[1].header.iconPosition).toEqual('right');
             expect(tab.element.querySelector('#e-item_1').classList.contains('e-iright')).toEqual(true);
+        });
+        it('Items - dynamic add content using id', function () {
+            let test1: HTMLElement =<HTMLElement>document.querySelector('#test1');
+            let test2: HTMLElement =<HTMLElement>document.querySelector('#test2');
+            tab = new Tab({
+                items: [
+                    { header: { "text": "Twitter", "iconCss": "e-twitter" }, content: test1 }
+                ]
+            });
+            test1.innerHTML = '<div>Content changed</div>';
+            test2.innerHTML = '<div>Content replaced</div>';
+            tab.appendTo('#ej2Tab');
+            expect(tab.element.querySelector('#e-content_0').innerText.trim()).toEqual('Content changed');
+            tab.items[0].content = "";
+            tab.dataBind();
+            expect(tab.element.querySelector('#e-content_0').innerText.trim()).toEqual('');
+            tab.items[0].content = "#test2";
+            tab.dataBind();
+            expect(tab.element.querySelector('#e-content_0').innerText.trim()).toEqual('Content replaced');
         });
     });
 });

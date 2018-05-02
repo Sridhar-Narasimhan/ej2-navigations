@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## 16.1.38 (2018-05-02)
+
+### TreeView
+
+#### bug Fixes
+
+- TreeView is not rendering properly when you return entire data (including child nodes) on initial request issue is fixed.
+
+### Tab
+
+#### Bug Fixes
+
+- Issue with loading dynamic content using template ID is fixed.
+
 ## 16.1.37 (2018-04-24)
 
 ### ContextMenu
